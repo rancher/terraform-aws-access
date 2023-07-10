@@ -1,0 +1,2 @@
+# load aws config
+source ~/.config/aws/default/rc
