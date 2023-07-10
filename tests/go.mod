@@ -1,4 +1,4 @@
-module github.com/coffee-shop-devs/aws/aws-access.go
+module github.com/rancher/terraform-aws-access.go
 
 go 1.18
 
