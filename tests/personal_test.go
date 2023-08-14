@@ -1,8 +1,12 @@
 package test
 
 import (
-	"github.com/gruntwork-io/terratest/modules/terraform"
+	"fmt"
 	"testing"
+
+	"github.com/gruntwork-io/terratest/modules/random"
+	"github.com/gruntwork-io/terratest/modules/ssh"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 // this test adds security group and ssh key, but overrides vpc and subnet
@@ -10,11 +14,18 @@ import (
 // thus generating only unshared or "personal" objects
 func TestPersonal(t *testing.T) {
 	t.Parallel()
+	uniqueID := random.UniqueId()
+	directory := "personal"
+	region := "us-west-1"
 
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../examples/personal",
-	})
-
+	keyPair := ssh.GenerateRSAKeyPair(t, 2048)
+	keyPairName := fmt.Sprintf("terraform-aws-access-test-%s-%s", directory, uniqueID)
+	terraformVars := map[string]interface{}{
+		"key_name": keyPairName,
+		"key":      keyPair.PublicKey,
+	}
+	terraformOptions := setup(t, directory, region, terraformVars)
+	defer teardown(t, directory)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
