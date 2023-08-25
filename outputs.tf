@@ -14,6 +14,10 @@ output "security_group" {
   value = module.security_group.security_group
 }
 
+output "security_group_name" {
+  value = module.security_group.name
+}
+
 output "ssh_key" {
   value = module.ssh_key.ssh_key
 }
