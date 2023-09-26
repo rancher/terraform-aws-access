@@ -28,3 +28,12 @@ variable "owner" {
   EOT
   default     = ""
 }
+variable "availability_zone" {
+  type        = string
+  description = <<-EOT
+    The availability zone to create the subnet in.
+    This is the name of the availability zone, not the AWS unique id.
+    For example "us-east-1a" or "us-east-1b" not "use1-az1" or "use1-az2".
+  EOT
+  default     = ""
+}

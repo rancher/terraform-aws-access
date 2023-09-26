@@ -5,8 +5,9 @@ locals {
   vpc_name = var.vpc_name
   vpc_cidr = var.vpc_cidr # create when cidr is given, otherwise select with name
 
-  subnet_name = var.subnet_name
-  subnet_cidr = var.subnet_cidr # create when cidr is given, otherwise select with name
+  subnet_name              = var.subnet_name
+  subnet_cidr              = var.subnet_cidr       # create when cidr is given, otherwise select with name
+  subnet_availability_zone = var.availability_zone # only used when creating
 
   security_group_name = var.security_group_name
   security_group_type = var.security_group_type # create when type is given, otherwise select with name
@@ -28,11 +29,12 @@ module "vpc" {
 }
 
 module "subnet" {
-  source = "./modules/subnet"
-  name   = local.subnet_name
-  cidr   = local.subnet_cidr
-  vpc_id = module.vpc.id
-  owner  = local.owner
+  source            = "./modules/subnet"
+  name              = local.subnet_name
+  cidr              = local.subnet_cidr
+  vpc_id            = module.vpc.id
+  owner             = local.owner
+  availability_zone = local.subnet_availability_zone
 }
 
 module "security_group" {

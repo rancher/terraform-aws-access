@@ -23,6 +23,10 @@ variable "vpc_cidr" {
     This value sets the default private IP space for the created VPC.
     VPCs generated with this module automatically give Amazon supplied public addresses to ec2 instances via an internet gateway.
     Access to the ec2 instances is then controlled by the security group.
+    WARNING: AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively).
+    This means that every VPC has 5 IP addresses that cannot be assigned to subnets, and every subnet assigned has 5 IP addresses that cannot be used.
+    If you attempt to generate a VPC that has no usable addresses you will get an "invalid CIDR" error from AWS.
+    If you attempt to generate a subnet that uses one of the addresses reserved by AWS in the VPC's CIDR, you will get an "invalid CIDR" error from AWS.
   EOT
   default     = ""
 }
@@ -48,6 +52,21 @@ variable "subnet_cidr" {
     This cidr must be within the IP bounds of the vpc_cidr.
     If this is specified, then a subnet will be created.
     If this isn't specified, then the module will attempt to find a subnet with the given name.
+    WARNING: AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively).
+    This means that every VPC has 5 IP addresses that cannot be assigned to subnets, and every subnet assigned has 5 IP addresses that cannot be used.
+    If you attempt to generate a subnet that has no usable addresses you will get an "invalid CIDR" error from AWS.
+    If you attempt to generate a subnet that uses one of the addresses reserved by AWS in the VPC's CIDR, you will get an "invalid CIDR" error from AWS.
+  EOT
+  default     = ""
+}
+variable "availability_zone" {
+  type        = string
+  description = <<-EOT
+    The availability zone to create the subnet in.
+    This is the name of the availability zone, not the AWS unique id.
+    For example "us-east-1a" or "us-east-1b" not "use1-az1" or "use1-az2".
+    This is required when creating a subnet, but not when selecting a subnet.
+    Any servers created in this subnet will be created in this availability zone.
   EOT
   default     = ""
 }
