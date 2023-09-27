@@ -44,6 +44,7 @@ module "security_group" {
   cidr   = module.subnet.cidr
   owner  = local.owner
   type   = local.security_group_type
+  vpc_id = module.vpc.id
 }
 
 module "ssh_key" {

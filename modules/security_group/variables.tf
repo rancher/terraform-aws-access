@@ -41,3 +41,11 @@ variable "cidr" {
   EOT
   default     = ""
 }
+variable "vpc_id" {
+  type        = string
+  description = <<-EOT
+    The id of the vpc to use when generating the security group.
+    Not necessary if the security group is being found.
+  EOT
+  default     = ""
+}
