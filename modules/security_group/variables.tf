@@ -49,3 +49,11 @@ variable "vpc_id" {
   EOT
   default     = ""
 }
+variable "vpc_cidr" {
+  type        = string
+  description = <<-EOT
+    The CIDR of the VPC, used to allow ingress from the VPC to the servers in the security group.
+    Not necessary if the security group is being found.
+  EOT
+  default     = ""
+}
