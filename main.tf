@@ -45,7 +45,7 @@ module "security_group" {
   owner    = local.owner
   type     = local.security_group_type
   vpc_id   = module.vpc.id
-  vpc_cidr = module.vpc.cidr
+  vpc_cidr = module.vpc.cidr_block
 }
 
 module "ssh_key" {
