@@ -1,12 +1,13 @@
 locals {
-  name   = var.name
-  select = (var.type == "" ? 1 : 0) # select if no type given
-  create = (var.type != "" ? 1 : 0) # create if given a type
-  type   = (local.types[(var.type == "" ? "none" : var.type)])
-  owner  = var.owner
-  ip     = var.ip
-  cidr   = var.cidr
-  vpc_id = var.vpc_id
+  name     = var.name
+  select   = (var.type == "" ? 1 : 0) # select if no type given
+  create   = (var.type != "" ? 1 : 0) # create if given a type
+  type     = (local.types[(var.type == "" ? "none" : var.type)])
+  owner    = var.owner
+  ip       = var.ip
+  cidr     = var.cidr
+  vpc_id   = var.vpc_id
+  vpc_cidr = var.vpc_cidr
 }
 
 data "aws_security_group" "selected" {
