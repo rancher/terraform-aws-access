@@ -1,12 +1,13 @@
 locals {
-  name   = var.name
-  select = (var.type == "" ? 1 : 0) # select if no type given
-  create = (var.type != "" ? 1 : 0) # create if given a type
-  type   = (local.types[(var.type == "" ? "none" : var.type)])
-  owner  = var.owner
-  ip     = var.ip
-  cidr   = var.cidr
-  vpc_id = var.vpc_id
+  name     = var.name
+  select   = (var.type == "" ? 1 : 0) # select if no type given
+  create   = (var.type != "" ? 1 : 0) # create if given a type
+  type     = (local.types[(var.type == "" ? "none" : var.type)])
+  owner    = var.owner
+  ip       = var.ip
+  cidr     = var.cidr
+  vpc_id   = var.vpc_id
+  vpc_cidr = var.vpc_cidr
 }
 
 data "aws_security_group" "selected" {
@@ -69,7 +70,26 @@ resource "aws_security_group_rule" "internal_egress" {
   cidr_blocks       = [local.cidr]
   security_group_id = aws_security_group.new[0].id
 }
-
+# this rule allows any ip in the cidr on any port to initiate connections to the server
+resource "aws_security_group_rule" "project_ingress" {
+  count             = (local.type.project_ingress ? 1 : 0)
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = [local.vpc_cidr]
+  security_group_id = aws_security_group.new[0].id
+}
+# this rule allows the server to initiate connections to any ip in the cidr on any port
+resource "aws_security_group_rule" "project_egress" {
+  count             = (local.type.project_egress ? 1 : 0)
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = [local.vpc_cidr]
+  security_group_id = aws_security_group.new[0].id
+}
 # this is necessary if you want to update or install anything from the internet
 # allows server to initiate connections to anywhere
 resource "aws_security_group_rule" "external_egress" {

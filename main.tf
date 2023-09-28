@@ -38,13 +38,14 @@ module "subnet" {
 }
 
 module "security_group" {
-  source = "./modules/security_group"
-  name   = local.security_group_name
-  ip     = (local.security_group_ip == "" ? data.http.get_my_ip[0].response_body : local.security_group_ip)
-  cidr   = module.subnet.cidr
-  owner  = local.owner
-  type   = local.security_group_type
-  vpc_id = module.vpc.id
+  source   = "./modules/security_group"
+  name     = local.security_group_name
+  ip       = (local.security_group_ip == "" ? data.http.get_my_ip[0].response_body : local.security_group_ip)
+  cidr     = module.subnet.cidr
+  owner    = local.owner
+  type     = local.security_group_type
+  vpc_id   = module.vpc.id
+  vpc_cidr = module.vpc.vpc.cidr_block
 }
 
 module "ssh_key" {
