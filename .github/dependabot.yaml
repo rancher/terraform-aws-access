@@ -8,9 +8,13 @@ updates:
     schedule:
       interval: "weekly"
       day: "sunday" # this way it is ready for review on Monday
+    commit-message:
+      prefix: "fix"
   # Check for updates to terraform providers every week
   - package-ecosystem: "terraform"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "sunday" # this way it is ready for review on Monday
+    commit-message:
+      prefix: "fix"
