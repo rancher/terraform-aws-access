@@ -1,2 +1,4 @@
 # load aws config
 source ~/.config/aws/default/rc
+# load personal aliases
+source ~/.config/alias/default/rc
