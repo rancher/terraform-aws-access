@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/rancher/terraform-aws-access/compare/v0.1.0...v0.1.1) (2023-11-29)
+
+
+### Bug Fixes
+
+* Add release ([#14](https://github.com/rancher/terraform-aws-access/issues/14)) ([ca7a6b1](https://github.com/rancher/terraform-aws-access/commit/ca7a6b16fa06755d5b4daf505c524f390fd1724a))
+
 ## [0.1.0](https://github.com/rancher/terraform-aws-access/compare/v0.0.8...v0.1.0) (2023-10-30)
 
 
