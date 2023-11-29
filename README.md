@@ -1,9 +1,5 @@
 # Terraform AWS Access
 
-WARNING! This is a work in progress and not ready to be used.
-
-This is an "Independent" module, please see [terraform.md](./terraform.md) for more information.
-
 ## AWS Access
 
 The first step to using the AWS modules is having an AWS account, [here](https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-creating.html) is a document describing this process.
@@ -48,9 +44,8 @@ These tools are not necessary, but they can make it much simpler to collaborate.
 * I navigate to the `tests` directory and run `go test -v -timeout=5m -parallel=10`
 * To run an individual test I nvaigate to the `tests` directory and run `go test -v -timeout=5m -run <test function name>`
   * eg. `go test -v -timeout=5m -run TestBasic`
-* I use `override.tf` files to change the values of `examples` to personalized data so that I can run them
 
-Our continuous integration tests in the GitHub [ubuntu-latest runner](https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md), which has many different things installed.
+Our continuous integration tests in the GitHub [ubuntu-latest runner](https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md), which has many different things installed, we use nix to add dependencies.
 
 ### Override Tests
 
