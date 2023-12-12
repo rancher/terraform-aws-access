@@ -20,11 +20,6 @@ resource "aws_vpc" "new" {
     Name = local.name
   }
   assign_generated_ipv6_cidr_block = true
-  lifecycle {
-    ignore_changes = [
-      default_network_acl_id,
-    ]
-  }
 }
 
 resource "aws_internet_gateway" "new" {
