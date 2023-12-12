@@ -23,7 +23,7 @@ resource "aws_vpc" "new" {
 }
 
 resource "aws_internet_gateway" "new" {
-  count  = local.create
+  count = local.create
   depends_on = [
     aws_vpc.new,
   ]
@@ -31,7 +31,7 @@ resource "aws_internet_gateway" "new" {
 }
 
 resource "aws_route" "public" {
-  count                  = local.create
+  count = local.create
   depends_on = [
     aws_internet_gateway.new,
     aws_vpc.new,
