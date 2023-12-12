@@ -16,16 +16,13 @@ locals {
   ssh_key_name   = var.ssh_key_name
   public_ssh_key = var.public_ssh_key # create when public key is given, otherwise select with name
 
-  ifconfig_co_json = jsondecode(data.http.my_public_ip[0].response_body)
-  ip               = (local.security_group_ip == "" ? local.ifconfig_co_json.ip : local.security_group_ip)
+  ipinfo_ip = chomp(data.http.my_public_ip[0].response_body)
+  ip        = (local.security_group_ip == "" ? local.ipinfo_ip : local.security_group_ip)
 }
 
 data "http" "my_public_ip" {
   count = (local.security_group_ip == "" ? 1 : 0)
-  url   = "https://ifconfig.co/json"
-  request_headers = {
-    Accept = "application/json"
-  }
+  url   = "https://ipinfo.io/ip"
 }
 
 module "vpc" {
