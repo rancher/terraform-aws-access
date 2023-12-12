@@ -4,7 +4,7 @@ locals {
   create   = (var.type != "" ? 1 : 0) # create if given a type
   type     = (local.types[(var.type == "" ? "none" : var.type)])
   owner    = var.owner
-  ip       = var.ip
+  ip       = chomp(var.ip)
   cidr     = var.cidr
   vpc_id   = var.vpc_id
   vpc_cidr = var.vpc_cidr
