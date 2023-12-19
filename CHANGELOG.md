@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/rancher/terraform-aws-access/compare/v0.1.2...v0.1.3) (2023-12-19)
+
+
+### Bug Fixes
+
+* remove unnecessary lifecycle ignore ([#21](https://github.com/rancher/terraform-aws-access/issues/21)) ([6178353](https://github.com/rancher/terraform-aws-access/commit/61783534ae7377cd8d91c3545deed25ffa3c820f))
+
 ## [0.1.2](https://github.com/rancher/terraform-aws-access/compare/v0.1.1...v0.1.2) (2023-12-12)
 
 
