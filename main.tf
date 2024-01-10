@@ -16,7 +16,7 @@ locals {
   ssh_key_name   = var.ssh_key_name
   public_ssh_key = var.public_ssh_key # create when public key is given, otherwise select with name
 
-  ipinfo_ip = chomp(data.http.my_public_ip[0].response_body)
+  ipinfo_ip = (can(chomp(data.http.my_public_ip[0].response_body)) ? chomp(data.http.my_public_ip[0].response_body) : "")
   ip        = (local.security_group_ip == "" ? local.ipinfo_ip : local.security_group_ip)
 }
 
