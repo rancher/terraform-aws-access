@@ -6,10 +6,6 @@ output "subnet" {
   value = module.TestProject.subnet
 }
 
-output "cidr" {
-  value = module.TestProject.cidr
-}
-
 output "security_group" {
   value = module.TestProject.security_group
 }

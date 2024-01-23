@@ -1,7 +1,7 @@
 locals {
-  identifier = "specifyip"
+  identifier = "skipsg"
 }
-
+# vpc, subnet, and ssh key
 module "this" {
   source              = "../../"
   owner               = "terraform-ci@suse.com"
@@ -10,9 +10,7 @@ module "this" {
   subnet_name         = "terraform-aws-access-${local.identifier}"
   subnet_cidr         = "10.0.255.224/28" # gives 14 usable addresses from .225 to .238, but AWS reserves .225 to .227 and .238, leaving .227 to .237
   availability_zone   = "us-west-1b"      # check what availability zones are available in your region before setting this
-  security_group_name = "terraform-aws-access-${local.identifier}"
-  security_group_type = "egress"
-  security_group_ip   = chomp(var.ip)
+  skip_security_group = true
   public_ssh_key      = var.key
   ssh_key_name        = var.key_name
 }

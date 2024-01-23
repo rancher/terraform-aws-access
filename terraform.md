@@ -89,12 +89,6 @@ Selector files like this allow users to choose a configuration that makes sense 
 Most commonly, this is used for server configurations, but may also occur in other places like ami selection or higher level abstractions.
 Generally this should provide some examples of working configurations so that users do not need to scour provider documentation.
 
-## Select if Not Creating
-
-Forcing the user to select a resource if they are not creating it allows outputs to be normalized, which allows easier construction of modules at a higher level.
-If a "server" implementation module always returns information about a server, even when the information isn't necessary, then the composing module can just treat it like any other implementation of that module.
-This provides a separation of concerns around data and logic allowing for less work adapting to specific implementations.
-
 ## Idempotent Modules
 
 Terraform state allows modules to be idempotent within their context by default,
