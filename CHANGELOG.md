@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/rancher/terraform-aws-access/compare/v0.1.4...v1.0.0) (2024-01-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* add the ability to explicitly skip parts of the module ([#26](https://github.com/rancher/terraform-aws-access/issues/26))
+
+### Features
+
+* add the ability to explicitly skip parts of the module ([#26](https://github.com/rancher/terraform-aws-access/issues/26)) ([a7445f9](https://github.com/rancher/terraform-aws-access/commit/a7445f999bb82b757bd09b281ce06b4bbc50711e))
+
 ## [0.1.4](https://github.com/rancher/terraform-aws-access/compare/v0.1.3...v0.1.4) (2024-01-10)
 
 

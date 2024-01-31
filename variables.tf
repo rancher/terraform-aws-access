@@ -15,6 +15,7 @@ variable "vpc_name" {
     This is required.
     If a cidr is specified, then a VPC will be created.
   EOT
+  default     = ""
 }
 variable "vpc_cidr" {
   type        = string
@@ -30,6 +31,11 @@ variable "vpc_cidr" {
   EOT
   default     = ""
 }
+variable "skip_vpc" {
+  type        = bool
+  description = "Skip vpc generation, use with care."
+  default     = false
+}
 # subnet
 variable "subnet_name" {
   type        = string
@@ -44,6 +50,7 @@ variable "subnet_name" {
     If you override the creation of the VPC and the creation of the subnet,
       this module won't attempt to associate the subnet to the VPC.
   EOT
+  default     = ""
 }
 variable "subnet_cidr" {
   type        = string
@@ -70,6 +77,11 @@ variable "availability_zone" {
   EOT
   default     = ""
 }
+variable "skip_subnet" {
+  type        = bool
+  description = "Skip subnet generation, use with care."
+  default     = false
+}
 # security group
 variable "security_group_name" {
   type        = string
@@ -79,6 +91,7 @@ variable "security_group_name" {
     If you would like to create a security group please specify the type of security group you would like to create.
     The types are located in modules/security_group/types.tf.
   EOT
+  default     = ""
 }
 variable "security_group_type" {
   type        = string
@@ -100,6 +113,11 @@ variable "security_group_ip" {
   EOT
   default     = ""
 }
+variable "skip_security_group" {
+  type        = bool
+  description = "Skip security group generation, use with care."
+  default     = false
+}
 
 # ssh key
 variable "ssh_key_name" {
@@ -110,6 +128,7 @@ variable "ssh_key_name" {
     If you would like to create an ssh key pair, please specify the public_ssh_key.
     If the public_ssh_key variable is not specified, then this module will attempt to find an ssh key with the given name.
   EOT
+  default     = ""
 }
 variable "public_ssh_key" {
   type        = string
@@ -119,4 +138,9 @@ variable "public_ssh_key" {
     If this isn't specified, then the module will attempt to find an ssh key with the given name.
   EOT
   default     = ""
+}
+variable "skip_ssh" {
+  type        = bool
+  description = "Skip ssh key generation, use with care."
+  default     = false
 }
