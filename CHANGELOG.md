@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/rancher/terraform-aws-access/compare/v1.0.0...v1.0.1) (2024-01-31)
+
+
+### Bug Fixes
+
+* bump actions/cache from 3 to 4 ([#25](https://github.com/rancher/terraform-aws-access/issues/25)) ([8e46a19](https://github.com/rancher/terraform-aws-access/commit/8e46a19c096a6f3086df0a89ce9c86e404a780e4))
+* bump peter-evans/create-or-update-comment from 3 to 4 ([#28](https://github.com/rancher/terraform-aws-access/issues/28)) ([0982d67](https://github.com/rancher/terraform-aws-access/commit/0982d67cfecbe228628e4cd90020f57805d2d6dc))
+
 ## [1.0.0](https://github.com/rancher/terraform-aws-access/compare/v0.1.4...v1.0.0) (2024-01-23)
 
 
