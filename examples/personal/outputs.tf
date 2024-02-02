@@ -1,15 +1,15 @@
 output "vpc" {
-  value = module.TestPersonal.vpc
+  value = module.this.vpc
 }
 
 output "subnet" {
-  value = module.TestPersonal.subnet
+  value = module.this.subnet
 }
 
 output "security_group" {
-  value = module.TestPersonal.security_group
+  value = module.this.security_group
 }
 
 output "ssh_key" {
-  value = module.TestPersonal.ssh_key
+  value = module.this.ssh_key
 }

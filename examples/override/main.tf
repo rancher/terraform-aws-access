@@ -6,11 +6,12 @@ provider "aws" {
   }
 }
 locals {
+  identifier          = var.identifier
+  name                = "tf-override-${local.identifier}"
   security_group_name = var.security_group_name
   key_name            = var.key_name
-  identifier          = var.identifier
 }
-module "TestOverride" {
+module "this" {
   source              = "../../"
   vpc_name            = "default"
   subnet_name         = "default"

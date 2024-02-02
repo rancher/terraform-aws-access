@@ -1,15 +1,15 @@
 output "vpc" {
-  value = module.TestOverride.vpc
+  value = module.this.vpc
 }
 
 output "subnet" {
-  value = module.TestOverride.subnet
+  value = module.this.subnet
 }
 
 output "security_group" {
-  value = module.TestOverride.security_group
+  value = module.this.security_group
 }
 
 output "ssh_key" {
-  value = module.TestOverride.ssh_key
+  value = module.this.ssh_key
 }
