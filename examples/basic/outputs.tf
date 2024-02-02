@@ -1,15 +1,15 @@
 output "vpc" {
-  value = module.TestBasic.vpc
+  value = module.this.vpc
 }
 
 output "subnet" {
-  value = module.TestBasic.subnet
+  value = module.this.subnet
 }
 
 output "security_group" {
-  value = module.TestBasic.security_group
+  value = module.this.security_group
 }
 
 output "ssh_key" {
-  value = module.TestBasic.ssh_key
+  value = module.this.ssh_key
 }
