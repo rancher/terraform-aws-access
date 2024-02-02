@@ -4,3 +4,6 @@ variable "key_name" {
 variable "security_group_name" {
   type = string
 }
+variable "identifier" {
+  type = string
+}

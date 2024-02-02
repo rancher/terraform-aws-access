@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/random"
@@ -13,7 +14,10 @@ import (
 
 func TestIp(t *testing.T) {
 	t.Parallel()
-	uniqueID := random.UniqueId()
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
 	directory := "specifyip"
 	region := "us-west-1"
 	ip := GetOutboundIP().String()
@@ -21,9 +25,10 @@ func TestIp(t *testing.T) {
 	keyPair := ssh.GenerateRSAKeyPair(t, 2048)
 	keyPairName := fmt.Sprintf("terraform-aws-access-%s-%s", directory, uniqueID)
 	terraformVars := map[string]interface{}{
-		"key_name": keyPairName,
-		"key":      keyPair.PublicKey,
-		"ip":       ip,
+		"identifier": uniqueID,
+		"key_name":   keyPairName,
+		"key":        keyPair.PublicKey,
+		"ip":         ip,
 	}
 	terraformOptions := setup(t, directory, region, terraformVars)
 	defer teardown(t, directory)

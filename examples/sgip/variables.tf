@@ -1,6 +1,3 @@
-variable "key" {
-  type = string
-}
-variable "key_name" {
+variable "identifier" {
   type = string
 }

@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/random"
@@ -11,15 +12,19 @@ import (
 
 func TestSkipVpc(t *testing.T) {
 	t.Parallel()
-	uniqueID := random.UniqueId()
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
 	directory := "skipvpc"
 	region := "us-west-1"
 
 	keyPair := ssh.GenerateRSAKeyPair(t, 2048)
-	keyPairName := fmt.Sprintf("terraform-aws-access-%s-%s", directory, uniqueID)
+	keyPairName := fmt.Sprintf("tf-%s-%s", directory, uniqueID)
 	terraformVars := map[string]interface{}{
-		"key_name": keyPairName,
-		"key":      keyPair.PublicKey,
+		"identifier": uniqueID,
+		"key_name":   keyPairName,
+		"key":        keyPair.PublicKey,
 	}
 	terraformOptions := setup(t, directory, region, terraformVars)
 	defer teardown(t, directory)
@@ -29,15 +34,19 @@ func TestSkipVpc(t *testing.T) {
 
 func TestSkipSubnet(t *testing.T) {
 	t.Parallel()
-	uniqueID := random.UniqueId()
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
 	directory := "skipsubnet"
 	region := "us-west-1"
 
 	keyPair := ssh.GenerateRSAKeyPair(t, 2048)
-	keyPairName := fmt.Sprintf("terraform-aws-access-%s-%s", directory, uniqueID)
+	keyPairName := fmt.Sprintf("tf-%s-%s", directory, uniqueID)
 	terraformVars := map[string]interface{}{
-		"key_name": keyPairName,
-		"key":      keyPair.PublicKey,
+		"identifier": uniqueID,
+		"key_name":   keyPairName,
+		"key":        keyPair.PublicKey,
 	}
 	terraformOptions := setup(t, directory, region, terraformVars)
 	defer teardown(t, directory)
@@ -46,15 +55,19 @@ func TestSkipSubnet(t *testing.T) {
 }
 func TestSkipSecurityGroup(t *testing.T) {
 	t.Parallel()
-	uniqueID := random.UniqueId()
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
 	directory := "skipsecuritygroup"
 	region := "us-west-1"
 
 	keyPair := ssh.GenerateRSAKeyPair(t, 2048)
-	keyPairName := fmt.Sprintf("terraform-aws-access-%s-%s", directory, uniqueID)
+	keyPairName := fmt.Sprintf("tf-%s-%s", directory, uniqueID)
 	terraformVars := map[string]interface{}{
-		"key_name": keyPairName,
-		"key":      keyPair.PublicKey,
+		"identifier": uniqueID,
+		"key_name":   keyPairName,
+		"key":        keyPair.PublicKey,
 	}
 	terraformOptions := setup(t, directory, region, terraformVars)
 	defer teardown(t, directory)
@@ -63,15 +76,15 @@ func TestSkipSecurityGroup(t *testing.T) {
 }
 func TestSkipSsh(t *testing.T) {
 	t.Parallel()
-	uniqueID := random.UniqueId()
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
 	directory := "skipssh"
 	region := "us-west-1"
 
-	keyPair := ssh.GenerateRSAKeyPair(t, 2048)
-	keyPairName := fmt.Sprintf("terraform-aws-access-%s-%s", directory, uniqueID)
 	terraformVars := map[string]interface{}{
-		"key_name": keyPairName,
-		"key":      keyPair.PublicKey,
+		"identifier": uniqueID,
 	}
 	terraformOptions := setup(t, directory, region, terraformVars)
 	defer teardown(t, directory)
