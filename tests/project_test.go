@@ -1,8 +1,10 @@
 package test
 
 import (
+	"os"
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
@@ -11,14 +13,19 @@ import (
 // and the vpc is outside of your control
 func TestProject(t *testing.T) {
 	t.Parallel()
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
 	directory := "project"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
 
-	keyPair := setupKeyPair(t, directory, region, owner)
+	keyPair := setupKeyPair(t, directory, region, owner, uniqueID)
 	defer teardownKeyPair(t, keyPair)
 	terraformVars := map[string]interface{}{
-		"key_name": keyPair.Name,
+		"identifier": uniqueID,
+		"key_name":   keyPair.Name,
 	}
 	terraformOptions := setup(t, directory, region, terraformVars)
 	defer teardown(t, directory)

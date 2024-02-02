@@ -16,6 +16,12 @@ import (
 func teardown(t *testing.T, directory string) {
 	err := os.RemoveAll(fmt.Sprintf("../examples/%s/.terraform", directory))
 	require.NoError(t, err)
+	err1 := os.RemoveAll(fmt.Sprintf("../examples/%s/.terraform.lock.hcl", directory))
+	require.NoError(t, err1)
+	err2 := os.RemoveAll(fmt.Sprintf("../examples/%s/terraform.tfstate", directory))
+	require.NoError(t, err2)
+	err3 := os.RemoveAll(fmt.Sprintf("../examples/%s/terraform.tfstate.backup", directory))
+	require.NoError(t, err3)
 }
 
 func setup(t *testing.T, directory string, region string, terraformVars map[string]interface{}) *terraform.Options {
@@ -43,9 +49,8 @@ func setup(t *testing.T, directory string, region string, terraformVars map[stri
 	return terraformOptions
 }
 
-func setupKeyPair(t *testing.T, directory string, region string, owner string) *aws.Ec2Keypair {
+func setupKeyPair(t *testing.T, directory string, region string, owner string, uniqueID string) *aws.Ec2Keypair {
 	// Create an EC2 KeyPair that we can find in the module
-	uniqueID := random.UniqueId()
 	keyPairName := fmt.Sprintf("terraform-aws-access-test-%s-%s", directory, uniqueID)
 	keyPair := aws.CreateAndImportEC2KeyPair(t, region, keyPairName)
 	// tag the key pair

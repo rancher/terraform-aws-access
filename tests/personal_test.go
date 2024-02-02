@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/random"
@@ -14,15 +15,19 @@ import (
 // thus generating only unshared or "personal" objects
 func TestPersonal(t *testing.T) {
 	t.Parallel()
-	uniqueID := random.UniqueId()
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
 	directory := "personal"
 	region := "us-west-1"
 
 	keyPair := ssh.GenerateRSAKeyPair(t, 2048)
 	keyPairName := fmt.Sprintf("terraform-aws-access-test-%s-%s", directory, uniqueID)
 	terraformVars := map[string]interface{}{
-		"key_name": keyPairName,
-		"key":      keyPair.PublicKey,
+		"identifier": uniqueID,
+		"key_name":   keyPairName,
+		"key":        keyPair.PublicKey,
 	}
 	terraformOptions := setup(t, directory, region, terraformVars)
 	defer teardown(t, directory)

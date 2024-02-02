@@ -7,3 +7,6 @@ variable "key_name" {
 variable "ip" {
   type = string
 }
+variable "identifier" {
+  type = string
+}
