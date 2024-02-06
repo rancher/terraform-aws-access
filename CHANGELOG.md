@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/rancher/terraform-aws-access/compare/v1.0.1...v1.0.2) (2024-02-02)
+
+
+### Bug Fixes
+
+* add names specific to tests in examples ([#32](https://github.com/rancher/terraform-aws-access/issues/32)) ([1653d16](https://github.com/rancher/terraform-aws-access/commit/1653d1627800e378d4d6422d93e27b7f3c9cfd80))
+* update workflow to include id tag, cleanup, new flake, etc ([#30](https://github.com/rancher/terraform-aws-access/issues/30)) ([bac9943](https://github.com/rancher/terraform-aws-access/commit/bac9943fb9c764bf0afb17ceede794d2d08e0dee))
+
 ## [1.0.1](https://github.com/rancher/terraform-aws-access/compare/v1.0.0...v1.0.1) (2024-01-31)
 
 
