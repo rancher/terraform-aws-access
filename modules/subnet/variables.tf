@@ -37,3 +37,10 @@ variable "availability_zone" {
   EOT
   default     = ""
 }
+variable "public_ip" {
+  type        = bool
+  description = <<-EOT
+    Set this to true to enable the subnet to have public IP addresses.
+  EOT
+  default     = false
+}

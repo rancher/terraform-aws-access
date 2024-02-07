@@ -66,6 +66,13 @@ variable "subnet_cidr" {
   EOT
   default     = ""
 }
+variable "subnet_public_ip" {
+  type        = bool
+  description = <<-EOT
+    Set this to true to enable the subnet to have public IP addresses.
+  EOT
+  default     = false
+}
 variable "availability_zone" {
   type        = string
   description = <<-EOT
