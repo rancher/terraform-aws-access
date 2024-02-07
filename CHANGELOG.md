@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/rancher/terraform-aws-access/compare/v1.0.2...v1.1.0) (2024-02-07)
+
+
+### Features
+
+* add the option to map a public ip to servers on subnet ([#33](https://github.com/rancher/terraform-aws-access/issues/33)) ([c622311](https://github.com/rancher/terraform-aws-access/commit/c6223110d0f4a4fa9794fc3226dbc0f03d0ad92e))
+
+
+### Bug Fixes
+
+* remove unncessary store steps ([#35](https://github.com/rancher/terraform-aws-access/issues/35)) ([e5f6034](https://github.com/rancher/terraform-aws-access/commit/e5f60342a087b6460038c00f7ddc088f5de0fd45))
+
 ## [1.0.2](https://github.com/rancher/terraform-aws-access/compare/v1.0.1...v1.0.2) (2024-02-02)
 
 
