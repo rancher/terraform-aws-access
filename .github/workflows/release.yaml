@@ -32,14 +32,6 @@ jobs:
         if: steps.release-please.outputs.pr
         with:
           token: ${{secrets.GITHUB_TOKEN}}
-      - run: sudo rm -rf /nix/store
-        if: steps.release-please.outputs.pr
-      - run: sudo install -d /nix/store
-        if: steps.release-please.outputs.pr
-      - run: sudo chown -R "$(whoami)" /nix/store
-        if: steps.release-please.outputs.pr
-      - run: sudo chmod 0755 /nix/store
-        if: steps.release-please.outputs.pr
       - uses: DeterminateSystems/nix-installer-action@main
         if: steps.release-please.outputs.pr
       - uses: nicknovitski/nix-develop@v1.1.0
