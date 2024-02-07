@@ -9,6 +9,7 @@ locals {
   subnet_name              = var.subnet_name
   subnet_cidr              = var.subnet_cidr       # create when cidr is given, otherwise select with name or skip
   subnet_availability_zone = var.availability_zone # only used when creating
+  subnet_public_ip         = var.subnet_public_ip  # set this to true to enable public ip addressing on servers
   skip_subnet              = var.skip_subnet       # if using the "specific" security group type you can skip subnet creation
 
   security_group_name = var.security_group_name
@@ -43,6 +44,7 @@ module "subnet" {
   vpc_id            = module.vpc[0].id
   owner             = local.owner
   availability_zone = local.subnet_availability_zone
+  public_ip         = local.subnet_public_ip
 }
 
 module "security_group" {
