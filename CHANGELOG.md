@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/rancher/terraform-aws-access/compare/v1.1.0...v1.1.1) (2024-02-09)
+
+
+### Bug Fixes
+
+* update terraform version to new req 1.5 ([#36](https://github.com/rancher/terraform-aws-access/issues/36)) ([7d55c41](https://github.com/rancher/terraform-aws-access/commit/7d55c4116e3763ee04c321c4a743d3fdb0267381))
+
 ## [1.1.0](https://github.com/rancher/terraform-aws-access/compare/v1.0.2...v1.1.0) (2024-02-07)
 
 
