@@ -57,3 +57,7 @@ variable "vpc_cidr" {
   EOT
   default     = ""
 }
+variable "skip_runner_ip" {
+  type        = bool
+  description = "Skip generating ingress security group for the runner's ip"
+}

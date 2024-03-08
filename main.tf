@@ -18,10 +18,10 @@ locals {
   ipinfo_ip           = chomp(can(data.http.my_public_ip[0].response_body) ? data.http.my_public_ip[0].response_body : "127.0.0.1")
   ip                  = (local.security_group_ip == "" ? local.ipinfo_ip : local.security_group_ip)
   skip_security_group = var.skip_security_group # no objects in this module depend on security group being created, skip if wanted
-
-  ssh_key_name   = var.ssh_key_name
-  public_ssh_key = var.public_ssh_key # create when public key is given, otherwise select with name
-  skip_ssh       = var.skip_ssh       # no objects in this module depend on ssh key being created, skip if wanted
+  skip_runner_ip      = var.skip_runner_ip
+  ssh_key_name        = var.ssh_key_name
+  public_ssh_key      = var.public_ssh_key # create when public key is given, otherwise select with name
+  skip_ssh            = var.skip_ssh       # no objects in this module depend on ssh key being created, skip if wanted
 }
 
 data "http" "my_public_ip" {
@@ -48,15 +48,16 @@ module "subnet" {
 }
 
 module "security_group" {
-  count    = (local.skip_security_group ? 0 : 1)
-  source   = "./modules/security_group"
-  name     = local.security_group_name
-  ip       = local.ip
-  cidr     = (can(module.subnet[0].cidr) ? module.subnet[0].cidr : "")
-  owner    = local.owner
-  type     = local.security_group_type
-  vpc_id   = module.vpc[0].id
-  vpc_cidr = module.vpc[0].vpc.cidr_block
+  count          = (local.skip_security_group ? 0 : 1)
+  source         = "./modules/security_group"
+  name           = local.security_group_name
+  ip             = local.ip
+  cidr           = (can(module.subnet[0].cidr) ? module.subnet[0].cidr : "")
+  owner          = local.owner
+  type           = local.security_group_type
+  vpc_id         = module.vpc[0].id
+  vpc_cidr       = module.vpc[0].vpc.cidr_block
+  skip_runner_ip = local.skip_runner_ip
 }
 
 module "ssh_key" {

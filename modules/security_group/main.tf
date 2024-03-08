@@ -1,13 +1,15 @@
 locals {
-  name     = var.name
-  select   = (var.type == "" ? 1 : 0) # select if no type given
-  create   = (var.type != "" ? 1 : 0) # create if given a type
-  type     = (local.types[(var.type == "" ? "none" : var.type)])
-  owner    = var.owner
-  ip       = chomp(var.ip)
-  cidr     = var.cidr
-  vpc_id   = var.vpc_id
-  vpc_cidr = var.vpc_cidr
+  name           = var.name
+  select         = (var.type == "" ? 1 : 0) # select if no type given
+  create         = (var.type != "" ? 1 : 0) # create if given a type
+  type           = (local.types[(var.type == "" ? "none" : var.type)])
+  owner          = var.owner
+  ip             = chomp(var.ip)
+  cidr           = var.cidr
+  vpc_id         = var.vpc_id
+  vpc_cidr       = var.vpc_cidr
+  skip_runner_ip = var.skip_runner_ip
+  allow_runner   = (local.skip_runner_ip ? false : true) # opposite of skip_runner_ip
 }
 
 data "aws_security_group" "selected" {
@@ -37,14 +39,14 @@ resource "aws_security_group" "new" {
 
 # this rule allows ingress on any port from the ip specified
 resource "aws_vpc_security_group_ingress_rule" "from_ip" {
-  count             = (local.type.specific_ip_ingress ? 1 : 0)
+  count             = (local.type.specific_ip_ingress && local.allow_runner ? 1 : 0)
   ip_protocol       = "-1"
   cidr_ipv4         = "${local.ip}/32"
   security_group_id = aws_security_group.new[0].id
 }
 # this rule allows egress on any port to the ip specified
 resource "aws_vpc_security_group_egress_rule" "to_ip" {
-  count             = (local.type.specific_ip_egress ? 1 : 0)
+  count             = (local.type.specific_ip_egress && local.allow_runner ? 1 : 0)
   ip_protocol       = "-1"
   cidr_ipv4         = "${local.ip}/32"
   security_group_id = aws_security_group.new[0].id
