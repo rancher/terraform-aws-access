@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/rancher/terraform-aws-access/compare/v1.1.1...v1.2.0) (2024-03-08)
+
+
+### Features
+
+* add ability to skip specific ip sg ([#38](https://github.com/rancher/terraform-aws-access/issues/38)) ([a0c8b10](https://github.com/rancher/terraform-aws-access/commit/a0c8b103e9448d4eb0c94895941e6c3dfcccc5c3))
+
 ## [1.1.1](https://github.com/rancher/terraform-aws-access/compare/v1.1.0...v1.1.1) (2024-02-09)
 
 
