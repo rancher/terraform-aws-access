@@ -125,6 +125,11 @@ variable "skip_security_group" {
   description = "Skip security group generation, use with care."
   default     = false
 }
+variable "skip_runner_ip" {
+  type        = bool
+  description = "Skip generating ingress security group for the runner's ip"
+  default     = false
+}
 
 # ssh key
 variable "ssh_key_name" {
