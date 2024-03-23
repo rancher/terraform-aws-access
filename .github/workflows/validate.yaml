@@ -94,8 +94,8 @@ jobs:
           fetch-depth: 0
       - uses: matttrach/nix-installer-action@main
       - name: shell check
-        shell: >
-          nix develop \
+        shell: |
+          "nix develop \
             --ignore-environment \
             --extra-experimental-features nix-command \
             --extra-experimental-features flakes \
@@ -114,7 +114,7 @@ jobs:
             --keep GPG_SIGNING_KEY \
             --keep NIX_ENV_LOADED \
             --keep TERM \
-            --command bash -e {0}
+            --command bash -e {0}"
         run: |
           git pull;
           while read -r file; do
