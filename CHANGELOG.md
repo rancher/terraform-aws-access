@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/rancher/terraform-aws-access/compare/v1.2.0...v1.2.1) (2024-03-23)
+
+
+### Bug Fixes
+
+* update workflows to meet new standards ([#40](https://github.com/rancher/terraform-aws-access/issues/40)) ([4933b3a](https://github.com/rancher/terraform-aws-access/commit/4933b3a09ee46d69c1ed5c22a5b822d64fa740cf))
+
 ## [1.2.0](https://github.com/rancher/terraform-aws-access/compare/v1.1.1...v1.2.0) (2024-03-08)
 
 
