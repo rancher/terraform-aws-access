@@ -49,7 +49,7 @@ The word "Module" is used in three contexts:
    - an example of this would be a security group and its rules
      - while rules can be added separately from the group and are their own resources they do not make a lot of sense to have in their own external module
      - it may be useful to separate out the rules from the group in logical form to keep top level (implementation) modules clean
-3. As an implementation of resources (Implementation Module/IMod)
+3. As an implementation of resources (Implementation Module/Root module/IMod)
    - modules are generally considered a way to pull code into a terraform file, but eventually a "root" must be created
    - the "root module" or "impementation module" orchestrates a group of modules with the intent of actually provisioning resources (rather than just as a template or library)
    - using the git ops paradigm the implementation module should be considered the source of truth for the infrastructure
@@ -99,6 +99,9 @@ For instance, you should not need to provision a new VPC for every implementatio
 This technique allows you to only generate a VPC once (or never, if you create it manually) by querying the provider before generating the resource.
 This also prevents users from having to know or pass the unique ids of resources into modules.
 Modules need selectors to accomplish this, usually in the form of some kind of name or default.
+There is a trade off to this approach where dependency chains become coupled in a way the forces recreation of resources due to unknown values.
+We diminish this trade off by explicitly ignoring this cases which Terraform calls "changes".
+This in turn may cause infrastructure to stay around when you might expect it to go away, which is how we err on the side of caution.
 
 ## Parenthesis Around Ternaries
 
@@ -115,6 +118,7 @@ Many times, variables need to be processed after an initial implementation is in
   variables can not be processed in the variables section, and processing the variable in multiple places throughout the config is prone to error,
   this standard will prevent unnecessary changes to the variables and the config as a whole.
 Basically, place everything in locals so you don't have to worry about moving them there later.
+This also makes the interface able to be more stable than the underlying code.
 
 ## Embedded Scripts Should Use Heredoc
 
@@ -168,16 +172,19 @@ There shouldn't be more than 3 levels of nested independent modules: (Core, Prim
 
 These independent modules represent provider resources, they should not have any nested independant modules.
 Core Modules should only call resources.
+Most times these are local modules within a Primary module.
 
 ### Primary Modules
 
 These independent modules represent groups of core modules, they should not call resources.
 Primary Modules should only call Core Modules.
+There is an exception for null_resource or terraform_data resources which many times are necessary to configure services.
 
 ### Secondary Modules
 
 These modules represent large systems, they should only call Primary Modules.
 Secondary Modules should only call Primary Modules.
+There is an exception for null_resource or terraform_data resources which many times are necessary to configure services.
 
 ## Test Size
 
@@ -196,3 +203,4 @@ Integration tests show that any two local modules work together.
 
 In this code base an "End to End" or "E2E" test refers to testing all of the units together.
 A module might have several E2E tests validating different configurations.
+The vast majority of tests will be e2e, since that represents the highest value to our users.

@@ -11,13 +11,16 @@
 
 ## AWS Access
 
-The first step to using the AWS modules is having an AWS account, [here](https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-creating.html) is a document describing this process.
-You will need an API access key id and API secret key, you can get the API keys [following this tutorial](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey).
+The first step to using the AWS modules is having an AWS account,
+ [here](https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-creating.html) is a document describing this process.
+You will need an API access key id and API secret key,
+ you can get the API keys [following this tutorial](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey).
 The Terraform AWS provider uses the AWS Go SDK, which allows the use of either environment variables or config files for authentication.
 https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html#cli-configure-files-settings
 
 You do not need the AWS cli to generate the files, just place them in the proper place and Terraform will find and read them.
-We use environment variables to configure the AWS provider and load them by sourcing an RC file.
+In development, we use environment variables to configure the AWS provider and load them by sourcing an RC file.
+In CI we use OIDC connection to AWS to authenticate.
 
 ```
 export AWS_ACCESS_KEY_ID='ABC123'
@@ -26,7 +29,7 @@ export AWS_REGION='us-west-1'
 ```
 
 These help the tests set you as the owner on the testing infra and generate the proper key.
-The `.envrc` file sources `.rcs` file which assumes a local file at path `~/.config/aws/default/rc` exists with the above information.
+The `.envrc` file sources `.rcs` file which assumes a local file at path `~/.config/aws/default` exists with the above information.
 
 ## Examples
 
