@@ -94,7 +94,7 @@ jobs:
           fetch-depth: 0
       - uses: matttrach/nix-installer-action@main
       - name: shell check
-        shell: |
+        shell: >
           nix develop \
             --ignore-environment \
             --extra-experimental-features nix-command \
