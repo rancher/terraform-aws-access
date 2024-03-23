@@ -1,10 +1,8 @@
 name: validate
 
 on:
-  # WARNING: do not make this repo public if you use this workflow, as a private repo you can safely trust the PRs not to be malicious
-  pull_request_target:
-    types: [opened, synchronize, reopened, ready_for_review]
-    branches: [main]
+  pull_request:
+    branches: main
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
