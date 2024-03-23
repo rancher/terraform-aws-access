@@ -61,6 +61,8 @@ jobs:
       - name: Check commit message
         shell: nix develop --ignore-environment --extra-experimental-features nix-command --extra-experimental-features flakes --keep HOME --keep SSH_AUTH_SOCK --keep GITHUB_TOKEN --keep AWS_ROLE --keep AWS_REGION --keep AWS_DEFAULT_REGION --keep AWS_ACCESS_KEY_ID --keep AWS_SECRET_ACCESS_KEY --keep AWS_SESSION_TOKEN --keep UPDATECLI_GPGTOKEN --keep UPDATECLI_GITHUB_TOKEN --keep UPDATECLI_GITHUB_ACTOR --keep GPG_SIGNING_KEY --keep NIX_ENV_LOADED --keep TERM --command bash -e {0}
         run: |
+          set -e
+          set -x
           # Check commit messages
           # This steps enforces https://www.conventionalcommits.org/en/v1.0.0/
           # This format enables automatic generation of changelogs and versioning
@@ -77,49 +79,46 @@ jobs:
           echo "$COMMIT_MESSAGES"
 
           while read -r message; do
-            echo "Checking commit message: $message"
             if [ "" != "$(filter "$message")" ]; then
               echo "Commit message does not start with the required prefix.
               Please use one of the following prefixes: fix:, feature:, feat:, refactor!:, feature!:, feat:!.
               'chore(main): ' is also allowed for release PRs.
-              This enables release-please to automatically determine the type of release (major, minor, patch) based on the commit message."
+              This enables release-please to automatically determine the type of release (major, minor, patch) based on the commit message.
+              $message"
               exit 1
             else
-              echo "Commit message starts with the required prefix."
+              echo "Commit message $message starts with the required prefix."
             fi
           done <<<"$COMMIT_MESSAGES"
 
           # Check if any commit message is empty
           while read -r message; do
-            echo "Checking commit message: $message"
             if [ "" == "$message" ]; then
-              echo "Found empty commit message."
+              echo "Found empty commit message: $message."
               exit 1
             else
-              echo "Commit message is not empty."
+              echo "Commit message $message is not empty."
             fi
           done <<<"$COMMIT_MESSAGES"
 
           # Check if any commit message subject line is longer than 50 characters
           while read -r message; do
-            echo "Checking commit message: $message"
             if [ "$(wc -m <<<"$message")" -gt 50 ]; then
-              echo "Commit message subject line should be less than 50 characters."
+              echo "Commit message subject line should be less than 50 characters, found $(wc -m "$message"). $message"
               exit 1
             else
-              echo "Commit message subject line is less than 50 characters."
+              echo "Commit message subject line is less than 50 characters. $message"
             fi
           done <<<"$COMMIT_MESSAGES"
 
           # Spell check the commit messages using aspell
           while read -r message; do
-            echo "Checking commit message: $message"
             if [ "" != "$(echo "$message" | aspell list)" ]; then
-              echo "Commit messages contain spelling errors on words $WORDS."
+              echo "Commit message $message contains spelling errors on words: ^$WORDS\$"
               echo "Also try updating the PR title not just amending the commits."
               exit 1
             else
-              echo "Commit messages do not contain spelling errors."
+              echo "Commit message doesnt contain spelling errors. $message"
             fi
           done <<<"$COMMIT_MESSAGES"
 
