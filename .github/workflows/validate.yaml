@@ -19,27 +19,7 @@ jobs:
           fetch-depth: 0
       - uses: matttrach/nix-installer-action@main
       - name: lint terraform
-        shell: |
-          nix develop \
-            --ignore-environment \
-            --extra-experimental-features nix-command \
-            --extra-experimental-features flakes \
-            --keep HOME \
-            --keep SSH_AUTH_SOCK \
-            --keep GITHUB_TOKEN \
-            --keep AWS_ROLE \
-            --keep AWS_REGION \
-            --keep AWS_DEFAULT_REGION \
-            --keep AWS_ACCESS_KEY_ID \
-            --keep AWS_SECRET_ACCESS_KEY \
-            --keep AWS_SESSION_TOKEN \
-            --keep UPDATECLI_GPGTOKEN \
-            --keep UPDATECLI_GITHUB_TOKEN \
-            --keep UPDATECLI_GITHUB_ACTOR \
-            --keep GPG_SIGNING_KEY \
-            --keep NIX_ENV_LOADED \
-            --keep TERM \
-            --command bash -e {0}
+        shell: nix develop --ignore-environment --extra-experimental-features nix-command --extra-experimental-features flakes --keep HOME --keep SSH_AUTH_SOCK --keep GITHUB_TOKEN --keep AWS_ROLE --keep AWS_REGION --keep AWS_DEFAULT_REGION --keep AWS_ACCESS_KEY_ID --keep AWS_SECRET_ACCESS_KEY --keep AWS_SESSION_TOKEN --keep UPDATECLI_GPGTOKEN --keep UPDATECLI_GITHUB_TOKEN --keep UPDATECLI_GITHUB_ACTOR --keep GPG_SIGNING_KEY --keep NIX_ENV_LOADED --keep TERM --command bash -e {0}
         run: |
           set -e
           set -x
@@ -63,27 +43,7 @@ jobs:
           fetch-depth: 0
       - uses: matttrach/nix-installer-action@main
       - name: action lint
-        shell: |
-          nix develop \
-            --ignore-environment \
-            --extra-experimental-features nix-command \
-            --extra-experimental-features flakes \
-            --keep HOME \
-            --keep SSH_AUTH_SOCK \
-            --keep GITHUB_TOKEN \
-            --keep AWS_ROLE \
-            --keep AWS_REGION \
-            --keep AWS_DEFAULT_REGION \
-            --keep AWS_ACCESS_KEY_ID \
-            --keep AWS_SECRET_ACCESS_KEY \
-            --keep AWS_SESSION_TOKEN \
-            --keep UPDATECLI_GPGTOKEN \
-            --keep UPDATECLI_GITHUB_TOKEN \
-            --keep UPDATECLI_GITHUB_ACTOR \
-            --keep GPG_SIGNING_KEY \
-            --keep NIX_ENV_LOADED \
-            --keep TERM \
-            --command bash -e {0}
+        shell: nix develop --ignore-environment --extra-experimental-features nix-command --extra-experimental-features flakes --keep HOME --keep SSH_AUTH_SOCK --keep GITHUB_TOKEN --keep AWS_ROLE --keep AWS_REGION --keep AWS_DEFAULT_REGION --keep AWS_ACCESS_KEY_ID --keep AWS_SECRET_ACCESS_KEY --keep AWS_SESSION_TOKEN --keep UPDATECLI_GPGTOKEN --keep UPDATECLI_GITHUB_TOKEN --keep UPDATECLI_GITHUB_ACTOR --keep GPG_SIGNING_KEY --keep NIX_ENV_LOADED --keep TERM --command bash -e {0}
         run: actionlint
 
   shellcheck:
@@ -94,27 +54,7 @@ jobs:
           fetch-depth: 0
       - uses: matttrach/nix-installer-action@main
       - name: shell check
-        shell: |
-          "nix develop \
-            --ignore-environment \
-            --extra-experimental-features nix-command \
-            --extra-experimental-features flakes \
-            --keep HOME \
-            --keep SSH_AUTH_SOCK \
-            --keep GITHUB_TOKEN \
-            --keep AWS_ROLE \
-            --keep AWS_REGION \
-            --keep AWS_DEFAULT_REGION \
-            --keep AWS_ACCESS_KEY_ID \
-            --keep AWS_SECRET_ACCESS_KEY \
-            --keep AWS_SESSION_TOKEN \
-            --keep UPDATECLI_GPGTOKEN \
-            --keep UPDATECLI_GITHUB_TOKEN \
-            --keep UPDATECLI_GITHUB_ACTOR \
-            --keep GPG_SIGNING_KEY \
-            --keep NIX_ENV_LOADED \
-            --keep TERM \
-            --command bash -e {0}"
+        shell: nix develop --ignore-environment --extra-experimental-features nix-command --extra-experimental-features flakes --keep HOME --keep SSH_AUTH_SOCK --keep GITHUB_TOKEN --keep AWS_ROLE --keep AWS_REGION --keep AWS_DEFAULT_REGION --keep AWS_ACCESS_KEY_ID --keep AWS_SECRET_ACCESS_KEY --keep AWS_SESSION_TOKEN --keep UPDATECLI_GPGTOKEN --keep UPDATECLI_GITHUB_TOKEN --keep UPDATECLI_GITHUB_ACTOR --keep GPG_SIGNING_KEY --keep NIX_ENV_LOADED --keep TERM --command bash -e {0}
         run: |
           git pull;
           while read -r file; do
@@ -130,27 +70,7 @@ jobs:
           fetch-depth: 0 # fetch all history so that we can validate the commit messages
       - uses: matttrach/nix-installer-action@main
       - name: Check commit message
-        shell: |
-          nix develop \
-            --ignore-environment \
-            --extra-experimental-features nix-command \
-            --extra-experimental-features flakes \
-            --keep HOME \
-            --keep SSH_AUTH_SOCK \
-            --keep GITHUB_TOKEN \
-            --keep AWS_ROLE \
-            --keep AWS_REGION \
-            --keep AWS_DEFAULT_REGION \
-            --keep AWS_ACCESS_KEY_ID \
-            --keep AWS_SECRET_ACCESS_KEY \
-            --keep AWS_SESSION_TOKEN \
-            --keep UPDATECLI_GPGTOKEN \
-            --keep UPDATECLI_GITHUB_TOKEN \
-            --keep UPDATECLI_GITHUB_ACTOR \
-            --keep GPG_SIGNING_KEY \
-            --keep NIX_ENV_LOADED \
-            --keep TERM \
-            --command bash -e {0}
+        shell: nix develop --ignore-environment --extra-experimental-features nix-command --extra-experimental-features flakes --keep HOME --keep SSH_AUTH_SOCK --keep GITHUB_TOKEN --keep AWS_ROLE --keep AWS_REGION --keep AWS_DEFAULT_REGION --keep AWS_ACCESS_KEY_ID --keep AWS_SECRET_ACCESS_KEY --keep AWS_SESSION_TOKEN --keep UPDATECLI_GPGTOKEN --keep UPDATECLI_GITHUB_TOKEN --keep UPDATECLI_GITHUB_ACTOR --keep GPG_SIGNING_KEY --keep NIX_ENV_LOADED --keep TERM --command bash -e {0}
         run: |
           # Check commit messages
           set -x
@@ -225,27 +145,7 @@ jobs:
         fetch-depth: 0
     - uses: matttrach/nix-installer-action@main
     - name: Check for secrets
-      shell: |
-        nix develop \
-          --ignore-environment \
-          --extra-experimental-features nix-command \
-          --extra-experimental-features flakes \
-          --keep HOME \
-          --keep SSH_AUTH_SOCK \
-          --keep GITHUB_TOKEN \
-          --keep AWS_ROLE \
-          --keep AWS_REGION \
-          --keep AWS_DEFAULT_REGION \
-          --keep AWS_ACCESS_KEY_ID \
-          --keep AWS_SECRET_ACCESS_KEY \
-          --keep AWS_SESSION_TOKEN \
-          --keep UPDATECLI_GPGTOKEN \
-          --keep UPDATECLI_GITHUB_TOKEN \
-          --keep UPDATECLI_GITHUB_ACTOR \
-          --keep GPG_SIGNING_KEY \
-          --keep NIX_ENV_LOADED \
-          --keep TERM \
-          --command bash -e {0}
+      shell: nix develop --ignore-environment --extra-experimental-features nix-command --extra-experimental-features flakes --keep HOME --keep SSH_AUTH_SOCK --keep GITHUB_TOKEN --keep AWS_ROLE --keep AWS_REGION --keep AWS_DEFAULT_REGION --keep AWS_ACCESS_KEY_ID --keep AWS_SECRET_ACCESS_KEY --keep AWS_SESSION_TOKEN --keep UPDATECLI_GPGTOKEN --keep UPDATECLI_GITHUB_TOKEN --keep UPDATECLI_GITHUB_ACTOR --keep GPG_SIGNING_KEY --keep NIX_ENV_LOADED --keep TERM --command bash -e {0}
       run: |
         gitleaks detect --no-banner -v --no-git
         gitleaks detect --no-banner -v
