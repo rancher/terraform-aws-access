@@ -89,24 +89,34 @@
         leftovers-wrapper = pkgs.writeShellScriptBin "leftovers" ''
           exec ${leftovers} "$@"
         '';
+        aspellWithDicts = pkgs.aspellWithDicts (d: [d.en d.en-computers]);
       in
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
+            act # run workflows locally with Docker
             actionlint
+            age
+            aspellWithDicts
             bashInteractive
             curl
+            docker
+            gh
             git
             gitleaks
-            go # need go for terratest
-            gnupg # need gpg for signing commits
+            gnupg
+            go
             jq
+            kubectl
             less
-            openssh # need openssh for running remote provisioners
+            ncurses
+            vim # for easily editing files that are not in this directory structure
+            openssh_hpn
             shellcheck
             tflint
             tfswitch
-            vim
+            tree # for easily finding files in this directory structure and helping generate docs
+            xterm
           ];
           shellHook = ''
             homebin=$HOME/bin;

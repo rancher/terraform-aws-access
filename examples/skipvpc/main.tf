@@ -7,7 +7,6 @@ provider "aws" {
 }
 locals {
   identifier = var.identifier
-  name       = "tf-skipsubnet-${local.identifier}"
   key        = var.key
   key_name   = var.key_name
 }
