@@ -89,3 +89,45 @@ output "ssh_key" {
     The SSH key object from AWS.
   EOT
 }
+
+output "load_balancer" {
+  value = (can(module.network_load_balancer[0].load_balancer) ? {
+    id               = module.network_load_balancer[0].load_balancer.id
+    arn              = module.network_load_balancer[0].load_balancer.arn
+    dns_name         = module.network_load_balancer[0].load_balancer.dns_name
+    zone_id          = module.network_load_balancer[0].load_balancer.zone_id
+    security_groups  = module.network_load_balancer[0].load_balancer.security_groups
+    subnets          = module.network_load_balancer[0].load_balancer.subnets
+    tags             = module.network_load_balancer[0].load_balancer.tags
+    } : {
+    # no object found, but output types are normal
+    id               = ""
+    arn              = ""
+    dns_name         = ""
+    zone_id          = ""
+    security_groups  = []
+    subnets          = []
+    tags             = tomap({ "" = "" })
+  })
+  description = <<-EOT
+    The load balancer object from AWS.
+  EOT
+}
+
+output "domain" {
+  value = (can(module.domain[0].domain) ? {
+    id          = module.domain[0].domain.id
+    arn         = module.domain[0].domain.arn
+    domain_name = module.domain[0].domain.domain_name
+    owner_id    = module.domain[0].domain.owner_id
+    } : {
+    # no object found, but output types are normal
+    id          = ""
+    arn         = ""
+    domain_name = ""
+    owner_id    = ""
+  })
+  description = <<-EOT
+    The domain object from AWS.
+  EOT
+}

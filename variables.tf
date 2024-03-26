@@ -156,3 +156,45 @@ variable "skip_ssh" {
   description = "Skip ssh key generation, use with care."
   default     = false
 }
+
+# load balancer
+variable "skip_lb" {
+  type        = bool
+  description = "Set to false to deploy a load balancer."
+  default     = true
+}
+variable "load_balancer_name" {
+  type        = string
+  description = <<-EOT
+    The name of the Load Balancer, there must be a 'Name' tag on it to be found.
+    When generating a load balancer, this will be added as a tag to the resource.
+    This tag is how we will find it again in the future.
+    If a domain and a load balancer name is given, we will create a domain record pointing to the load balancer.
+  EOT
+  default = ""
+}
+variable "select_lb" {
+  type        = bool
+  description = "Set to true to select a load balancer rather than creating one."
+  default     = false  
+}
+# domain
+variable "domain" {
+  type        = string
+  description = <<-EOT
+    The domain name to retrieve or create.
+    There is no way to generate a domain name without something to attach it to,
+     so without a load balancer no domain will be created.
+    If a domain is given, and no load balancer name is given, we will attempt to find the domain.
+  EOT
+  default     = ""
+}
+variable "zone" {
+  type        = string
+  description = <<-EOT
+    The zone to add the domain to.
+    If this is specified we will try to generate a zone record.
+    If this isn't set we will attempt to find the zone based on the domain name.
+  EOT
+  default     = ""
+}
