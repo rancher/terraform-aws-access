@@ -1,13 +1,12 @@
-variable "owner" {
+variable "use" {
   type        = string
-  description = "The owner to tag the domain with after creation."
-  default     = "terraform"
-}
-
-variable "create" {
-  type        = bool
   description = <<-EOT
-    Set to true to add a domain record.
+    Strategy for using domain resources:
+      'select' to use existing,
+      or 'create' to generate new domain resources.
+    The default is 'create'.
+    When selecting a domain, the content must be provided and a domain with the matching address must exist.
+    We will extract the zone from the content, this module does not create zones.
   EOT
 }
 
@@ -20,20 +19,11 @@ variable "content" {
   EOT
 }
 
-variable "alias" {
+variable "ip" {
   type        = string
   description = <<-EOT
-    An undesireable pre-generated domain name assigned to the project (for instance, from the creation of a network load balancer).
-  EOT
-  default     = ""
-}
-
-variable "zone" {
-  type        = string
-  description = <<-EOT
-    Setting this will create a new zone with the given name.
-    The zone to add the domain to.
-    If this is not set we will attempt to find the zone based on the domain name.
+    The ip address to attach to the domain.
+    When selecting a domain we won't generate any domain objects, we won't create a cert.
   EOT
   default     = ""
 }

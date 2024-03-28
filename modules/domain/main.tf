@@ -1,118 +1,195 @@
 locals {
-  owner = var.owner
 
-  content    = var.content                           # the domain to register eg. "blah.blah.test.example.com"
-  alias      = var.alias                             # optional pre-generated domain name eg. "mylb.region.elb.amazonaws.com"
-  content_id = "${local.zone_id}_${local.content}_A" # used in output
+  use     = var.use
+  content = lower(var.content)
+  ip      = var.ip
 
-  add_zone    = (var.zone == "" ? 0 : 1) # add a zone if given a zone, else select a zone
-  select_zone = (local.add_zone == 1 ? 0 : 1) # select is the opposite of add
+  content_parts = split(".", local.content)
+  top_level_domain = join(".", [
+    local.content_parts[(length(local.content_parts) - 2)],
+    local.content_parts[(length(local.content_parts) - 1)],
+  ])
+  zone = join(".", [
+    for i in range(1, length(local.content_parts) - 1) : local.content_parts[i]
+  ])
 
-  zone_id     = (local.add_zone == 1 ? resource.aws_route53_zone.new[0].id : data.aws_route53_zone.select[0].id)
-  domain_part_count = length(split(".", local.content))
-  domain_parts = split(".", local.content)
-  top_level_domain = local.domain_parts[(local.domain_part_count - 1)]
-  next_level_domain = local.domain_parts[(local.domain_part_count - 2)]
-  find_zone   = join(".", [local.next_level_domain, local.top_level_domain]) # extract the zone from the domain eg. "example.com"
-  zone        = (var.zone == "" ? local.find_zone : var.zone)
+  # zone
+  zone_id = data.aws_route53_zone.select.id
 
-  create = (var.create ? 1 : 0) # create is always an alias because it can only attached to a load balancer at this point in the project
-  select = (local.create == 1 ? 0 : 1)   # select is the opposite of create
-
-  validation_records = [
-    for option in aws_acm_certificate.new[0].domain_validation_options : {
-      name    = option.resource_record_name
-      record  = option.resource_record_value
-      type    = option.resource_record_type
-      zone_id = local.zone_id
-    }
-  ]
-  # Transform the list of maps into a map using the 'name' and 'type' as the key
-  validation_records_map = { for record in local.validation_records : "${record.name}_${record.type}" => record }
-
-
+  # domain record
+  create = (local.use == "create" ? 1 : 0)
+  select = (local.use == "select" ? 1 : 0)
 }
 
 data "aws_route53_zone" "select" {
-  count = local.select_zone
-  name  = local.find_zone
-  tags = {
-    Name = local.find_zone
-  }
-}
-
-resource "aws_route53_zone" "new" {
-  count = local.add_zone
-  name  = local.zone
-  tags = {
-    Name  = local.zone
-    Owner = local.owner
-  }
+  name = "${local.zone}."
 }
 
 resource "aws_route53domains_registered_domain" "select" {
-  count = local.select
+  count       = local.select
   domain_name = local.content
 }
 
-# alias is a pre-generated "aws" domain eg. mylb.region.elb.amazonaws.com
-# this cnames the pre-generated aws domain to the specified domain
 resource "aws_route53_record" "new" {
   depends_on = [
-    aws_route53_zone.new,
     data.aws_route53_zone.select,
   ]
   count   = local.create
   zone_id = local.zone_id
   name    = local.content
-  type    = "CNAME"
-  records = [local.alias]
-  ttl     = 60
+  type    = "A"
+  ttl     = 30
+  records = [local.ip]
 }
 
-# only generate a certificate if the domain is not already registered
-resource "aws_acm_certificate" "new" {
+resource "terraform_data" "dig_new_record" {
   depends_on = [
-    aws_route53_zone.new,
     data.aws_route53_zone.select,
     aws_route53_record.new,
   ]
-  count             = local.create
-  domain_name       = local.content
-  validation_method = "DNS"
-  tags = {
-    Name  = local.content
-    Owner = local.owner
+  count = local.create
+  triggers_replace = [
+    local.content,
+    local.create,
+  ]
+  provisioner "local-exec" {
+    command = <<-EOT
+      #!/bin/bash
+
+      DOMAIN='${local.content}'
+      #DNS_SERVER='${data.aws_route53_zone.select.primary_name_server}'
+      DNS_SERVER='8.8.8.8 1.1.1.1'
+
+      # Timeout in seconds (5 minutes)
+      TIMEOUT=300
+
+      # Start time
+      START_TIME=$(date +%s)
+
+      # Loop until timeout
+      while [ $(($(date +%s)-$START_TIME)) -lt $TIMEOUT ]; do
+          # Query the domain
+          RESULT="$(dig @$DNS_SERVER $DOMAIN +short)"
+          
+          # Check if the domain is available
+          if [ -n "$RESULT" ]; then
+              echo "Domain $DOMAIN is available at $DNS_SERVER. IP: $RESULT."
+              exit 0
+          else
+              echo "Domain $DOMAIN is not available yet. Retrying..."
+              sleep 30
+          fi
+      done
+
+      # If the loop ends without finding the domain, it's not available
+      echo "Domain $DOMAIN is not available after 5 minutes."
+      exit 1
+    EOT
   }
-  lifecycle {
-    create_before_destroy = true
+}
+
+
+resource "tls_private_key" "private_key" {
+  count     = local.create
+  algorithm = "RSA"
+}
+
+# Warning, this can lead to rate limiting if you are not careful
+# make sure you are not creating a new acme_registration for every certificate
+resource "acme_registration" "reg" {
+  count           = local.create
+  account_key_pem = tls_private_key.private_key[0].private_key_pem
+  email_address   = "${local.zone_id}@${local.top_level_domain}"
+}
+
+resource "tls_private_key" "cert_private_key" {
+  count     = local.create
+  algorithm = "RSA"
+}
+resource "tls_cert_request" "req" {
+  count           = local.create
+  private_key_pem = tls_private_key.cert_private_key[0].private_key_pem
+  subject {
+    common_name = local.content
   }
 }
 
-resource "aws_route53_record" "cert_validation" {
+resource "acme_certificate" "certificate" {
   depends_on = [
-    aws_route53_zone.new,
     data.aws_route53_zone.select,
     aws_route53_record.new,
-    aws_acm_certificate.new,
+    terraform_data.dig_new_record,
+    acme_registration.reg,
+    tls_private_key.private_key,
+    tls_private_key.cert_private_key,
+    tls_cert_request.req,
   ]
-  count   = local.create
-  zone_id = local.zone_id
-  name    = tolist(aws_acm_certificate.new[0].domain_validation_options)[0].resource_record_name
-  type    = tolist(aws_acm_certificate.new[0].domain_validation_options)[0].resource_record_type
-  records = [tolist(aws_acm_certificate.new[0].domain_validation_options)[0].resource_record_value]
-  ttl     = 60
+  account_key_pem         = acme_registration.reg[0].account_key_pem
+  certificate_request_pem = tls_cert_request.req[0].cert_request_pem
+  pre_check_delay         = 30
+  recursive_nameservers = [
+    "${data.aws_route53_zone.select.primary_name_server}:53",
+    "1.1.1.1",
+    "8.8.8.8",
+  ]
+  disable_complete_propagation = true
+  dns_challenge {
+    provider = "route53"
+    config = {
+      AWS_PROPAGATION_TIMEOUT = 60,
+      AWS_POLLING_INTERVAL    = 10,
+    }
+  }
 }
-
-resource "aws_acm_certificate_validation" "certificate_validation" {
+resource "terraform_data" "dig_cert_txt" {
   depends_on = [
-    aws_route53_zone.new,
     data.aws_route53_zone.select,
     aws_route53_record.new,
-    aws_acm_certificate.new,
-    aws_route53_record.cert_validation,
+    terraform_data.dig_new_record,
+    acme_registration.reg,
+    tls_private_key.private_key,
+    tls_private_key.cert_private_key,
+    tls_cert_request.req,
+    #acme_certificate.certificate, # run at same time as certificate
   ]
-  count                   = local.create
-  certificate_arn         = aws_acm_certificate.new[0].arn
-  validation_record_fqdns = [aws_route53_record.cert_validation[0].fqdn]
+  count = local.create
+  triggers_replace = [
+    local.content,
+    local.create,
+  ]
+  provisioner "local-exec" {
+    command = <<-EOT
+      #!/bin/bash
+
+      # Domain to query
+      DOMAIN='_acme-challenge.${local.content}'
+      #DNS_SERVER="${data.aws_route53_zone.select.primary_name_server}"
+      DNS_SERVER='1.1.1.1 8.8.8.8'
+
+      # Timeout in seconds (5 minutes)
+      TIMEOUT=300
+
+      # Start time
+      START_TIME=$(date +%s)
+
+      # Loop until timeout
+      while [ $(($(date +%s)-$START_TIME)) -lt $TIMEOUT ]; do
+          # Query the domain
+          RESULT="$(dig @$DNS_SERVER $DOMAIN TXT +short)"
+          
+          # Check if the domain is available
+          if [ -n "$RESULT" ]; then
+              echo "Domain $DOMAIN is available at $DNS_SERVER. TXT record: $RESULT."
+              exit 0
+          else
+              echo "Domain $DOMAIN is not available yet. Retrying..."
+              sleep 30
+          fi
+      done
+
+      # If the loop ends without finding the domain, it's not available
+      echo "Domain $DOMAIN is not available after 5 minutes."
+      exit 1
+    EOT
+  }
 }

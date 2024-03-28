@@ -1,29 +1,32 @@
-variable "owner" {
+# vpc
+variable "vpc_use_strategy" {
   type        = string
   description = <<-EOT
-    The name of the owner to tag resources with, usually your email address.
-    Using your email address for this value allows teammates and other users 
-     to contact you if a resource needs to be removed or if they have questions about it.
+    Strategy for using vpc resources:
+      'skip' to disable,
+      'select' to use existing,
+      or 'create' to generate new vpc resources.
+    The default is 'create', which requires a vpc_name and vpc_cidr to be provided.
+    When selecting a vpc, the vpc_name must be provided and a vpc that has a tag "Name with the given name must exist.
+    When skipping a vpc, the subnet, security group, and load balancer will also be skipped (automatically).
   EOT
-  default     = ""
+  default     = "create"
+  validation {
+    condition     = contains(["skip", "select", "create"], var.vpc_use_strategy)
+    error_message = "The vpc_use_strategy value must be one of 'skip', 'select', or 'create'."
+  }
 }
-# vpc
 variable "vpc_name" {
   type        = string
   description = <<-EOT
     The name of the VPC to create or select.
-    This is required.
-    If a cidr is specified, then a VPC will be created.
   EOT
   default     = ""
 }
 variable "vpc_cidr" {
   type        = string
   description = <<-EOT
-    If this value is specified, then a VPC will be created.
     This value sets the default private IP space for the created VPC.
-    VPCs generated with this module automatically give Amazon supplied public addresses to ec2 instances via an internet gateway.
-    Access to the ec2 instances is then controlled by the security group.
     WARNING: AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively).
     This means that every VPC has 5 IP addresses that cannot be assigned to subnets, and every subnet assigned has 5 IP addresses that cannot be used.
     If you attempt to generate a VPC that has no usable addresses you will get an "invalid CIDR" error from AWS.
@@ -31,65 +34,77 @@ variable "vpc_cidr" {
   EOT
   default     = ""
 }
-variable "skip_vpc" {
-  type        = bool
-  description = "Skip vpc generation, use with care."
-  default     = false
-}
+
 # subnet
-variable "subnet_name" {
+variable "subnet_use_strategy" {
   type        = string
   description = <<-EOT
-    The name of the subnet you would like to create or select.
-    This is required.
-    If you provide a cidr value, then this module will create a subnet with the given name.
-    If you do not provide a cidr value, then this module will attempt to find a subnet with the given name.
-    If you override the VPC creation, but not the subnet creation,
-      this module will attempt to associate the created subnet to the VPC.
-    If the subnet is not available within the VPC's default CIDR, this module will fail.
-    If you override the creation of the VPC and the creation of the subnet,
-      this module won't attempt to associate the subnet to the VPC.
+    Strategy for using subnet resources:
+      'skip' to disable,
+      'select' to use existing,
+      or 'create' to generate new subnet resources.
+    The default is 'create', which requires a subnet_name and subnet_cidr to be provided.
+    When selecting a subnet, the subnet_name must be provided and a subnet with the tag "Name" with the given name must exist.
+    When skipping a subnet, the security group and load balancer will also be skipped (automatically).
   EOT
-  default     = ""
+  default     = "create"
+  validation {
+    condition     = contains(["skip", "select", "create"], var.subnet_use_strategy)
+    error_message = "The subnet_use_strategy value must be one of 'skip', 'select', or 'create'."
+  }
 }
-variable "subnet_cidr" {
-  type        = string
+variable "subnets" {
+  type = map(object({
+    cidr              = string,
+    availability_zone = string,
+    public            = bool,
+  }))
   description = <<-EOT
-    The cidr of the private subnet you would like to create.
-    This cidr must be within the IP bounds of the vpc_cidr.
-    If this is specified, then a subnet will be created.
-    If this isn't specified, then the module will attempt to find a subnet with the given name.
+    A map of subnet objects to create or select.
+    The key is the name of the subnet, and the value is an object with the following keys:
+      cidr: the cidr of the subnet to create
+      availability_zone: the availability zone to create the subnet in
+      public: set this to true to enable the subnet to have public IP addresses
     WARNING: AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively).
     This means that every VPC has 5 IP addresses that cannot be assigned to subnets, and every subnet assigned has 5 IP addresses that cannot be used.
     If you attempt to generate a subnet that has no usable addresses you will get an "invalid CIDR" error from AWS.
     If you attempt to generate a subnet that uses one of the addresses reserved by AWS in the VPC's CIDR, you will get an "invalid CIDR" error from AWS.
+    When skipping a subnet, the security group and load balancer will also be skipped (automatically).
+    When selecting a subnet:
+     - the name must be provided and a subnet with the tag "Name" with the given name must exist.
+     - the values for cidr, availability_zone, and public will be ignored.
+    When creating subnets, any values not supplied will be generated by the module.
+     - the name will match the vpc name
+     - The availability zone will be whatever the default is for your account.
+     - The cidr will be generated based on the VPC's cidr and the number of subnets you are creating.
+     - The public flag will be set to false.
+    If you are expecting high availability, make sure there are at least three availability zones in the region you are deploying to.
   EOT
-  default     = ""
+  default = { "default" = {
+    cidr              = "", # will be generated based on the vpc cidr
+    availability_zone = "", # just get the first one
+    public            = false,
+  } }
 }
-variable "subnet_public_ip" {
-  type        = bool
-  description = <<-EOT
-    Set this to true to enable the subnet to have public IP addresses.
-  EOT
-  default     = false
-}
-variable "availability_zone" {
+
+# security group
+variable "security_group_use_strategy" {
   type        = string
   description = <<-EOT
-    The availability zone to create the subnet in.
-    This is the name of the availability zone, not the AWS unique id.
-    For example "us-east-1a" or "us-east-1b" not "use1-az1" or "use1-az2".
-    This is required when creating a subnet, but not when selecting a subnet.
-    Any servers created in this subnet will be created in this availability zone.
+    Strategy for using security group resources:
+      'skip' to disable,
+      'select' to use existing,
+      or 'create' to generate new security group resources.
+    The default is 'create'.
+    When selecting a security group, the security_group_name must be provided and a security group with the given name must exist.
+    When skipping a security group, the load balancer will also be skipped (automatically).
   EOT
-  default     = ""
+  default     = "create"
+  validation {
+    condition     = contains(["skip", "select", "create"], var.security_group_use_strategy)
+    error_message = "The security_group_use_strategy value must be one of 'skip', 'select', or 'create'."
+  }
 }
-variable "skip_subnet" {
-  type        = bool
-  description = "Skip subnet generation, use with care."
-  default     = false
-}
-# security group
 variable "security_group_name" {
   type        = string
   description = <<-EOT
@@ -110,58 +125,29 @@ variable "security_group_type" {
     If specified, must be one of: specific, internal, egress, or public.
   EOT
   default     = ""
-}
-variable "security_group_ip" {
-  type        = string
-  description = <<-EOT
-    When selecting the type of security group to create, you may need to specify an IP address.
-    If no IP address is specified the module will attempt to discover and use your local IP address.
-    It is a good idea to specify the IP where Terraform will be run to create servers.
-  EOT
-  default     = ""
-}
-variable "skip_security_group" {
-  type        = bool
-  description = "Skip security group generation, use with care."
-  default     = false
-}
-variable "skip_runner_ip" {
-  type        = bool
-  description = "Skip generating ingress security group for the runner's ip"
-  default     = false
-}
-
-# ssh key
-variable "ssh_key_name" {
-  type        = string
-  description = <<-EOT
-    The name of the ec2 ssh key pair to create or select.
-    This is required.
-    If you would like to create an ssh key pair, please specify the public_ssh_key.
-    If the public_ssh_key variable is not specified, then this module will attempt to find an ssh key with the given name.
-  EOT
-  default     = ""
-}
-variable "public_ssh_key" {
-  type        = string
-  description = <<-EOT
-    The contents of the public ssh key object to create.
-    If this is specified, then an ssh key will be created.
-    If this isn't specified, then the module will attempt to find an ssh key with the given name.
-  EOT
-  default     = ""
-}
-variable "skip_ssh" {
-  type        = bool
-  description = "Skip ssh key generation, use with care."
-  default     = false
+  validation {
+    condition     = contains(["project", "egress", "public"], var.security_group_type)
+    error_message = "The security_group_type value must be one of 'project', 'egress', or 'public'."
+  }
 }
 
 # load balancer
-variable "skip_lb" {
-  type        = bool
-  description = "Set to false to deploy a load balancer."
-  default     = true
+variable "load_balancer_use_strategy" {
+  type        = string
+  description = <<-EOT
+    Strategy for using load balancer resources:
+      'skip' to disable,
+      'select' to use existing,
+      or 'create' to generate new load balancer resources.
+    The default is 'create'.
+    When selecting a load balancer, the load_balancer_name must be provided and a load balancer with the "Name" tag must exist.
+    When skipping a load balancer, the domain will also be skipped (automatically).
+  EOT
+  default     = "create"
+  validation {
+    condition     = contains(["skip", "select", "create"], var.load_balancer_use_strategy)
+    error_message = "The load_balancer_use_strategy value must be one of 'skip', 'select', or 'create'."
+  }
 }
 variable "load_balancer_name" {
   type        = string
@@ -171,30 +157,34 @@ variable "load_balancer_name" {
     This tag is how we will find it again in the future.
     If a domain and a load balancer name is given, we will create a domain record pointing to the load balancer.
   EOT
-  default = ""
+  default     = ""
 }
-variable "select_lb" {
-  type        = bool
-  description = "Set to true to select a load balancer rather than creating one."
-  default     = false  
-}
+
 # domain
+variable "domain_use_strategy" {
+  type        = string
+  description = <<-EOT
+    Strategy for using domain resources:
+      'skip' to disable,
+      'select' to use existing,
+      or 'create' to generate new domain resources.
+    The default is 'create', which requires a domain name to be provided.
+    When selecting a domain, the domain must be provided and a domain with the matching name must exist.
+  EOT
+  default     = "create"
+  validation {
+    condition     = contains(["skip", "select", "create"], var.domain_use_strategy)
+    error_message = "The domain_use_strategy value must be one of 'skip', 'select', or 'create'."
+  }
+}
 variable "domain" {
   type        = string
   description = <<-EOT
     The domain name to retrieve or create.
-    There is no way to generate a domain name without something to attach it to,
-     so without a load balancer no domain will be created.
-    If a domain is given, and no load balancer name is given, we will attempt to find the domain.
-  EOT
-  default     = ""
-}
-variable "zone" {
-  type        = string
-  description = <<-EOT
-    The zone to add the domain to.
-    If this is specified we will try to generate a zone record.
-    If this isn't set we will attempt to find the zone based on the domain name.
+    Part of creating the domain is assigning it to the load balancer and generating a tls certificate.
+    This should enable secure connections for your project.
+    To make use of this feature, you must generate load balancer target group associations in other further stages.
+    We output the ids of the load balancer target groups for this purpose.
   EOT
   default     = ""
 }

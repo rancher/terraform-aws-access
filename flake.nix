@@ -100,6 +100,7 @@
             aspellWithDicts
             bashInteractive
             curl
+            dig
             docker
             gh
             git
