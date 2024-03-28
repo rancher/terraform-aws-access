@@ -1,8 +1,9 @@
 locals {
   name   = var.name
   cidr   = var.cidr
-  select = (var.cidr == "" ? 1 : 0)
-  create = (var.cidr != "" ? 1 : 0)
+  use    = var.use
+  select = (local.use == "select" ? 1 : 0)
+  create = (local.use == "create" ? 1 : 0)
 }
 
 data "aws_vpc" "selected" {

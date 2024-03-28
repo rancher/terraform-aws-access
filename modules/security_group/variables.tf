@@ -1,51 +1,31 @@
-
+variable "use" {
+  type        = string
+  description = <<-EOT
+    Strategy for using security group resources:
+      'select' to use existing,
+      or 'create' to generate new security group resources.
+    When selecting a security group, the name must be provided and a security group with the matching tag Name must exist.
+  EOT
+}
 variable "name" {
   type        = string
   description = <<-EOT
     The name of the security group to find or create.
-    Required.
   EOT
 }
-
-# only used when generating a security group
 variable "type" {
   type        = string
   description = <<-EOT
     The designation from the types.tf of opinionated options to use.
-    If this value is specified the assumption is that the security group is being generated.
-    If this value isn't specified the assumption is that the security group is being found.
+    Not necessary if the security group is being selected.
   EOT
-  default     = ""
-}
-variable "owner" {
-  type        = string
-  description = <<-EOT
-    The owner to tag the security group with if generated.
-    Not necessary if the security group is being found.
-  EOT
-  default     = ""
-}
-variable "ip" {
-  type        = string
-  description = <<-EOT
-    The public IP addess to allow ingress from external WAN to the servers in the security group.
-    Not necessary if the security group is being found.
-  EOT
-  default     = ""
-}
-variable "cidr" {
-  type        = string
-  description = <<-EOT
-    The cidr of the internal subnet to allow servers access to when generating the security group.
-    Not necessary if the security group is being found.
-  EOT
-  default     = ""
+  default     = "none"
 }
 variable "vpc_id" {
   type        = string
   description = <<-EOT
     The id of the vpc to use when generating the security group.
-    Not necessary if the security group is being found.
+    Not necessary if the security group is being selected.
   EOT
   default     = ""
 }
@@ -53,11 +33,7 @@ variable "vpc_cidr" {
   type        = string
   description = <<-EOT
     The CIDR of the VPC, used to allow ingress from the VPC to the servers in the security group.
-    Not necessary if the security group is being found.
+    Not necessary if the security group is being selected.
   EOT
   default     = ""
-}
-variable "skip_runner_ip" {
-  type        = bool
-  description = "Skip generating ingress security group for the runner's ip"
 }

@@ -43,6 +43,7 @@ func setup(t *testing.T, directory string, region string, terraformVars map[stri
 		// Environment variables to set when running Terraform
 		EnvVars: map[string]string{
 			"AWS_DEFAULT_REGION": region,
+			"AWS_REGION":         region,
 		},
 		RetryableTerraformErrors: retryableTerraformErrors,
 	})

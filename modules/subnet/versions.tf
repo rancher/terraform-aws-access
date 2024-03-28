@@ -9,9 +9,5 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 5.11"
     }
-    http = {
-      source  = "hashicorp/http"
-      version = ">= 3.4"
-    }
   }
 }

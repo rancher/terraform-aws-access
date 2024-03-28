@@ -7,3 +7,6 @@ output "cidr" {
 output "subnet" {
   value = (local.select == 1 ? data.aws_subnet.selected[0] : aws_subnet.new[0])
 }
+output "availability_zone" {
+  value = (local.select == 1 ? data.aws_subnet.selected[0].availability_zone : aws_subnet.new[0].availability_zone)
+}

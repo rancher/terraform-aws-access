@@ -65,27 +65,62 @@ output "security_group" {
   EOT
 }
 
-
-output "ssh_key" {
-  value = (can(module.ssh_key[0].ssh_key) ? {
-    id          = module.ssh_key[0].ssh_key.id
-    arn         = module.ssh_key[0].ssh_key.arn
-    key_name    = module.ssh_key[0].ssh_key.key_name
-    key_pair_id = module.ssh_key[0].ssh_key.key_pair_id
-    key_type    = module.ssh_key[0].ssh_key.key_type
-    public_key  = module.ssh_key[0].ssh_key.public_key
-    tags        = module.ssh_key[0].ssh_key.tags
+output "load_balancer" {
+  value = (can(module.network_load_balancer[0].load_balancer) ? {
+    id              = module.network_load_balancer[0].load_balancer.id
+    arn             = module.network_load_balancer[0].load_balancer.arn
+    dns_name        = module.network_load_balancer[0].load_balancer.dns_name
+    zone_id         = module.network_load_balancer[0].load_balancer.zone_id
+    security_groups = module.network_load_balancer[0].load_balancer.security_groups
+    subnets         = module.network_load_balancer[0].load_balancer.subnets
+    tags            = module.network_load_balancer[0].load_balancer.tags
     } : {
     # no object found, but output types are normal
-    id          = ""
-    arn         = ""
-    key_name    = ""
-    key_pair_id = ""
-    key_type    = ""
-    public_key  = ""
-    tags        = tomap({ "" = "" })
+    id              = ""
+    arn             = ""
+    dns_name        = ""
+    zone_id         = ""
+    security_groups = []
+    subnets         = []
+    tags            = tomap({ "" = "" })
   })
   description = <<-EOT
-    The SSH key object from AWS.
+    The load balancer object from AWS.
   EOT
 }
+
+output "domain" {
+  value = (can(module.domain[0].domain) ? {
+    id      = module.domain[0].domain.id
+    name    = module.domain[0].domain.name
+    zone_id = module.domain[0].domain.zone_id
+    type    = module.domain[0].domain.type
+    records = module.domain[0].domain.records
+    } : {
+    # no object found, but output types are normal
+    id      = ""
+    name    = ""
+    zone_id = ""
+    type    = ""
+    records = []
+  })
+  description = <<-EOT
+    The domain object from AWS.
+  EOT
+}
+
+# output "domain_zone" {
+#   value = (can(module.domain[0].zone) ? {
+#     arn                 = module.domain[0].zone.arn
+#     name                = module.domain[0].zone.name
+#     primary_name_server = module.domain[0].zone.primary_name_server
+#     } : {
+#     # no object found, but output types are normal
+#     arn                 = ""
+#     name                = ""
+#     primary_name_server = ""
+#   })
+#   description = <<-EOT
+#     The domain zone object from AWS.
+#   EOT
+# }
