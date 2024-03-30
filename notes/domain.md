@@ -64,3 +64,24 @@
 ## TLD
 - I don't like the idea of a demo user having to go buy a domain manually for this to work, I would rather generate one for them
 - I can't seem to get a valid cert when creating a TLD on our account, so until that works we are stuck with it
+
+## Kubernetes
+- I have the domain and load balancer working
+- I decided to generate a cert for the domain
+- In order to assign the cert to the load balancer I need to choose a port to listen on
+- This gets application specific... which makes me feel like I have made this module too specific to stand on its own
+- Kubernetes should be a specialized use of this module not the only way to use it.
+- Kubernetes expects a load balancer and domain and cert listening on port 6443
+- maybe we listen on port 443? but then the kubernetes API will need a new listener in the server mod?
+- maybe the root module should include any application specific stuff, like a listener on port 6443
+- isn't 443 application specific then? does a kubernetes cluster need 443 exposed?
+
+## How do I use this thing?
+- Getting started with AWS is a hassle, you have to generate a vpc, subnets, an internet gateway, security groups, etc.
+- I was thinking, y'know, before I can even start working on a project I have to figure out a lot and do a lot.
+- I really wish there was an easy way to get this stuff that didn't lock me into AWS forever
+- I don't want to be stuck at AWS in the end. I would like to be able to move my project somewhere else eventually if I need to.
+- This module should be the starting point for a project, even if that project has nothing to do with kubernetes
+- this lays the groundwork for any project on aws
+- it doesn't use any super in-depth or complicated AWS things, just the basics, and with a few tweaks I could use it on any cloud
+

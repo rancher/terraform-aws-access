@@ -15,7 +15,7 @@ func TestLoadbalancer(t *testing.T) {
 		uniqueID = random.UniqueId()
 	}
 	directory := "loadbalancer"
-	region := "us-west-2"
+	region := "us-west-1"
 
 	terraformVars := map[string]interface{}{
 		"identifier": uniqueID,

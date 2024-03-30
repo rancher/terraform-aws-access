@@ -109,6 +109,7 @@
             go
             jq
             kubectl
+            lego
             less
             ncurses
             vim # for easily editing files that are not in this directory structure

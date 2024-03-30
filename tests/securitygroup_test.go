@@ -1,25 +1,29 @@
 package test
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/random"
+	"github.com/gruntwork-io/terratest/modules/ssh"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-// generate a security group without generating a subnet, specifying an ip
-func TestSgip(t *testing.T) {
+// this test generates all objects, no overrides
+func TestBasic(t *testing.T) {
 	t.Parallel()
+	domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
 	}
-	directory := "sgip"
+	directory := "basic"
 	region := "us-west-1"
 
 	terraformVars := map[string]interface{}{
 		"identifier": uniqueID,
+		"domain":     domain,
 	}
 	terraformOptions := setup(t, directory, region, terraformVars)
 	defer teardown(t, directory)

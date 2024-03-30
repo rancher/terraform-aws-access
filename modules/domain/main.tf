@@ -9,12 +9,18 @@ locals {
     local.content_parts[(length(local.content_parts) - 2)],
     local.content_parts[(length(local.content_parts) - 1)],
   ])
-  zone = join(".", [
-    for i in range(1, length(local.content_parts) - 1) : local.content_parts[i]
+  subdomain = local.content_parts[0]
+  found_zone = join(".", [
+    for part in local.content_parts : part if part != local.subdomain
   ])
 
   # zone
-  zone_id = data.aws_route53_zone.select.id
+  zone_id = (local.zone_select == 1 ? data.aws_route53_zone.select[0].id : aws_route53_zone.new[0].id)
+  domain_zone = var.zone
+  zone = (local.domain_zone == "" ? local.found_zone : local.domain_zone)
+  zone_create = (local.domain_zone == "" ? 0 : 1)
+  zone_select = (local.domain_zone == "" ? 1 : 0)
+  zone_resource = (local.zone_create == 1 ? aws_route53_zone.new[0] : data.aws_route53_zone.select[0])
 
   # domain record
   create = (local.use == "create" ? 1 : 0)
@@ -22,7 +28,27 @@ locals {
 }
 
 data "aws_route53_zone" "select" {
-  name = "${local.zone}."
+  count = local.zone_select
+  name = local.zone
+}
+resource "aws_route53_zone" "new" {
+  count = local.zone_create
+  name  = local.zone
+}
+resource "aws_route53_record" "ns" {
+  count           = local.zone_create
+  allow_overwrite = true
+  name            = local.zone
+  ttl             = 300
+  type            = "NS"
+  zone_id         = aws_route53_zone.new[0].zone_id
+
+  records = [
+    aws_route53_zone.new[0].name_servers[0],
+    aws_route53_zone.new[0].name_servers[1],
+    aws_route53_zone.new[0].name_servers[2],
+    aws_route53_zone.new[0].name_servers[3],
+  ]
 }
 
 resource "aws_route53domains_registered_domain" "select" {
@@ -33,6 +59,7 @@ resource "aws_route53domains_registered_domain" "select" {
 resource "aws_route53_record" "new" {
   depends_on = [
     data.aws_route53_zone.select,
+    aws_route53_zone.new,
   ]
   count   = local.create
   zone_id = local.zone_id
@@ -41,53 +68,6 @@ resource "aws_route53_record" "new" {
   ttl     = 30
   records = [local.ip]
 }
-
-resource "terraform_data" "dig_new_record" {
-  depends_on = [
-    data.aws_route53_zone.select,
-    aws_route53_record.new,
-  ]
-  count = local.create
-  triggers_replace = [
-    local.content,
-    local.create,
-  ]
-  provisioner "local-exec" {
-    command = <<-EOT
-      #!/bin/bash
-
-      DOMAIN='${local.content}'
-      #DNS_SERVER='${data.aws_route53_zone.select.primary_name_server}'
-      DNS_SERVER='8.8.8.8 1.1.1.1'
-
-      # Timeout in seconds (5 minutes)
-      TIMEOUT=300
-
-      # Start time
-      START_TIME=$(date +%s)
-
-      # Loop until timeout
-      while [ $(($(date +%s)-$START_TIME)) -lt $TIMEOUT ]; do
-          # Query the domain
-          RESULT="$(dig @$DNS_SERVER $DOMAIN +short)"
-          
-          # Check if the domain is available
-          if [ -n "$RESULT" ]; then
-              echo "Domain $DOMAIN is available at $DNS_SERVER. IP: $RESULT."
-              exit 0
-          else
-              echo "Domain $DOMAIN is not available yet. Retrying..."
-              sleep 30
-          fi
-      done
-
-      # If the loop ends without finding the domain, it's not available
-      echo "Domain $DOMAIN is not available after 5 minutes."
-      exit 1
-    EOT
-  }
-}
-
 
 resource "tls_private_key" "private_key" {
   count     = local.create
@@ -114,82 +94,66 @@ resource "tls_cert_request" "req" {
   }
 }
 
-resource "acme_certificate" "certificate" {
+resource "acme_certificate" "new" {
   depends_on = [
     data.aws_route53_zone.select,
+    aws_route53_zone.new,
     aws_route53_record.new,
-    terraform_data.dig_new_record,
     acme_registration.reg,
     tls_private_key.private_key,
     tls_private_key.cert_private_key,
     tls_cert_request.req,
   ]
+  count = local.create
   account_key_pem         = acme_registration.reg[0].account_key_pem
   certificate_request_pem = tls_cert_request.req[0].cert_request_pem
-  pre_check_delay         = 30
   recursive_nameservers = [
-    "${data.aws_route53_zone.select.primary_name_server}:53",
-    "1.1.1.1",
-    "8.8.8.8",
+    "${local.zone_resource.primary_name_server}:53",
   ]
   disable_complete_propagation = true
   dns_challenge {
     provider = "route53"
     config = {
-      AWS_PROPAGATION_TIMEOUT = 60,
-      AWS_POLLING_INTERVAL    = 10,
+      AWS_PROPAGATION_TIMEOUT = 2400,
+      AWS_POLLING_INTERVAL    = 60,
+      AWS_HOSTED_ZONE_ID      = local.zone_id,
     }
   }
 }
-resource "terraform_data" "dig_cert_txt" {
+
+resource "aws_iam_server_certificate" "new" {
   depends_on = [
     data.aws_route53_zone.select,
+    aws_route53_zone.new,
     aws_route53_record.new,
-    terraform_data.dig_new_record,
     acme_registration.reg,
     tls_private_key.private_key,
     tls_private_key.cert_private_key,
     tls_cert_request.req,
-    #acme_certificate.certificate, # run at same time as certificate
+    acme_certificate.new,
   ]
-  count = local.create
-  triggers_replace = [
-    local.content,
-    local.create,
-  ]
-  provisioner "local-exec" {
-    command = <<-EOT
-      #!/bin/bash
-
-      # Domain to query
-      DOMAIN='_acme-challenge.${local.content}'
-      #DNS_SERVER="${data.aws_route53_zone.select.primary_name_server}"
-      DNS_SERVER='1.1.1.1 8.8.8.8'
-
-      # Timeout in seconds (5 minutes)
-      TIMEOUT=300
-
-      # Start time
-      START_TIME=$(date +%s)
-
-      # Loop until timeout
-      while [ $(($(date +%s)-$START_TIME)) -lt $TIMEOUT ]; do
-          # Query the domain
-          RESULT="$(dig @$DNS_SERVER $DOMAIN TXT +short)"
-          
-          # Check if the domain is available
-          if [ -n "$RESULT" ]; then
-              echo "Domain $DOMAIN is available at $DNS_SERVER. TXT record: $RESULT."
-              exit 0
-          else
-              echo "Domain $DOMAIN is not available yet. Retrying..."
-              sleep 30
-          fi
-      done
-
-      # If the loop ends without finding the domain, it's not available
-      echo "Domain $DOMAIN is not available after 5 minutes."
-      exit 1
-    EOT
+  count             = local.create
+  name_prefix       = local.content
+  certificate_body  = acme_certificate.new[0].certificate_pem
+  private_key       = tls_private_key.cert_private_key[0].private_key_pem
+  lifecycle {
+    create_before_destroy = true
   }
+}
+
+data "aws_iam_server_certificate" "select" {
+  depends_on = [
+    data.aws_route53_zone.select,
+    aws_route53_zone.new,
+    aws_route53_record.new,
+    acme_registration.reg,
+    tls_private_key.private_key,
+    tls_private_key.cert_private_key,
+    tls_cert_request.req,
+    acme_certificate.new,
+
+  ]
+  count       = local.select
+  name_prefix = local.content
+  latest      = true
 }

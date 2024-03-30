@@ -184,7 +184,16 @@ variable "domain" {
     Part of creating the domain is assigning it to the load balancer and generating a tls certificate.
     This should enable secure connections for your project.
     To make use of this feature, you must generate load balancer target group associations in other further stages.
-    We output the ids of the load balancer target groups for this purpose.
+    We output the arn of the load balancer for this purpose.
+  EOT
+  default     = ""
+}
+variable "domain_zone" {
+  type        = string
+  description = <<-EOT
+    The domain zone to create.
+    This is only required if you want to create a new domain zone.
+    If you are using an existing domain zone, you can leave this blank.
   EOT
   default     = ""
 }

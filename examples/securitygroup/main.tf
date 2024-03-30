@@ -1,26 +1,22 @@
+
 provider "aws" {
   default_tags {
     tags = {
       Id = local.identifier
+      Owner = "terraform-ci@suse.com"
     }
   }
 }
 locals {
   identifier = var.identifier
-  name       = "tf-skipssh-${local.identifier}"
-  key        = var.key
-  key_name   = var.key_name
+  name       = "tf-securitygroup-${local.identifier}"
 }
-# generate vpc, security group, and ssh key
+# AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively)
 module "this" {
   source              = "../../"
-  owner               = "terraform-ci@suse.com"
   vpc_name            = local.name
   vpc_cidr            = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
-  skip_subnet         = true
   security_group_name = local.name
-  security_group_type = "specific"
-  security_group_ip   = "192.168.0.1"
-  public_ssh_key      = local.key
-  ssh_key_name        = local.key_name
+  security_group_type = "project"
+  load_balancer_use_strategy = "skip" # everything depending on load balancer is skipped implicitly
 }

@@ -8,23 +8,19 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-// this test generates all objects, no overrides
-func TestDomain(t *testing.T) {
+func TestBasic(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
 	}
-	domain := os.Getenv("DOMAIN")
-	directory := "domain"
-	region := "us-west-1"
+	directory := "basic"
+	region := "us-west-2" // This regoin has at least 3 availability zones
 
 	terraformVars := map[string]interface{}{
 		"identifier": uniqueID,
-		"domain":     domain,
 	}
 	terraformOptions := setup(t, directory, region, terraformVars)
-
 	defer teardown(t, directory)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)

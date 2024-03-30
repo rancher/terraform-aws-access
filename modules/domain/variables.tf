@@ -27,3 +27,13 @@ variable "ip" {
   EOT
   default     = ""
 }
+
+variable "zone" {
+  type        = string
+  description = <<-EOT
+    The domain zone to use for the domain record.
+    eg. example.com for domain 'test.example.com'
+    Only specify when creating a new zone.
+  EOT
+  default     = ""
+}

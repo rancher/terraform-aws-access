@@ -5,14 +5,14 @@ output "vpc" {
     cidr_block          = module.vpc[0].vpc.cidr_block
     ipv6_cidr_block     = module.vpc[0].vpc.ipv6_cidr_block
     main_route_table_id = module.vpc[0].vpc.main_route_table_id
-    tags                = module.vpc[0].vpc.tags
+    tags_all                = module.vpc[0].vpc.tags_all
     } : {
     id                  = ""
     arn                 = ""
     cidr_block          = ""
     ipv6_cidr_block     = ""
     main_route_table_id = ""
-    tags                = tomap({ "" = "" })
+    tags_all                = tomap({ "" = "" })
   })
   description = <<-EOT
     The VPC object from AWS.
@@ -28,7 +28,7 @@ output "subnet" {
     cidr_block           = module.subnet[0].subnet.cidr_block
     ipv6_cidr_block      = module.subnet[0].subnet.ipv6_cidr_block
     vpc_id               = module.subnet[0].subnet.vpc_id
-    tags                 = module.subnet[0].subnet.tags
+    tags_all                 = module.subnet[0].subnet.tags_all
     } : {
     # no object found, but output types are normal
     id                   = ""
@@ -38,7 +38,7 @@ output "subnet" {
     cidr_block           = ""
     ipv6_cidr_block      = ""
     vpc_id               = ""
-    tags                 = tomap({ "" = "" })
+    tags_all                 = tomap({ "" = "" })
   })
   description = <<-EOT
     The subnet object from AWS.
@@ -51,14 +51,14 @@ output "security_group" {
     arn    = module.security_group[0].security_group.arn
     name   = module.security_group[0].security_group.name
     vpc_id = module.security_group[0].security_group.vpc_id
-    tags   = module.security_group[0].security_group.tags
+    tags_all   = module.security_group[0].security_group.tags_all
     } : {
     # no object found, but output types are normal
     id     = ""
     arn    = ""
     name   = ""
     vpc_id = ""
-    tags   = tomap({ "" = "" })
+    tags_all   = tomap({ "" = "" })
   })
   description = <<-EOT
     The security group object from AWS.
@@ -73,7 +73,7 @@ output "load_balancer" {
     zone_id         = module.network_load_balancer[0].load_balancer.zone_id
     security_groups = module.network_load_balancer[0].load_balancer.security_groups
     subnets         = module.network_load_balancer[0].load_balancer.subnets
-    tags            = module.network_load_balancer[0].load_balancer.tags
+    tags_all            = module.network_load_balancer[0].load_balancer.tags_all
     } : {
     # no object found, but output types are normal
     id              = ""
@@ -82,7 +82,7 @@ output "load_balancer" {
     zone_id         = ""
     security_groups = []
     subnets         = []
-    tags            = tomap({ "" = "" })
+    tags_all            = tomap({ "" = "" })
   })
   description = <<-EOT
     The load balancer object from AWS.
@@ -109,18 +109,24 @@ output "domain" {
   EOT
 }
 
-# output "domain_zone" {
-#   value = (can(module.domain[0].zone) ? {
-#     arn                 = module.domain[0].zone.arn
-#     name                = module.domain[0].zone.name
-#     primary_name_server = module.domain[0].zone.primary_name_server
-#     } : {
-#     # no object found, but output types are normal
-#     arn                 = ""
-#     name                = ""
-#     primary_name_server = ""
-#   })
-#   description = <<-EOT
-#     The domain zone object from AWS.
-#   EOT
-# }
+output "certificate" {
+  value = (can(module.domain[0].certificate) ? {
+    id          = module.domain[0].certificate.id
+    arn         = module.domain[0].certificate.arn
+    name        = module.domain[0].certificate.name
+    expiration  = module.domain[0].certificate.expiration
+    upload_date = module.domain[0].certificate.upload_date
+    tags_all    = module.domain[0].certificate.tags_all
+    } : {
+    # no object found, but output types are normal
+    id          = ""
+    arn         = ""
+    name        = ""
+    expiration  = ""
+    upload_date = ""
+    tags_all        = tomap({ "" = "" })
+  })
+  description = <<-EOT
+    The certificate object from AWS.
+  EOT
+}

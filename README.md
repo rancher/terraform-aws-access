@@ -2,6 +2,17 @@
 
 ## Recent Changes
 
+- BREAKING CHANGES!
+
+  While adding the loadbalancer and domain to this module it kinda seems like the ssh key shouldn't be included.
+  I also found a more standardized approach to how to skip or select modules.
+  When adding a load balancer I discovered that subnets will need to be tied to availability zones.
+  I also found that it was easier to combine the subnet input to something more complex, but should be easy enough to figure out
+  1. No longer managing ssh keys with this module!
+  2. The <name>-use-strategy variables now determine how modules are used (create, skip, or select)
+  3. Subnets inputs needed to change to incorporate high availability
+  With this is a massive change in the interface, this is a major break from the previous version, but I believe necessary for its growth.
+
 - Skip Runner IP
 
   By default this module will create a security group which allows the ip of the client running terraform ingress and egress access.

@@ -63,6 +63,7 @@ locals {
 
   # domain
   domain = var.domain
+  domain_zone = var.domain_zone
 
   # load balancer
   load_balancer_name = var.load_balancer_name
@@ -120,7 +121,6 @@ module "network_load_balancer" {
   name              = local.load_balancer_name
   security_group_id = module.security_group[0].id
   subnet_ids        = [for subnet in module.subnet : subnet.id]
-  vpc_id            = module.vpc[0].id
 }
 
 module "domain" {
@@ -135,4 +135,5 @@ module "domain" {
   use     = local.domain_use_strategy
   content = lower(local.domain)
   ip      = module.network_load_balancer[0].public_ip
+  zone   = local.domain_zone
 }
