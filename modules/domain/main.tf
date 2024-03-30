@@ -15,11 +15,11 @@ locals {
   ])
 
   # zone
-  zone_id = (local.zone_select == 1 ? data.aws_route53_zone.select[0].id : aws_route53_zone.new[0].id)
-  domain_zone = var.zone
-  zone = (local.domain_zone == "" ? local.found_zone : local.domain_zone)
-  zone_create = (local.domain_zone == "" ? 0 : 1)
-  zone_select = (local.domain_zone == "" ? 1 : 0)
+  zone_id       = (local.zone_select == 1 ? data.aws_route53_zone.select[0].id : aws_route53_zone.new[0].id)
+  domain_zone   = var.zone
+  zone          = (local.domain_zone == "" ? local.found_zone : local.domain_zone)
+  zone_create   = (local.domain_zone == "" ? 0 : 1)
+  zone_select   = (local.domain_zone == "" ? 1 : 0)
   zone_resource = (local.zone_create == 1 ? aws_route53_zone.new[0] : data.aws_route53_zone.select[0])
 
   # domain record
@@ -29,7 +29,7 @@ locals {
 
 data "aws_route53_zone" "select" {
   count = local.zone_select
-  name = local.zone
+  name  = local.zone
 }
 resource "aws_route53_zone" "new" {
   count = local.zone_create
@@ -104,7 +104,7 @@ resource "acme_certificate" "new" {
     tls_private_key.cert_private_key,
     tls_cert_request.req,
   ]
-  count = local.create
+  count                   = local.create
   account_key_pem         = acme_registration.reg[0].account_key_pem
   certificate_request_pem = tls_cert_request.req[0].cert_request_pem
   recursive_nameservers = [
@@ -132,10 +132,10 @@ resource "aws_iam_server_certificate" "new" {
     tls_cert_request.req,
     acme_certificate.new,
   ]
-  count             = local.create
-  name_prefix       = local.content
-  certificate_body  = acme_certificate.new[0].certificate_pem
-  private_key       = tls_private_key.cert_private_key[0].private_key_pem
+  count            = local.create
+  name_prefix      = local.content
+  certificate_body = acme_certificate.new[0].certificate_pem
+  private_key      = tls_private_key.cert_private_key[0].private_key_pem
   lifecycle {
     create_before_destroy = true
   }

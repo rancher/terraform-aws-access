@@ -2,7 +2,7 @@
 provider "aws" {
   default_tags {
     tags = {
-      Id = local.identifier
+      Id    = local.identifier
       Owner = "terraform-ci@suse.com"
     }
   }
@@ -19,6 +19,6 @@ module "this" {
   vpc_cidr            = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
   security_group_name = local.name
   security_group_type = "egress"
-  load_balancer_name = local.name
-  domain = local.domain
+  load_balancer_name  = local.name
+  domain              = local.domain
 }

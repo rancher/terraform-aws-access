@@ -62,7 +62,7 @@ locals {
   security_group_type = var.security_group_type
 
   # domain
-  domain = var.domain
+  domain      = var.domain
   domain_zone = var.domain_zone
 
   # load balancer
@@ -135,5 +135,5 @@ module "domain" {
   use     = local.domain_use_strategy
   content = lower(local.domain)
   ip      = module.network_load_balancer[0].public_ip
-  zone   = local.domain_zone
+  zone    = local.domain_zone
 }
