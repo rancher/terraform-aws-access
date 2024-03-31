@@ -1,18 +1,18 @@
 output "vpc" {
-  value = ( length(module.vpc) > 0 ? {
+  value = (length(module.vpc) > 0 ? {
     id                  = module.vpc[0].vpc.id
     arn                 = module.vpc[0].vpc.arn
     cidr_block          = module.vpc[0].vpc.cidr_block
     ipv6_cidr_block     = module.vpc[0].vpc.ipv6_cidr_block
     main_route_table_id = module.vpc[0].vpc.main_route_table_id
-    tags            = module.vpc[0].vpc.tags
+    tags                = module.vpc[0].vpc.tags
     } : {
     id                  = ""
     arn                 = ""
     cidr_block          = ""
     ipv6_cidr_block     = ""
     main_route_table_id = ""
-    tags            = tomap({ "" = "" })
+    tags                = tomap({ "" = "" })
   })
   description = <<-EOT
     The VPC object from AWS.
@@ -20,8 +20,8 @@ output "vpc" {
 }
 
 output "subnets" {
-  value = ( length(module.subnet) > 0 ? {
-    for subnet in module.subnet: subnet.subnet.tags.Name => {
+  value = (length(module.subnet) > 0 ? {
+    for subnet in module.subnet : subnet.subnet.tags.Name => {
       id                   = subnet.subnet.id
       arn                  = subnet.subnet.arn
       availability_zone    = subnet.subnet.availability_zone
@@ -31,7 +31,7 @@ output "subnets" {
       vpc_id               = subnet.subnet.vpc_id
       tags_all             = subnet.subnet.tags_all
     }
-  } : { "empty" = {
+    } : { "empty" = {
       id                   = ""
       arn                  = ""
       availability_zone    = ""
