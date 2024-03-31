@@ -124,7 +124,7 @@ variable "security_group_type" {
     The types are located in ./modules/security_group/types.tf.
     If specified, must be one of: specific, internal, egress, or public.
   EOT
-  default     = ""
+  default     = "project"
   validation {
     condition     = contains(["project", "egress", "public"], var.security_group_type)
     error_message = "The security_group_type value must be one of 'project', 'egress', or 'public'."

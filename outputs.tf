@@ -1,44 +1,46 @@
 output "vpc" {
-  value = (can(module.vpc[0].vpc) ? {
+  value = ( length(module.vpc) > 0 ? {
     id                  = module.vpc[0].vpc.id
     arn                 = module.vpc[0].vpc.arn
     cidr_block          = module.vpc[0].vpc.cidr_block
     ipv6_cidr_block     = module.vpc[0].vpc.ipv6_cidr_block
     main_route_table_id = module.vpc[0].vpc.main_route_table_id
-    tags_all            = module.vpc[0].vpc.tags_all
+    tags            = module.vpc[0].vpc.tags
     } : {
     id                  = ""
     arn                 = ""
     cidr_block          = ""
     ipv6_cidr_block     = ""
     main_route_table_id = ""
-    tags_all            = tomap({ "" = "" })
+    tags            = tomap({ "" = "" })
   })
   description = <<-EOT
     The VPC object from AWS.
   EOT
 }
 
-output "subnet" {
-  value = (can(module.subnet[0].subnet) ? {
-    id                   = module.subnet[0].subnet.id
-    arn                  = module.subnet[0].subnet.arn
-    availability_zone    = module.subnet[0].subnet.availability_zone
-    availability_zone_id = module.subnet[0].subnet.availability_zone_id
-    cidr_block           = module.subnet[0].subnet.cidr_block
-    ipv6_cidr_block      = module.subnet[0].subnet.ipv6_cidr_block
-    vpc_id               = module.subnet[0].subnet.vpc_id
-    tags_all             = module.subnet[0].subnet.tags_all
-    } : {
-    # no object found, but output types are normal
-    id                   = ""
-    arn                  = ""
-    availability_zone    = ""
-    availability_zone_id = ""
-    cidr_block           = ""
-    ipv6_cidr_block      = ""
-    vpc_id               = ""
-    tags_all             = tomap({ "" = "" })
+output "subnets" {
+  value = ( length(module.subnet) > 0 ? {
+    for subnet in module.subnet: subnet.subnet.tags.Name => {
+      id                   = subnet.subnet.id
+      arn                  = subnet.subnet.arn
+      availability_zone    = subnet.subnet.availability_zone
+      availability_zone_id = subnet.subnet.availability_zone_id
+      cidr_block           = subnet.subnet.cidr_block
+      ipv6_cidr_block      = subnet.subnet.ipv6_cidr_block
+      vpc_id               = subnet.subnet.vpc_id
+      tags_all             = subnet.subnet.tags_all
+    }
+  } : { "empty" = {
+      id                   = ""
+      arn                  = ""
+      availability_zone    = ""
+      availability_zone_id = ""
+      cidr_block           = ""
+      ipv6_cidr_block      = ""
+      vpc_id               = ""
+      tags_all             = tomap({ "" = "" })
+    }
   })
   description = <<-EOT
     The subnet object from AWS.
@@ -46,7 +48,7 @@ output "subnet" {
 }
 
 output "security_group" {
-  value = (can(module.security_group[0].security_group) ? {
+  value = (length(module.security_group) > 0 ? {
     id       = module.security_group[0].security_group.id
     arn      = module.security_group[0].security_group.arn
     name     = module.security_group[0].security_group.name
@@ -66,7 +68,7 @@ output "security_group" {
 }
 
 output "load_balancer" {
-  value = (can(module.network_load_balancer[0].load_balancer) ? {
+  value = (length(module.network_load_balancer) > 0 ? {
     id              = module.network_load_balancer[0].load_balancer.id
     arn             = module.network_load_balancer[0].load_balancer.arn
     dns_name        = module.network_load_balancer[0].load_balancer.dns_name
@@ -90,7 +92,7 @@ output "load_balancer" {
 }
 
 output "domain" {
-  value = (can(module.domain[0].domain) ? {
+  value = (length(module.domain) > 0 ? {
     id      = module.domain[0].domain.id
     name    = module.domain[0].domain.name
     zone_id = module.domain[0].domain.zone_id
@@ -110,7 +112,7 @@ output "domain" {
 }
 
 output "certificate" {
-  value = (can(module.domain[0].certificate) ? {
+  value = (length(module.domain) > 0 ? {
     id          = module.domain[0].certificate.id
     arn         = module.domain[0].certificate.arn
     name        = module.domain[0].certificate.name

@@ -8,13 +8,13 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-func TestBasic(t *testing.T) {
+func TestSubnet(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
 	}
-	directory := "basic"
+	directory := "subnets"
 	region := "us-west-2" // This regoin has at least 3 availability zones
 
 	terraformVars := map[string]interface{}{

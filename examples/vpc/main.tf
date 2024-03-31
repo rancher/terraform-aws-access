@@ -9,7 +9,7 @@ provider "aws" {
 }
 locals {
   identifier = var.identifier
-  name       = "tf-vpc-${local.identifier}"
+  name       = "tf-${local.identifier}"
 }
 # AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively)
 module "this" {

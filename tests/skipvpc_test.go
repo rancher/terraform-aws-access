@@ -9,13 +9,13 @@ import (
 )
 
 // this test generates all objects, no overrides
-func TestSecuritygroup(t *testing.T) {
+func TestSkipvpc(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
 	}
-	directory := "securitygroup"
+	directory := "skipvpc"
 	region := "us-west-1"
 
 	terraformVars := map[string]interface{}{
