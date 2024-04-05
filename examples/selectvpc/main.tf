@@ -7,16 +7,30 @@ provider "aws" {
     }
   }
 }
+provider "acme" {
+  server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
+}
+
 locals {
   identifier = var.identifier
   name       = "tf-${local.identifier}"
   domain     = "${local.identifier}-${var.domain}"
 }
-# AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively)
-module "this" {
+
+module "setup" {
   source              = "../../"
   vpc_name            = local.name
-  vpc_cidr            = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
+  vpc_cidr            = "10.0.255.0/24"
+  subnet_use_strategy = "skip"
+}
+
+module "this" {
+  depends_on = [
+    module.setup
+  ]
+  source              = "../../"
+  vpc_use_strategy    = "select"
+  vpc_name            = module.setup.vpc.tags.Name
   security_group_name = local.name
   security_group_type = "egress"
   load_balancer_name  = local.name

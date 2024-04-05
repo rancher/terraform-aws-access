@@ -1,4 +1,4 @@
-
 variable "identifier" {
   type = string
 }
+

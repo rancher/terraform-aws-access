@@ -9,14 +9,14 @@ import (
 )
 
 // this test generates all objects, no overrides
-func TestBasic(t *testing.T) {
+func TestDomain(t *testing.T) {
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
 	}
-	directory := "basic"
+	domain := os.Getenv("DOMAIN")
+	directory := "domain"
 	region := "us-west-1"
 
 	terraformVars := map[string]interface{}{
@@ -24,6 +24,7 @@ func TestBasic(t *testing.T) {
 		"domain":     domain,
 	}
 	terraformOptions := setup(t, directory, region, terraformVars)
+
 	defer teardown(t, directory)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
