@@ -7,7 +7,9 @@ provider "aws" {
     }
   }
 }
-
+provider "acme" {
+  server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
+}
 locals {
   identifier = var.identifier
   name       = "tf-${local.identifier}"
