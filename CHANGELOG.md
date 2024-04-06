@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.0.0](https://github.com/rancher/terraform-aws-access/compare/v1.2.0...v2.0.0) (2024-04-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* add domains and load balancing ([#42](https://github.com/rancher/terraform-aws-access/issues/42))
+
+### Bug Fixes
+
+* add encrypt address everywhere ([#45](https://github.com/rancher/terraform-aws-access/issues/45)) ([962c133](https://github.com/rancher/terraform-aws-access/commit/962c1333c8f70c7183f46eafa7f1e134d99f9f81))
+* add encrypt address everywhere ([#46](https://github.com/rancher/terraform-aws-access/issues/46)) ([6e8ddd0](https://github.com/rancher/terraform-aws-access/commit/6e8ddd04601e8dd5f4cf96ff3d9b421e4606dce8))
+* add notes on policies ([#48](https://github.com/rancher/terraform-aws-access/issues/48)) ([559c579](https://github.com/rancher/terraform-aws-access/commit/559c57904a90060a7f21fe765ad19acfa63775b1))
+* add policies and reduce speed ([#49](https://github.com/rancher/terraform-aws-access/issues/49)) ([daef0d8](https://github.com/rancher/terraform-aws-access/commit/daef0d888eb6421691fd9108193d290504dcd07b))
+* add policy and speed up ([#51](https://github.com/rancher/terraform-aws-access/issues/51)) ([9b964a9](https://github.com/rancher/terraform-aws-access/commit/9b964a9b9aa1fa688eb4a453c056669e4a750eb2))
+* add tag policy ([#52](https://github.com/rancher/terraform-aws-access/issues/52)) ([a6bf9c5](https://github.com/rancher/terraform-aws-access/commit/a6bf9c5eebb3879614bb8a592f83b161bed05b53))
+* keep the domain variable ([#44](https://github.com/rancher/terraform-aws-access/issues/44)) ([148b48a](https://github.com/rancher/terraform-aws-access/commit/148b48ae34990faf9c8373e396602c1b31a03067))
+* requested more elastic addresses ([#50](https://github.com/rancher/terraform-aws-access/issues/50)) ([ad3e046](https://github.com/rancher/terraform-aws-access/commit/ad3e046b830582a69878ec92fb3ae88ca3b591ef))
+* resolve ingress to balanced ports ([#43](https://github.com/rancher/terraform-aws-access/issues/43)) ([de2a8fa](https://github.com/rancher/terraform-aws-access/commit/de2a8fa165aa6399ee3b08a45f44a3e69fd21e42))
+* update notes on ingress ([#47](https://github.com/rancher/terraform-aws-access/issues/47)) ([2046845](https://github.com/rancher/terraform-aws-access/commit/2046845025c60d74c35cb706b20507ea94187ada))
+* update workflows to meet new standards ([#40](https://github.com/rancher/terraform-aws-access/issues/40)) ([4933b3a](https://github.com/rancher/terraform-aws-access/commit/4933b3a09ee46d69c1ed5c22a5b822d64fa740cf))
+
+
+### Code Refactoring
+
+* add domains and load balancing ([#42](https://github.com/rancher/terraform-aws-access/issues/42)) ([6cb3cff](https://github.com/rancher/terraform-aws-access/commit/6cb3cff557a9bb5b8a1aadd3a619ade9603f1d65))
+
 ## [1.2.0](https://github.com/rancher/terraform-aws-access/compare/v1.1.1...v1.2.0) (2024-03-08)
 
 
