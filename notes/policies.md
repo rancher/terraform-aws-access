@@ -171,7 +171,10 @@ Please remember that these are just my notes, make good decisions and evaluate y
                 "iam:UploadServerCertificate",
                 "iam:ListServerCertificates",
                 "iam:ListServerCertificateTags",
-                "iam:DeleteServerCertificate"
+                "iam:DeleteServerCertificate",
+                "iam:TagServerCertificate",
+                "iam:GetServerCertificate",
+                "iam:UntagServerCertificate"
             ],
             "Resource": "*"
         },
