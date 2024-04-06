@@ -7,6 +7,7 @@ provider "aws" {
     }
   }
 }
+
 locals {
   identifier = var.identifier
   name       = "tf-${local.identifier}"
