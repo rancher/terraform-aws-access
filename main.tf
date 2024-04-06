@@ -66,7 +66,8 @@ locals {
   domain_zone = var.domain_zone
 
   # load balancer
-  load_balancer_name = var.load_balancer_name
+  load_balancer_name         = var.load_balancer_name
+  load_balancer_access_cidrs = var.load_balancer_access_cidrs
 }
 
 data "aws_availability_zones" "available" {
@@ -119,8 +120,10 @@ module "network_load_balancer" {
   source            = "./modules/network_load_balancer"
   use               = local.load_balancer_use_strategy
   name              = local.load_balancer_name
+  vpc_id            = module.vpc[0].id
   security_group_id = module.security_group[0].id
   subnet_ids        = [for subnet in module.subnet : subnet.id]
+  access_cidrs      = local.load_balancer_access_cidrs
 }
 
 module "domain" {
