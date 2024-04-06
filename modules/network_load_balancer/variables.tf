@@ -17,6 +17,12 @@ variable "name" {
     This tag is how we will find it again in the future.
   EOT
 }
+variable "vpc_id" {
+  type        = string
+  description = <<-EOT
+    The VPC id where the load balancer will be created.
+  EOT
+}
 variable "security_group_id" {
   type        = string
   description = <<-EOT
@@ -30,4 +36,13 @@ variable "subnet_ids" {
     The subnet ids to attach to the Load Balancer.
   EOT
   default     = []
+}
+variable "access_cidrs" {
+  type        = map(list(string))
+  description = <<-EOT
+    A list of maps relating a port to a list of CIDRs that are allowed to access the load balancer external to the VPC.
+    If this is not provided, no IP addresses will be allowed to access the load balancer externally.
+    example: {"443" = ["1.1.1.1/32"]} would allow IP address 1.1.1.1 to access the load balancer on port 443.
+  EOT
+  default     = {}
 }

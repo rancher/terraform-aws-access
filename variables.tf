@@ -159,6 +159,15 @@ variable "load_balancer_name" {
   EOT
   default     = ""
 }
+variable "load_balancer_access_cidrs" {
+  type        = map(list(string))
+  description = <<-EOT
+    A list of maps relating a port to a list of CIDRs that are allowed to access the load balancer external to the VPC.
+    If this is not provided, no IP addresses will be allowed to access the load balancer externally.
+    exmaple: [{"443" = ["1.1.1.1/32"]}] would allow IP address 1.1.1.1 to access the load balancer on port 443.
+  EOT
+  default     = {}
+}
 
 # domain
 variable "domain_use_strategy" {
