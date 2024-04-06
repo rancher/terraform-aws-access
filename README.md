@@ -2,6 +2,12 @@
 
 ## Recent Changes
 
+- Manage external access
+
+  You can now add ingress from external addresses by cidr and port.
+  This will generate security group rules with 'from' and 'to' having the port number specified.
+  The input is a map of port to list of CIDRs, eg. `{"443" = ["1.1.1.1/32","2.2.2.2/32"], "6443" = ["3.3.3.3/24"]}`.
+
 - BREAKING CHANGES!
 
   While adding the loadbalancer and domain to this module it kinda seems like the ssh key shouldn't be included.
@@ -12,13 +18,6 @@
   2. The <name>-use-strategy variables now determine how modules are used (create, skip, or select)
   3. Subnets inputs needed to change to incorporate high availability
   With this is a massive change in the interface, this is a major break from the previous version, but I believe necessary for its growth.
-
-- Skip Runner IP
-
-  By default this module will create a security group which allows the ip of the client running terraform ingress and egress access.
-  This enables users to configure servers after they are created, but is not always wanted.
-  The new variable "skip_runner_ip" will prevent the creation of that security group, further securing the project.
-  This functionality enables air-gapped production projects.
 
 ## AWS Access
 
