@@ -167,7 +167,11 @@ Please remember that these are just my notes, make good decisions and evaluate y
                 "route53:ListCidrCollections",
                 "route53:GetHostedZoneCount",
                 "route53:CreateHealthCheck",
-                "route53:DeleteHealthCheck"
+                "route53:DeleteHealthCheck",
+                "iam:UploadServerCertificate",
+                "iam:ListServerCertificates",
+                "iam:ListServerCertificateTags",
+                "iam:DeleteServerCertificate"
             ],
             "Resource": "*"
         },
