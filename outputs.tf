@@ -43,7 +43,8 @@ output "subnets" {
     }
   })
   description = <<-EOT
-    The subnet object from AWS.
+    The subnet objects from AWS.
+    This can be used to provision ec2 instances.
   EOT
 }
 
@@ -64,6 +65,9 @@ output "security_group" {
   })
   description = <<-EOT
     The security group object from AWS.
+    This is the project level security group,
+    this should be common among all servers and objects in the project.
+    This can be helpful to make sure that all servers in the same vpc can talk to each other.
   EOT
 }
 
@@ -88,6 +92,9 @@ output "load_balancer" {
   })
   description = <<-EOT
     The load balancer object from AWS.
+    When generated, this can be helpful to set up indirect access to servers.
+    This is a network load balancer with either UDP or TCP protocol.
+    As such, it doesn't encrypt or decrypt data and TLS must be handled at the server level.
   EOT
 }
 
@@ -108,6 +115,8 @@ output "domain" {
   })
   description = <<-EOT
     The domain object from AWS.
+    When generated, the domain is applied to the EIP created with the load balancer.
+    This is helpful when you want to expose an application indirectly.
   EOT
 }
 
@@ -130,5 +139,7 @@ output "certificate" {
   })
   description = <<-EOT
     The certificate object from AWS.
+    When generating a domain, a valid TLS certificate is also generated.
+    This is helpful for servers and applications to import for securing transfer.
   EOT
 }

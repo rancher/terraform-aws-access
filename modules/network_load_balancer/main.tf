@@ -4,11 +4,11 @@ locals {
   vpc_id            = var.vpc_id
   security_group_id = var.security_group_id
   subnet_ids        = var.subnet_ids
-  access_cidrs      = var.access_cidrs
+  access_info       = (var.access_info == null ? {} : var.access_info)
   create            = (local.use == "create" ? 1 : 0)
   select            = (local.use == "select" ? 1 : 0)
-
-  public_ip = (local.select == 1 ? data.aws_eip.selected[0].public_ip : aws_eip.created[0].public_ip)
+  eip               = (local.select == 1 ? data.aws_eip.selected[0] : aws_eip.created[0])
+  public_ip         = (local.select == 1 ? data.aws_eip.selected[0].public_ip : aws_eip.created[0].public_ip)
 }
 
 data "aws_lb" "selected" {
@@ -42,13 +42,13 @@ resource "aws_security_group" "load_balancer" {
 }
 
 resource "aws_security_group_rule" "external_ingress" {
-  for_each          = (local.create == 1 ? local.access_cidrs : {})
+  for_each          = (local.create == 1 ? local.access_info : {})
   security_group_id = aws_security_group.load_balancer[0].id
   type              = "ingress"
-  from_port         = each.key
-  to_port           = each.key
-  protocol          = "-1"
-  cidr_blocks       = each.value
+  from_port         = each.value.port
+  to_port           = each.value.port
+  protocol          = each.value.protocol
+  cidr_blocks       = each.value.cidrs
 }
 
 resource "aws_lb" "new" {
@@ -57,9 +57,36 @@ resource "aws_lb" "new" {
   internal           = false
   load_balancer_type = "network"
   security_groups    = [local.security_group_id]
-  subnets            = local.subnet_ids
-
+  dynamic "subnet_mapping" {
+    for_each = toset(local.subnet_ids)
+    content {
+      subnet_id     = subnet_mapping.key
+      allocation_id = local.eip.id
+    }
+  }
   tags = {
     Name = local.name
+  }
+}
+
+resource "aws_lb_target_group" "created" {
+  for_each = (local.create == 1 ? local.access_info : {})
+  name_prefix = "${substr(md5("${local.name}-${each.key}"),0,5)}-"
+  port        = each.value.port
+  protocol    = upper(each.value.protocol)
+  vpc_id      = local.vpc_id
+  tags = {
+    Name = "${local.name}-${each.key}"
+  }
+}
+
+resource "aws_lb_listener" "created" {
+  for_each = (local.create == 1 ? local.access_info : {})
+  load_balancer_arn = aws_lb.new[0].arn
+  port              = each.value.port
+  protocol          = upper(each.value.protocol)
+  default_action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.created[each.key].arn
   }
 }

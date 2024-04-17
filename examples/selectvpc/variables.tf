@@ -1,6 +1,6 @@
 variable "identifier" {
   type = string
 }
-variable "domain" {
+variable "zone" {
   type = string
 }

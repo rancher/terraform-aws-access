@@ -10,3 +10,6 @@ output "load_balancer" {
 output "public_ip" {
   value = local.public_ip
 }
+output "listeners" {
+  value = (local.create == 1 ? aws_lb_listener.created : {})
+}
