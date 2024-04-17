@@ -49,7 +49,9 @@ jobs:
             echo "leftovers in $region:"
             response="$(leftovers -d --iaas=aws --aws-region="$region" --filter="Owner:terraform-ci")"
             if [ -n "$response" ]; then
-              echo "please clean up leftovers before release testing";
+              echo "found leftovers: "
+              echo "$response"
+              echo "please clean up leftovers before release testing"
               exit 1;
             fi
           done
