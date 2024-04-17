@@ -57,5 +57,5 @@ variable "access_info" {
       }
     }
   EOT
-  default = null
+  default     = null
 }

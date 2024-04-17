@@ -181,7 +181,7 @@ variable "load_balancer_access_cidrs" {
       }
     }
   EOT
-  default = null
+  default     = null
 }
 
 # domain

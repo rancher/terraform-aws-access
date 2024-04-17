@@ -1,7 +1,7 @@
 locals {
-  use       = var.use
-  content   = lower(var.content)
-  ip        = var.ip
+  use     = var.use
+  content = lower(var.content)
+  ip      = var.ip
 
   content_parts = split(".", local.content)
   top_level_domain = join(".", [

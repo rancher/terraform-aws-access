@@ -70,8 +70,8 @@ resource "aws_lb" "new" {
 }
 
 resource "aws_lb_target_group" "created" {
-  for_each = (local.create == 1 ? local.access_info : {})
-  name_prefix = "${substr(md5("${local.name}-${each.key}"),0,5)}-"
+  for_each    = (local.create == 1 ? local.access_info : {})
+  name_prefix = "${substr(md5("${local.name}-${each.key}"), 0, 5)}-"
   port        = each.value.port
   protocol    = upper(each.value.protocol)
   vpc_id      = local.vpc_id
@@ -81,12 +81,12 @@ resource "aws_lb_target_group" "created" {
 }
 
 resource "aws_lb_listener" "created" {
-  for_each = (local.create == 1 ? local.access_info : {})
+  for_each          = (local.create == 1 ? local.access_info : {})
   load_balancer_arn = aws_lb.new[0].arn
   port              = each.value.port
   protocol          = upper(each.value.protocol)
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.created[each.key].arn
   }
 }

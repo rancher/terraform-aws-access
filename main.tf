@@ -50,8 +50,8 @@ locals {
   subnets                    = var.subnets
   subnet_names               = keys(local.subnets)
   subnet_count               = length(local.subnets)
-  newbits                    = ( local.subnet_count > 1 ? ceil(log(local.subnet_count, 2)) : 1 )
-  vpc_cidr_split             = [ for i in range(local.subnet_count) : cidrsubnet(local.vpc_cidr, local.newbits, i) ]
+  newbits                    = (local.subnet_count > 1 ? ceil(log(local.subnet_count, 2)) : 1)
+  vpc_cidr_split             = [for i in range(local.subnet_count) : cidrsubnet(local.vpc_cidr, local.newbits, i)]
   potential_regional_subnets = { for i in range(local.subnet_count) : local.subnet_names[i] => local.vpc_cidr_split[i] }
 
   zones                  = tolist(data.aws_availability_zones.available.names)
@@ -133,10 +133,10 @@ module "domain" {
     module.security_group,
     module.network_load_balancer,
   ]
-  count     = local.domain_mod
-  source    = "./modules/domain"
-  use       = local.domain_use_strategy
-  content   = lower(local.domain)
-  ip        = module.network_load_balancer[0].public_ip
-  zone      = local.domain_zone
+  count   = local.domain_mod
+  source  = "./modules/domain"
+  use     = local.domain_use_strategy
+  content = lower(local.domain)
+  ip      = module.network_load_balancer[0].public_ip
+  zone    = local.domain_zone
 }
