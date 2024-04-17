@@ -37,12 +37,25 @@ variable "subnet_ids" {
   EOT
   default     = []
 }
-variable "access_cidrs" {
-  type        = map(list(string))
+variable "access_info" {
+  type = map(object({
+    port     = number
+    cidrs    = list(string)
+    protocol = string
+  }))
   description = <<-EOT
-    A list of maps relating a port to a list of CIDRs that are allowed to access the load balancer external to the VPC.
-    If this is not provided, no IP addresses will be allowed to access the load balancer externally.
-    example: {"443" = ["1.1.1.1/32"]} would allow IP address 1.1.1.1 to access the load balancer on port 443.
+    A map of access information objects.
+    The port is the port to expose on the load balancer.
+    The cidrs is a list of external cidr blocks to allow access to the load balancer.
+    The protocol is the network protocol to expose on, this can be 'udp' or 'tcp'.
+    Example:
+    {
+      test = {
+        port = 443
+        cidrs = ["1.1.1.1/32"]
+        protocol = "tcp"
+      }
+    }
   EOT
-  default     = {}
+  default     = null
 }

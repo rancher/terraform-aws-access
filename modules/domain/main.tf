@@ -1,5 +1,4 @@
 locals {
-
   use     = var.use
   content = lower(var.content)
   ip      = var.ip
@@ -133,7 +132,7 @@ resource "aws_iam_server_certificate" "new" {
     acme_certificate.new,
   ]
   count            = local.create
-  name_prefix      = local.content
+  name_prefix      = "${local.content}-"
   certificate_body = acme_certificate.new[0].certificate_pem
   private_key      = tls_private_key.cert_private_key[0].private_key_pem
   lifecycle {
@@ -151,9 +150,8 @@ data "aws_iam_server_certificate" "select" {
     tls_private_key.cert_private_key,
     tls_cert_request.req,
     acme_certificate.new,
-
   ]
   count       = local.select
-  name_prefix = local.content
+  name_prefix = "${local.content}-"
   latest      = true
 }

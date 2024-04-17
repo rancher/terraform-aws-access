@@ -7,7 +7,7 @@ variable "vpc_use_strategy" {
       'select' to use existing,
       or 'create' to generate new vpc resources.
     The default is 'create', which requires a vpc_name and vpc_cidr to be provided.
-    When selecting a vpc, the vpc_name must be provided and a vpc that has a tag "Name with the given name must exist.
+    When selecting a vpc, the vpc_name must be provided and a vpc that has a tag "Name" with the given name must exist.
     When skipping a vpc, the subnet, security group, and load balancer will also be skipped (automatically).
   EOT
   default     = "create"
@@ -109,8 +109,10 @@ variable "security_group_name" {
   type        = string
   description = <<-EOT
     The name of the ec2 security group to create or select.
-    This is required.
-    If you would like to create a security group please specify the type of security group you would like to create.
+    When choosing the "create" or "select" strategy, this is required.
+    When choosing the "skip" strategy, this is ignored.
+    When selecting a security group, the security_group_name must be provided and a security group with the given name must exist.
+    When creating a security group, the name will be used to tag the resource, and security_group_type is required.
     The types are located in modules/security_group/types.tf.
   EOT
   default     = ""
@@ -122,7 +124,7 @@ variable "security_group_type" {
     We provide opinionated options for the user to select from.
     Leave this blank if you would like to select a security group rather than generate one.
     The types are located in ./modules/security_group/types.tf.
-    If specified, must be one of: specific, internal, egress, or public.
+    If specified, must be one of: project, egress, or public.
   EOT
   default     = "project"
   validation {
@@ -160,13 +162,26 @@ variable "load_balancer_name" {
   default     = ""
 }
 variable "load_balancer_access_cidrs" {
-  type        = map(list(string))
+  type = map(object({
+    port     = number
+    cidrs    = list(string)
+    protocol = string
+  }))
   description = <<-EOT
-    A list of maps relating a port to a list of CIDRs that are allowed to access the load balancer external to the VPC.
-    If this is not provided, no IP addresses will be allowed to access the load balancer externally.
-    exmaple: [{"443" = ["1.1.1.1/32"]}] would allow IP address 1.1.1.1 to access the load balancer on port 443.
+    A map of access information objects.
+    The port is the port to expose on the load balancer.
+    The cidrs is a list of external cidr blocks to allow access to the load balancer.
+    The protocol is the network protocol to expose on, this can be 'udp' or 'tcp'.
+    Example:
+    {
+      test = {
+        port = 443
+        cidrs = ["1.1.1.1/32"]
+        protocol = "tcp"
+      }
+    }
   EOT
-  default     = {}
+  default     = null
 }
 
 # domain
@@ -179,6 +194,7 @@ variable "domain_use_strategy" {
       or 'create' to generate new domain resources.
     The default is 'create', which requires a domain name to be provided.
     When selecting a domain, the domain must be provided and a domain with the matching name must exist.
+    When adding a domain, it will be attached to all load balancer ports with a certificate for secure access.
   EOT
   default     = "create"
   validation {

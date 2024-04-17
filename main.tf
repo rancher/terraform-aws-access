@@ -123,7 +123,7 @@ module "network_load_balancer" {
   vpc_id            = module.vpc[0].id
   security_group_id = module.security_group[0].id
   subnet_ids        = [for subnet in module.subnet : subnet.id]
-  access_cidrs      = local.load_balancer_access_cidrs
+  access_info       = local.load_balancer_access_cidrs
 }
 
 module "domain" {

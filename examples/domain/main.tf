@@ -14,7 +14,8 @@ locals {
   identifier = var.identifier
   name       = "tf-${local.identifier}"
   owner      = "terraform-ci@suse.com"
-  domain     = "${local.identifier}-${var.domain}"
+  zone       = var.zone
+  domain     = "${local.identifier}.${local.zone}"
   #zone = var.domain_zone
 }
 # AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively)

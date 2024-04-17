@@ -14,7 +14,8 @@ provider "acme" {
 locals {
   identifier = var.identifier
   name       = "tf-${local.identifier}"
-  domain     = "${local.identifier}-${var.domain}"
+  zone       = var.zone
+  domain     = "${local.identifier}.${local.zone}"
 }
 
 module "setup" {
