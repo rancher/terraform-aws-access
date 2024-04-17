@@ -47,7 +47,7 @@ jobs:
         run: |
           for region in us-west-1 us-west-2 us-east-1 us-east-2; do
             echo "leftovers in $region:"
-            response="$(leftovers -d --iaas=aws --aws-region="$region" --filter="Owner:terraform-ci")"
+            response="$(leftovers -d --iaas=aws --aws-region="$region" --filter="Owner:terraform-ci" | grep -v 'AccessDenied')"
             if [ -n "$response" ]; then
               echo "found leftovers: "
               echo "$response"
