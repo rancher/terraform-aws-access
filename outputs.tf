@@ -98,6 +98,34 @@ output "load_balancer" {
   EOT
 }
 
+output "load_balancer_target_groups" {
+  value = (length(module.network_load_balancer) > 0 ? [
+    for k, v in module.network_load_balancer[0].target_groups :
+    {
+      id          = v.id
+      arn         = v.arn
+      name_prefix = v.name_prefix
+      port        = v.port
+      protocol    = v.protocol
+      tags_all    = v.tags_all
+    }
+    ] : [{
+      id          = ""
+      arn         = ""
+      name_prefix = ""
+      port        = ""
+      protocol    = ""
+      tags_all    = tomap({ "" = "" })
+    }
+    ]
+  )
+  description = <<-EOT
+    The load balancer target groups from AWS.
+    When generated, this can be helpful to set up indirect access to servers.
+    To attach servers, use the target_group_attachment resource.
+  EOT
+}
+
 output "domain" {
   value = (length(module.domain) > 0 ? {
     id      = module.domain[0].domain.id
