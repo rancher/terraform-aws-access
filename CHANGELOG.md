@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/rancher/terraform-aws-access/compare/v2.1.0...v2.1.1) (2024-04-18)
+
+
+### Bug Fixes
+
+* add target group output ([#66](https://github.com/rancher/terraform-aws-access/issues/66)) ([ec834f2](https://github.com/rancher/terraform-aws-access/commit/ec834f2db1245640ee0c4cdddab59ec7558c5b5b))
+
 ## [2.1.0](https://github.com/rancher/terraform-aws-access/compare/v2.0.0...v2.1.0) (2024-04-18)
 
 
