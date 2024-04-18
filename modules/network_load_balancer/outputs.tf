@@ -13,3 +13,6 @@ output "public_ip" {
 output "listeners" {
   value = (local.create == 1 ? aws_lb_listener.created : {})
 }
+output "target_groups" {
+  value = aws_lb_target_group.created
+}

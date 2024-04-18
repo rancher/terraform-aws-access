@@ -10,6 +10,9 @@ output "security_group" {
 output "load_balancer" {
   value = module.this.load_balancer
 }
+output "load_balancer_target_groups" {
+  value = module.this.load_balancer_target_groups
+}
 output "domain" {
   value = module.this.domain
 }
