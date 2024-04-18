@@ -20,6 +20,16 @@ Please remember that these are just my notes, make good decisions and evaluate y
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "Tags",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateTags",
+                "ec2:DeleteTags",
+                "ec2:DescribeTags"
+            ],
+            "Resource": "*"
+        },
+        {
             "Sid": "VPC",
             "Effect": "Allow",
             "Action": [
@@ -31,10 +41,7 @@ Please remember that these are just my notes, make good decisions and evaluate y
                 "ec2:MoveAddressToVpc",
                 "ec2:DisassociateVpcCidrBlock",
                 "ec2:AssociateVpcCidrBlock",
-                "ec2:CreateDefaultVpc",
-                "ec2:CreateTags",
-                "ec2:DeleteTags",
-                "ec2:DescribeTags"
+                "ec2:CreateDefaultVpc"
             ],
             "Resource": "*"
         },
@@ -46,10 +53,7 @@ Please remember that these are just my notes, make good decisions and evaluate y
                 "ec2:DeleteInternetGateway",
                 "ec2:AttachInternetGateway",
                 "ec2:DetachInternetGateway",
-                "ec2:DescribeInternetGateways",
-                "ec2:CreateTags",
-                "ec2:DeleteTags",
-                "ec2:DescribeTags"
+                "ec2:DescribeInternetGateways"
             ],
             "Resource": "*"
         },
@@ -65,10 +69,7 @@ Please remember that these are just my notes, make good decisions and evaluate y
                 "ec2:DisassociateRouteTable",
                 "ec2:ReplaceRoute",
                 "ec2:ReplaceRouteTableAssociation",
-                "ec2:AssociateRouteTable",
-                "ec2:CreateTags",
-                "ec2:DeleteTags",
-                "ec2:DescribeTags"
+                "ec2:AssociateRouteTable"
             ],
             "Resource": "*"
         },
@@ -86,10 +87,16 @@ Please remember that these are just my notes, make good decisions and evaluate y
                 "ec2:CreateDefaultSubnet",
                 "ec2:DeleteSubnet",
                 "ec2:DescribeSubnets",
-                "ec2:CreateTags",
-                "ec2:DeleteTags",
-                "ec2:DescribeTags",
-                "ec2:DescribeAvailabilityZones"
+                "ec2:DescribeAvailabilityZones",
+                "ec2:DescribeAddresses",
+                "ec2:DescribeAddressesAttribute",
+                "ec2:DescribeAddressTransfers",
+                "ec2:DescribeMovingAddresses",
+                "ec2:AllocateAddress",
+                "ec2:AssociateAddress",
+                "ec2:DisassociateAddress",
+                "ec2:ModifyAddressAttribute",
+                "ec2:ReleaseAddress"
             ],
             "Resource": "*"
         },
@@ -108,10 +115,7 @@ Please remember that these are just my notes, make good decisions and evaluate y
                 "ec2:RevokeSecurityGroupIngress",
                 "ec2:RevokeSecurityGroupEgress",
                 "ec2:UpdateSecurityGroupRuleDescriptionsEgress",
-                "ec2:UpdateSecurityGroupRuleDescriptionsIngress",
-                "ec2:CreateTags",
-                "ec2:DeleteTags",
-                "ec2:DescribeTags"
+                "ec2:UpdateSecurityGroupRuleDescriptionsIngress"
             ],
             "Resource": "*"
         },
@@ -122,10 +126,7 @@ Please remember that these are just my notes, make good decisions and evaluate y
                 "ec2:CreateKeyPair",
                 "ec2:DeleteKeyPair",
                 "ec2:DescribeKeyPairs",
-                "ec2:ImportKeyPair",
-                "ec2:CreateTags",
-                "ec2:DeleteTags",
-                "ec2:DescribeTags"
+                "ec2:ImportKeyPair"
             ],
             "Resource": "*"
         },
@@ -134,9 +135,6 @@ Please remember that these are just my notes, make good decisions and evaluate y
             "Effect": "Allow",
             "Action": [
                 "route53:GetChange",
-                "ec2:CreateTags",
-                "ec2:DeleteTags",
-                "ec2:DescribeTags",
                 "route53:GetHostedZone",
                 "route53:ListCidrBlocks",
                 "route53:ListHostedZones",
