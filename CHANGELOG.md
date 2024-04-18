@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.1.0](https://github.com/rancher/terraform-aws-access/compare/v2.0.0...v2.1.0) (2024-04-18)
+
+
+### Features
+
+* adding listeners and targets ([#53](https://github.com/rancher/terraform-aws-access/issues/53)) ([de2f8f0](https://github.com/rancher/terraform-aws-access/commit/de2f8f041d9026200b4bc51ac35b1396a85050d7))
+
+
+### Bug Fixes
+
+* add logging to leftovers ([#58](https://github.com/rancher/terraform-aws-access/issues/58)) ([10c947e](https://github.com/rancher/terraform-aws-access/commit/10c947e92cc6c6ed3e86122c3db0f5e13e9f8a5f))
+* add zone to keep variables ([#56](https://github.com/rancher/terraform-aws-access/issues/56)) ([1fb1460](https://github.com/rancher/terraform-aws-access/commit/1fb1460d35086760c85c0d81957dea0f0eaf0bf5))
+* add zone to release environment ([#55](https://github.com/rancher/terraform-aws-access/issues/55)) ([f0de2b1](https://github.com/rancher/terraform-aws-access/commit/f0de2b115bd883f00ee027a8fde7bac675e2f761))
+* added address policy ([#64](https://github.com/rancher/terraform-aws-access/issues/64)) ([7dff0e3](https://github.com/rancher/terraform-aws-access/commit/7dff0e3793b2e61d28e366b7a83a4678c63cea27))
+* adding more logging ([#62](https://github.com/rancher/terraform-aws-access/issues/62)) ([9ab4179](https://github.com/rancher/terraform-aws-access/commit/9ab417928daee16be9fc2721b6122b05521455b6))
+* adding notes about leftovers ([#65](https://github.com/rancher/terraform-aws-access/issues/65)) ([f997479](https://github.com/rancher/terraform-aws-access/commit/f9974795c8371c36893f490c67c4ae46cf018587))
+* also filter 404 and unauthorized ([#60](https://github.com/rancher/terraform-aws-access/issues/60)) ([e393cf4](https://github.com/rancher/terraform-aws-access/commit/e393cf40eadb00f7fd00eaff1b1c83f5f91cd7d3))
+* call leftovers before test ([#57](https://github.com/rancher/terraform-aws-access/issues/57)) ([42832e3](https://github.com/rancher/terraform-aws-access/commit/42832e37c6f7605c5c5bab17d260798c5cf2ab43))
+* filter access denied errors ([#59](https://github.com/rancher/terraform-aws-access/issues/59)) ([3fdbbf7](https://github.com/rancher/terraform-aws-access/commit/3fdbbf766224e5f13e8378adc5ae77b886f73b3a))
+* filter all 400 status codes ([#61](https://github.com/rancher/terraform-aws-access/issues/61)) ([f29e8b8](https://github.com/rancher/terraform-aws-access/commit/f29e8b870ca7ecc495bf55b77b4d6dce77d57f59))
+* resolve weird exit problems ([#63](https://github.com/rancher/terraform-aws-access/issues/63)) ([80f1d06](https://github.com/rancher/terraform-aws-access/commit/80f1d06898549f4c324c51c8d8301a6e864c9414))
+
 ## [2.0.0](https://github.com/rancher/terraform-aws-access/compare/v1.2.0...v2.0.0) (2024-04-06)
 
 
