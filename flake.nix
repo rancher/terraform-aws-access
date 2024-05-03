@@ -47,6 +47,7 @@
             name = "dev-shell-package";
             paths = with pkgs; [
               actionlint
+              aspell
               awscli
               bashInteractive
               curl
