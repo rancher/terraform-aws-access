@@ -86,7 +86,7 @@ module "subnet" {
   depends_on = [
     module.vpc,
   ]
-  for_each          = local.subnets
+  for_each          = (local.subnet_mod == 1 ? local.subnets : {})
   source            = "./modules/subnet"
   use               = local.subnet_use_strategy
   vpc_id            = module.vpc[0].id
