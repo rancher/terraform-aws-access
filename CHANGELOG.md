@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/rancher/terraform-aws-access/compare/v2.1.2...v2.1.3) (2024-05-03)
+
+
+### Bug Fixes
+
+* make subnet names static ([#71](https://github.com/rancher/terraform-aws-access/issues/71)) ([b256b55](https://github.com/rancher/terraform-aws-access/commit/b256b55fb6c3d262637f559fb097558c285f2b67))
+
 ## [2.1.2](https://github.com/rancher/terraform-aws-access/compare/v2.1.1...v2.1.2) (2024-05-03)
 
 
