@@ -47,7 +47,7 @@ locals {
   vpc_cidr = (var.vpc_cidr == "" ? "10.0.255.0/24" : var.vpc_cidr)
 
   # subnet
-  subnets                    = (local.subnet_mod == 1 ? var.subnets : {})
+  subnets                    = var.subnets
   subnet_names               = keys(local.subnets)
   subnet_count               = length(local.subnets)
   newbits                    = (local.subnet_count > 1 ? ceil(log(local.subnet_count, 2)) : 1)

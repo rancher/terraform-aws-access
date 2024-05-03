@@ -14,16 +14,9 @@ provider "acme" {
 locals {
   identifier   = var.identifier
   example      = "selectvpc"
-  project_name = "tf-${substr(md5(join("-", [local.example, random_pet.string.id])), 0, 5)}-${local.identifier}"
+  project_name = "tf-${substr(md5(join("-", [local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
   zone         = var.zone
   domain       = "${local.identifier}.${local.zone}"
-}
-resource "random_pet" "string" {
-  keepers = {
-    # regenerate the pet name when the identifier changes
-    identifier = local.identifier
-  }
-  length = 1
 }
 
 module "setup" {

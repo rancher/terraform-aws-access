@@ -1,5 +1,7 @@
 # Terraform AWS Access
 
+WARNING! The subnets argument must not be derived from an apply time resource.
+
 ## Recent Changes
 
 - Manage external access
