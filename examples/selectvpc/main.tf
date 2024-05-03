@@ -12,15 +12,23 @@ provider "acme" {
 }
 
 locals {
-  identifier = var.identifier
-  name       = "tf-${local.identifier}"
-  zone       = var.zone
-  domain     = "${local.identifier}.${local.zone}"
+  identifier   = var.identifier
+  example      = "selectvpc"
+  project_name = "tf-${substr(md5(join("-", [local.example, random_pet.string.id])), 0, 5)}-${local.identifier}"
+  zone         = var.zone
+  domain       = "${local.identifier}.${local.zone}"
+}
+resource "random_pet" "string" {
+  keepers = {
+    # regenerate the pet name when the identifier changes
+    identifier = local.identifier
+  }
+  length = 1
 }
 
 module "setup" {
   source              = "../../"
-  vpc_name            = local.name
+  vpc_name            = "${local.project_name}-vpc"
   vpc_cidr            = "10.0.255.0/24"
   subnet_use_strategy = "skip"
 }
@@ -32,8 +40,8 @@ module "this" {
   source              = "../../"
   vpc_use_strategy    = "select"
   vpc_name            = module.setup.vpc.tags.Name
-  security_group_name = local.name
+  security_group_name = "${local.project_name}-sg"
   security_group_type = "egress"
-  load_balancer_name  = local.name
+  load_balancer_name  = "${local.project_name}-lb"
   domain              = local.domain
 }

@@ -9,6 +9,10 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 5.11"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.1"
+    }
     acme = {
       source  = "vancluever/acme"
       version = ">= 2.0"
