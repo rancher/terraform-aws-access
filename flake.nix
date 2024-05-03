@@ -46,30 +46,32 @@
           devShellPackage = pkgs.symlinkJoin {
             name = "dev-shell-package";
             paths = with pkgs; [
-              actionlint
-              aspell
-              awscli
-              bashInteractive
-              curl
-              dig
-              gh
-              git
-              gitleaks
-              gnupg
-              go
-              gotestfmt
-              gotestsum
-              jq
-              leftovers
-              less
-              openssh
-              shellcheck
-              tflint
-              tfsec
-              tfswitch
-              updatecli
-              vim
-              which
+            act # run workflows locally with Docker
+            actionlint
+            age
+            aspellWithDicts
+            bashInteractive
+            curl
+            dig
+            docker
+            gh
+            git
+            gitleaks
+            gnupg
+            go
+            jq
+            kubectl
+            lego
+            less
+            ncurses
+            openssh_hpn
+            shellcheck
+            tflint
+            tfswitch
+            tree # for easily finding files in this directory structure and helping generate docs
+            vim # for easily editing files that are not in this directory structure
+            which
+            xterm
             ];
           };
         in
