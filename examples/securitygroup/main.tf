@@ -11,15 +11,23 @@ provider "acme" {
   server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
 locals {
-  identifier = var.identifier
-  name       = "tf-${local.identifier}"
+  identifier   = var.identifier
+  example      = "securitygroup"
+  project_name = "tf-${substr(md5(join("-", [local.example, random_pet.string.id])), 0, 5)}-${local.identifier}"
+}
+resource "random_pet" "string" {
+  keepers = {
+    # regenerate the pet name when the identifier changes
+    identifier = local.identifier
+  }
+  length = 1
 }
 # AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively)
 module "this" {
   source                     = "../../"
-  vpc_name                   = local.name
+  vpc_name                   = "${local.project_name}-vpc"
   vpc_cidr                   = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
-  security_group_name        = local.name
+  security_group_name        = "${local.project_name}-sg"
   security_group_type        = "project"
   load_balancer_use_strategy = "skip" # everything depending on load balancer is skipped implicitly
 }
