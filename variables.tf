@@ -79,6 +79,7 @@ variable "subnets" {
      - The cidr will be generated based on the VPC's cidr and the number of subnets you are creating.
      - The public flag will be set to false.
     If you are expecting high availability, make sure there are at least three availability zones in the region you are deploying to.
+    WARNING! The key for this argument must not be derived from a resource, it must be static.
   EOT
   default = { "default" = {
     cidr              = "", # will be generated based on the vpc cidr

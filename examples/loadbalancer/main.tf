@@ -13,15 +13,9 @@ provider "acme" {
 locals {
   identifier   = var.identifier
   example      = "loadbalancer"
-  project_name = "tf-${substr(md5(join("-", [local.example, random_pet.string.id])), 0, 5)}-${local.identifier}"
+  project_name = "tf-${substr(md5(join("-", [local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
 }
-resource "random_pet" "string" {
-  keepers = {
-    # regenerate the pet name when the identifier changes
-    identifier = local.identifier
-  }
-  length = 1
-}
+
 # AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively)
 module "this" {
   source              = "../../"
