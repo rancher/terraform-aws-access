@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.2](https://github.com/rancher/terraform-aws-access/compare/v2.1.1...v2.1.2) (2024-05-03)
+
+
+### Bug Fixes
+
+* add more random names ([#70](https://github.com/rancher/terraform-aws-access/issues/70)) ([403f630](https://github.com/rancher/terraform-aws-access/commit/403f6309ef5f03b5f3530c0c6af01c250f7e270a))
+* minor fix and nix ([#68](https://github.com/rancher/terraform-aws-access/issues/68)) ([261177a](https://github.com/rancher/terraform-aws-access/commit/261177ad4c102b6787facc3333037099528ad8ba))
+
 ## [2.1.1](https://github.com/rancher/terraform-aws-access/compare/v2.1.0...v2.1.1) (2024-04-18)
 
 
