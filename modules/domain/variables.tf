@@ -10,6 +10,17 @@ variable "use" {
   EOT
 }
 
+variable "cert_use_strategy" {
+  type        = string
+  description = <<-EOT
+    Strategy for using cert resource:
+      'skip' to not create a certificate,
+      'select' to use existing,
+      or 'create' to generate new resource.
+    The default is 'skip'.
+  EOT
+}
+
 variable "content" {
   type        = string
   description = <<-EOT
@@ -24,16 +35,6 @@ variable "ip" {
   description = <<-EOT
     The ip address to attach to the domain.
     When selecting a domain we won't generate any domain objects, we won't create a cert.
-  EOT
-  default     = ""
-}
-
-variable "zone" {
-  type        = string
-  description = <<-EOT
-    The domain zone to use for the domain record.
-    eg. example.com for domain 'test.example.com'
-    Only specify when creating a new zone.
   EOT
   default     = ""
 }

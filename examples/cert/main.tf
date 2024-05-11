@@ -28,4 +28,5 @@ module "this" {
   security_group_type = "project"
   load_balancer_name  = "${local.project_name}-lb"
   domain              = local.domain
+  cert_use_strategy   = "create"
 }
