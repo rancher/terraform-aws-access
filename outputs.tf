@@ -149,7 +149,7 @@ output "domain" {
 }
 
 output "certificate" {
-  value = (length(module.domain) > 0 ? {
+  value = ((length(module.domain) > 0) ? {
     id          = module.domain[0].certificate.id
     arn         = module.domain[0].certificate.arn
     name        = module.domain[0].certificate.name
