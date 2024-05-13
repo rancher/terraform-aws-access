@@ -4,6 +4,10 @@ WARNING! The subnets argument must not be derived from an apply time resource.
 
 ## Recent Changes
 
+- Optional Certificate generation
+  If you would like to terminate TLS on your server this module can generate a real Let's encrypt certificate for you.
+  This is done using the `cert_use_strategy` argument, it is set to 'skip' by default, but if you set it to `create` it will create a new certificate for you. It saves the cert in an IAM object and then use that as the source of truth for the cert.
+
 - Manage external access
 
   You can now add ingress from external addresses by cidr and port.
