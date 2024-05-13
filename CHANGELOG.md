@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/rancher/terraform-aws-access/compare/v2.1.3...v2.2.0) (2024-05-13)
+
+
+### Features
+
+* certificate controls ([#73](https://github.com/rancher/terraform-aws-access/issues/73)) ([35e62ca](https://github.com/rancher/terraform-aws-access/commit/35e62ca5998cd72ae5c1f24c04fcb6ffaae847c9))
+
+
+### Bug Fixes
+
+* update recent changes ([#75](https://github.com/rancher/terraform-aws-access/issues/75)) ([73495f2](https://github.com/rancher/terraform-aws-access/commit/73495f29ffd42ddf0377c52b1c7621974645e473))
+
 ## [2.1.3](https://github.com/rancher/terraform-aws-access/compare/v2.1.2...v2.1.3) (2024-05-03)
 
 
