@@ -2,7 +2,7 @@ locals {
   use      = var.use
   cert_use = var.cert_use_strategy
   content  = lower(var.content)
-  ip       = var.ip
+  ips      = var.ips
 
   content_parts = split(".", local.content)
   top_level_domain = join(".", [
@@ -48,7 +48,7 @@ resource "aws_route53_record" "new" {
   name    = local.content
   type    = "A"
   ttl     = 30
-  records = [local.ip]
+  records = local.ips
 }
 
 # cert generation

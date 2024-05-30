@@ -44,7 +44,7 @@ locals {
 
   # vpc
   vpc_name = var.vpc_name
-  vpc_cidr = (var.vpc_cidr == "" ? "10.0.255.0/24" : var.vpc_cidr)
+  vpc_cidr = var.vpc_cidr
 
   # subnet
   subnets                    = var.subnets
@@ -122,7 +122,7 @@ module "network_load_balancer" {
   name              = local.load_balancer_name
   vpc_id            = module.vpc[0].id
   security_group_id = module.security_group[0].id
-  subnet_ids        = [for subnet in module.subnet : subnet.id]
+  subnets           = { for s in keys(local.subnets) : s => { id = module.subnet[s].id, cidr = module.subnet[s].cidr } }
   access_info       = local.load_balancer_access_cidrs
 }
 
@@ -138,5 +138,5 @@ module "domain" {
   use               = local.domain_use_strategy
   cert_use_strategy = local.cert_use_strategy
   content           = lower(local.domain)
-  ip                = module.network_load_balancer[0].public_ip
+  ips               = module.network_load_balancer[0].public_ips
 }
