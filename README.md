@@ -4,6 +4,14 @@ WARNING! The subnets argument must not be derived from an apply time resource.
 
 ## Recent Changes
 
+- Private IP address for load balancer
+  Along with assigning an EIP for public access we now also attach a provate ip address to the load balancer.
+  The last available IP address in the subnet is used.
+  This helps avoid IP address conflicts with instances in the subnet.
+  We now provision a subnet mapping for every subnet, and an elastic IP for each mapping.
+  We then assign all the EIPs to the domain.
+  This enables cross-zone load balancing with DNS round robin while also supplying a specific IP to each AZ.
+
 - Optional Certificate generation
   If you would like to terminate TLS on your server this module can generate a real Let's encrypt certificate for you.
   This is done using the `cert_use_strategy` argument, it is set to 'skip' by default, but if you set it to `create` it will create a new certificate for you. It saves the cert in an IAM object and then use that as the source of truth for the cert.
