@@ -30,11 +30,11 @@ variable "content" {
   EOT
 }
 
-variable "ip" {
-  type        = string
+variable "ips" {
+  type        = list(string)
   description = <<-EOT
-    The ip address to attach to the domain.
-    When selecting a domain we won't generate any domain objects, we won't create a cert.
+    The ip addresses to attach to the domain.
+    When selecting a domain we won't generate any domain objects and we won't create a cert.
   EOT
-  default     = ""
+  default     = []
 }

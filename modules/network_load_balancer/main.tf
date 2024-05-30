@@ -3,12 +3,12 @@ locals {
   name              = var.name
   vpc_id            = var.vpc_id
   security_group_id = var.security_group_id
-  subnet_ids        = var.subnet_ids
+  subnets           = var.subnets
   access_info       = (var.access_info == null ? {} : var.access_info)
   create            = (local.use == "create" ? 1 : 0)
   select            = (local.use == "select" ? 1 : 0)
-  eip               = (local.select == 1 ? data.aws_eip.selected[0] : aws_eip.created[0])
-  public_ip         = (local.select == 1 ? data.aws_eip.selected[0].public_ip : aws_eip.created[0].public_ip)
+  eips              = (local.select == 1 ? data.aws_eip.selected : aws_eip.created)
+  public_ips        = (local.select == 1 ? [for e in data.aws_eip.selected : e.public_ip if can(e.public_ip)] : [for e in aws_eip.created : e.public_ip if can(e.public_ip)])
 }
 
 data "aws_lb" "selected" {
@@ -19,21 +19,25 @@ data "aws_lb" "selected" {
 }
 
 data "aws_eip" "selected" {
-  count = local.select
+  for_each = (local.select == 1 ? local.subnets : {})
   filter {
-    name   = "description"
-    values = ["ELB net/${data.aws_lb.selected[0].name}/*"]
+    name   = "name"
+    values = [local.name]
   }
 }
 
 resource "aws_eip" "created" {
-  count  = local.create
-  domain = "vpc"
+  for_each                  = (local.create == 1 ? local.subnets : {})
+  domain                    = "vpc"
+  associate_with_private_ip = cidrhost(each.value.cidr, -2) # map the eip to the last available ip of the private subnet
+  tags = {
+    Name = local.name
+  }
 }
 
 resource "aws_security_group" "load_balancer" {
   count       = local.create
-  name        = "${local.name}-lb"
+  name        = local.name
   description = "Security group for load balancer ${local.name}"
   vpc_id      = local.vpc_id
   tags = {
@@ -52,16 +56,17 @@ resource "aws_security_group_rule" "external_ingress" {
 }
 
 resource "aws_lb" "new" {
-  count              = local.create
-  name               = local.name
-  internal           = false
-  load_balancer_type = "network"
-  security_groups    = [local.security_group_id]
+  count                            = local.create
+  name                             = local.name
+  internal                         = false
+  load_balancer_type               = "network"
+  security_groups                  = [local.security_group_id]
+  enable_cross_zone_load_balancing = true
   dynamic "subnet_mapping" {
-    for_each = toset(local.subnet_ids)
+    for_each = local.subnets
     content {
-      subnet_id     = subnet_mapping.key
-      allocation_id = local.eip.id
+      subnet_id     = subnet_mapping.value.id
+      allocation_id = local.eips[subnet_mapping.key].id
     }
   }
   tags = {

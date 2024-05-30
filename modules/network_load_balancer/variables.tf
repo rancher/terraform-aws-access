@@ -30,12 +30,20 @@ variable "security_group_id" {
   EOT
   default     = ""
 }
-variable "subnet_ids" {
-  type        = list(string)
+variable "subnets" {
+  type = map(object({
+    id   = string
+    cidr = string
+  }))
   description = <<-EOT
-    The subnet ids to attach to the Load Balancer.
+    Map of subnets to attach to the Load Balancer.
   EOT
-  default     = []
+  default = {
+    "dummy" = {
+      id   = ""
+      cidr = ""
+    }
+  }
 }
 variable "access_info" {
   type = map(object({

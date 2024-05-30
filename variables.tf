@@ -32,7 +32,7 @@ variable "vpc_cidr" {
     If you attempt to generate a VPC that has no usable addresses you will get an "invalid CIDR" error from AWS.
     If you attempt to generate a subnet that uses one of the addresses reserved by AWS in the VPC's CIDR, you will get an "invalid CIDR" error from AWS.
   EOT
-  default     = ""
+  default     = "10.0.0.0/16"
 }
 
 # subnet

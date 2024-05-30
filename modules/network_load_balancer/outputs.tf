@@ -7,8 +7,8 @@ output "dns_name" {
 output "load_balancer" {
   value = (local.select == 1 ? data.aws_lb.selected[0] : aws_lb.new[0])
 }
-output "public_ip" {
-  value = local.public_ip
+output "public_ips" {
+  value = local.public_ips
 }
 output "listeners" {
   value = (local.create == 1 ? aws_lb_listener.created : {})
