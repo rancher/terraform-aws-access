@@ -47,11 +47,18 @@ locals {
   vpc_cidr = var.vpc_cidr
 
   # subnet
-  subnets                    = var.subnets
-  subnet_names               = keys(local.subnets)
-  subnet_count               = length(local.subnets)
-  newbits                    = (local.subnet_count > 1 ? ceil(log(local.subnet_count, 2)) : 1)
-  vpc_cidr_split             = [for i in range(local.subnet_count) : cidrsubnet(local.vpc_cidr, local.newbits, i)]
+  subnets      = var.subnets
+  subnet_names = keys(local.subnets)
+  subnet_count = length(local.subnets)
+  newbits      = (local.subnet_count > 1 ? ceil(log(local.subnet_count, 2)) : 1)
+  vpc_cidr_split = [
+    for i in range(local.subnet_count) :
+    cidrsubnet(
+      (local.vpc_mod == 1 ? module.vpc[0].cidr : local.vpc_cidr),
+      local.newbits,
+      i
+    )
+  ]
   potential_regional_subnets = { for i in range(local.subnet_count) : local.subnet_names[i] => local.vpc_cidr_split[i] }
 
   zones                  = tolist(data.aws_availability_zones.available.names)
