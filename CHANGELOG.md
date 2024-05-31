@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.1](https://github.com/rancher/terraform-aws-access/compare/v2.2.0...v2.2.1) (2024-05-31)
+
+
+### Bug Fixes
+
+* add and use address block for network ([#79](https://github.com/rancher/terraform-aws-access/issues/79)) ([0bb30b9](https://github.com/rancher/terraform-aws-access/commit/0bb30b966eccd8deb593087408f0df90f932273e))
+* add notes for latest release ([#78](https://github.com/rancher/terraform-aws-access/issues/78)) ([e6c4380](https://github.com/rancher/terraform-aws-access/commit/e6c4380759ea185b5995f4c6f1aa7afab174f387))
+* add private address ([#76](https://github.com/rancher/terraform-aws-access/issues/76)) ([6bb4328](https://github.com/rancher/terraform-aws-access/commit/6bb4328c5cf232d3b22f3e0489bb86a53fd2888b))
+
 ## [2.2.0](https://github.com/rancher/terraform-aws-access/compare/v2.1.3...v2.2.0) (2024-05-13)
 
 
