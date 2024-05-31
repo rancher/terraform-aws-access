@@ -22,7 +22,7 @@ locals {
 module "setup" {
   source              = "../../"
   vpc_name            = "${local.project_name}-vpc"
-  vpc_cidr            = "10.0.255.0/24"
+  vpc_cidr            = "10.0.0.0/16"
   subnet_use_strategy = "skip"
 }
 
