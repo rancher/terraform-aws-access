@@ -75,15 +75,15 @@
             which
           ];
 
-          # envPackage = pkgs.buildEnv {
-          #   name = "environment";
-          #   paths = tools;
-          # };
+          envPackage = pkgs.buildEnv {
+            name = "environment";
+            paths = tools;
+          };
         in
         {
-          #packages.default = envPackage;
+          packages.default = envPackage;
           devShells.default = pkgs.mkShell {
-            buildInputs = tools;
+            buildInputs = [ envPackage ];
             shellHook = ''
               homebin=$HOME/bin;
               install -d $homebin;
