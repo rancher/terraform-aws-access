@@ -73,9 +73,7 @@ jobs:
           ZONE: ${{secrets.ZONE}}
         run: |
           go version
-          cd ${{github.workspace}}/tests
-          go test -v -timeout=60m -parallel=10
-          cd ${{github.workspace}}
+          ./run_tests.sh
       - uses: peter-evans/create-or-update-comment@v4
         name: 'Report Success'
         if: steps.release-please.outputs.pr
