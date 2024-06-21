@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.0.0](https://github.com/rancher/terraform-aws-access/compare/v2.2.1...v3.0.0) (2024-06-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* enable dual stack and version 6 addresses ([#80](https://github.com/rancher/terraform-aws-access/issues/80))
+
+### Features
+
+* enable dual stack and version 6 addresses ([#80](https://github.com/rancher/terraform-aws-access/issues/80)) ([ad57058](https://github.com/rancher/terraform-aws-access/commit/ad570588bead0a49c2bda8755ca3052236e4f0e6))
+
+
+### Bug Fixes
+
+* move cleanup to script for maintainability ([#84](https://github.com/rancher/terraform-aws-access/issues/84)) ([cee0d48](https://github.com/rancher/terraform-aws-access/commit/cee0d480b66e26991c407bea0ef181aa94d3f189))
+* remove build result ([#82](https://github.com/rancher/terraform-aws-access/issues/82)) ([71ceb48](https://github.com/rancher/terraform-aws-access/commit/71ceb486c5542e2626d161e875489fa659956924))
+* specifying sub network is no longer allowed ([#83](https://github.com/rancher/terraform-aws-access/issues/83)) ([c33d71e](https://github.com/rancher/terraform-aws-access/commit/c33d71ee1066b607c071747b83361f878e00bf4e))
+
 ## [2.2.1](https://github.com/rancher/terraform-aws-access/compare/v2.2.0...v2.2.1) (2024-05-31)
 
 
