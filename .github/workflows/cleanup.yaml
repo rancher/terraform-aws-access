@@ -14,6 +14,8 @@ env:
   AWS_REGION: us-west-1
   AWS_ROLE: arn:aws:iam::270074865685:role/terraform-module-ci-test
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  API_URL: ${{github.api_url}}
+  REPO: ${{github.repository}}
 
 jobs:
   leftovers:
@@ -25,18 +27,10 @@ jobs:
       - uses: matttrach/nix-installer-action@main
       - name: Get Ids
         id: get_ids
-        shell: nix develop --ignore-environment --extra-experimental-features nix-command --extra-experimental-features flakes --keep HOME --keep SSH_AUTH_SOCK --keep GITHUB_TOKEN --keep AWS_ROLE --keep AWS_REGION --keep AWS_DEFAULT_REGION --keep AWS_ACCESS_KEY_ID --keep AWS_SECRET_ACCESS_KEY --keep AWS_SESSION_TOKEN --keep UPDATECLI_GPGTOKEN --keep UPDATECLI_GITHUB_TOKEN --keep UPDATECLI_GITHUB_ACTOR --keep GPG_SIGNING_KEY --keep NIX_ENV_LOADED --keep TERM --command bash -e {0}
+        shell: nix develop --ignore-environment --extra-experimental-features nix-command --extra-experimental-features flakes --keep HOME --keep SSH_AUTH_SOCK --keep GITHUB_TOKEN --keep API_URL --keep REPO --keep AWS_ROLE --keep AWS_REGION --keep AWS_DEFAULT_REGION --keep AWS_ACCESS_KEY_ID --keep AWS_SECRET_ACCESS_KEY --keep AWS_SESSION_TOKEN --keep UPDATECLI_GPGTOKEN --keep UPDATECLI_GITHUB_TOKEN --keep UPDATECLI_GITHUB_ACTOR --keep GPG_SIGNING_KEY --keep NIX_ENV_LOADED --keep TERM --command bash -e {0}
         # 86400 = 24 hours in seconds (24 * 60 * 60)
         # you might increase this number if you need to look back further for leftovers
-        run: |
-          DATA="$( \
-            curl -s \
-              --header 'Authorization: Bearer ${{secrets.GITHUB_TOKEN}}' \
-              '${{github.api_url}}/repos/${{github.repository}}/actions/runs' \
-            | jq -r '.workflow_runs[] | select(.created_at > (now - 86400)) | select(.status != "in_progress") | select((.name |= ascii_downcase | .name) == "release") | "\((.name |= ascii_downcase | .name))-\(.id)-\(.run_number)-\(.run_attempt)"' \
-            | jq -R -s -c 'split("\n")[:-1]' \
-          )"
-          echo ids="$DATA" >> "$GITHUB_OUTPUT"
+        run: ./get_ids.sh
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{env.AWS_ROLE}}
