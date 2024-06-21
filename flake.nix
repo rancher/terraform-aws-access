@@ -44,48 +44,46 @@
           };
           aspellWithDicts = pkgs.aspellWithDicts (d: [d.en d.en-computers]);
 
-          devShellPackage = pkgs.symlinkJoin {
-            name = "dev-shell-package";
-            paths = with pkgs; [
-              act
-              actionlint
-              age
-              aspellWithDicts
-              awscli
-              bashInteractive
-              curl
-              dig
-              docker
-              gh
-              git
-              gitleaks
-              gnupg
-              go
-              gotestfmt
-              gotestsum
-              jq
-              kubectl
-              leftovers
-              less
-              ncurses
-              openssh_hpn
-              shellcheck
-              tflint
-              tfsec
-              tfswitch
-              updatecli
-              vim
-              which
-              xterm
-            ];
-          };
+          tools = with pkgs; [
+            actionlint
+            age
+            aspellWithDicts
+            awscli2
+            bashInteractive
+            curl
+            dig
+            docker
+            gh
+            git
+            gitleaks
+            gnupg
+            go
+            gotestfmt
+            gotestsum
+            jq
+            kubectl
+            leftovers
+            less
+            ncurses
+            openssh
+            shellcheck
+            tflint
+            tfsec
+            tfswitch
+            updatecli
+            vim
+            which
+          ];
 
+          envPackage = pkgs.buildEnv {
+            name = "environment";
+            paths = tools;
+          };
         in
         {
-          packages.default = devShellPackage;
-
+          packages.default = envPackage;
           devShells.default = pkgs.mkShell {
-            buildInputs = [ devShellPackage ];
+            buildInputs = [ envPackage ];
             shellHook = ''
               homebin=$HOME/bin;
               install -d $homebin;

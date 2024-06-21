@@ -1,47 +1,29 @@
 output "vpc" {
-  value = (length(module.vpc) > 0 ? {
-    id                  = module.vpc[0].vpc.id
-    arn                 = module.vpc[0].vpc.arn
-    cidr_block          = module.vpc[0].vpc.cidr_block
-    ipv6_cidr_block     = module.vpc[0].vpc.ipv6_cidr_block
-    main_route_table_id = module.vpc[0].vpc.main_route_table_id
-    tags                = module.vpc[0].vpc.tags
-    } : {
-    id                  = ""
-    arn                 = ""
-    cidr_block          = ""
-    ipv6_cidr_block     = ""
-    main_route_table_id = ""
-    tags                = tomap({ "" = "" })
-  })
+  value = {
+    id                  = can(module.vpc[0].id) ? module.vpc[0].id : ""
+    arn                 = can(module.vpc[0].arn) ? module.vpc[0].arn : ""
+    cidr_block          = can(module.vpc[0].cidr_block) ? module.vpc[0].cidr_block : ""
+    ipv6_cidr_block     = can(module.vpc[0].ipv6_cidr_block) ? module.vpc[0].ipv6_cidr_block : ""
+    main_route_table_id = can(module.vpc[0].main_route_table_id) ? module.vpc[0].main_route_table_id : ""
+    tags                = can(module.vpc[0].tags) ? module.vpc[0].tags : tomap({ "" = "" })
+  }
   description = <<-EOT
     The VPC object from AWS.
   EOT
 }
 
 output "subnets" {
-  value = (length(module.subnet) > 0 ? {
-    for subnet in module.subnet : subnet.subnet.tags.Name => {
-      id                   = subnet.subnet.id
-      arn                  = subnet.subnet.arn
-      availability_zone    = subnet.subnet.availability_zone
-      availability_zone_id = subnet.subnet.availability_zone_id
-      cidr_block           = subnet.subnet.cidr_block
-      ipv6_cidr_block      = subnet.subnet.ipv6_cidr_block
-      vpc_id               = subnet.subnet.vpc_id
-      tags_all             = subnet.subnet.tags_all
+  value = { for subnet in module.subnet :
+    subnet.name => {
+      id                   = (can(module.subnet[subnet.name].id) ? module.subnet[subnet.name].id : "")
+      arn                  = (can(module.subnet[subnet.name].arn) ? module.subnet[subnet.name].arn : "")
+      availability_zone    = (can(module.subnet[subnet.name].availability_zone) ? module.subnet[subnet.name].availability_zone : "")
+      availability_zone_id = (can(module.subnet[subnet.name].availability_zone_id) ? module.subnet[subnet.name].availability_zone_id : "")
+      cidr                 = (can(module.subnet[subnet.name].cidr) ? module.subnet[subnet.name].cidr : "")
+      vpc_id               = (can(module.vpc[0].id) ? module.vpc[0].id : "")
+      tags                 = (can(module.subnet[subnet.name].tags) ? module.subnet[subnet.name].tags : tomap({ "" = "" }))
     }
-    } : { "empty" = {
-      id                   = ""
-      arn                  = ""
-      availability_zone    = ""
-      availability_zone_id = ""
-      cidr_block           = ""
-      ipv6_cidr_block      = ""
-      vpc_id               = ""
-      tags_all             = tomap({ "" = "" })
-    }
-  })
+  }
   description = <<-EOT
     The subnet objects from AWS.
     This can be used to provision ec2 instances.
@@ -49,20 +31,13 @@ output "subnets" {
 }
 
 output "security_group" {
-  value = (length(module.security_group) > 0 ? {
-    id       = module.security_group[0].security_group.id
-    arn      = module.security_group[0].security_group.arn
-    name     = module.security_group[0].security_group.name
-    vpc_id   = module.security_group[0].security_group.vpc_id
-    tags_all = module.security_group[0].security_group.tags_all
-    } : {
-    # no object found, but output types are normal
-    id       = ""
-    arn      = ""
-    name     = ""
-    vpc_id   = ""
-    tags_all = tomap({ "" = "" })
-  })
+  value = {
+    id       = can(module.project_security_group[0].security_group.id) ? module.project_security_group[0].security_group.id : ""
+    arn      = can(module.project_security_group[0].security_group.arn) ? module.project_security_group[0].security_group.arn : ""
+    name     = can(module.project_security_group[0].security_group.name) ? module.project_security_group[0].security_group.name : ""
+    vpc_id   = can(module.project_security_group[0].security_group.vpc_id) ? module.project_security_group[0].security_group.vpc_id : ""
+    tags_all = can(module.project_security_group[0].security_group.tags_all) ? module.project_security_group[0].security_group.tags_all : tomap({ "" = "" })
+  }
   description = <<-EOT
     The security group object from AWS.
     This is the project level security group,
@@ -72,24 +47,15 @@ output "security_group" {
 }
 
 output "load_balancer" {
-  value = (length(module.network_load_balancer) > 0 ? {
-    id              = module.network_load_balancer[0].load_balancer.id
-    arn             = module.network_load_balancer[0].load_balancer.arn
-    dns_name        = module.network_load_balancer[0].load_balancer.dns_name
-    zone_id         = module.network_load_balancer[0].load_balancer.zone_id
-    security_groups = module.network_load_balancer[0].load_balancer.security_groups
-    subnets         = module.network_load_balancer[0].load_balancer.subnets
-    tags_all        = module.network_load_balancer[0].load_balancer.tags_all
-    } : {
-    # no object found, but output types are normal
-    id              = ""
-    arn             = ""
-    dns_name        = ""
-    zone_id         = ""
-    security_groups = []
-    subnets         = []
-    tags_all        = tomap({ "" = "" })
-  })
+  value = {
+    id              = can(module.network_load_balancer[0].load_balancer.id) ? module.network_load_balancer[0].load_balancer.id : ""
+    arn             = can(module.network_load_balancer[0].load_balancer.arn) ? module.network_load_balancer[0].load_balancer.arn : ""
+    dns_name        = can(module.network_load_balancer[0].load_balancer.dns_name) ? module.network_load_balancer[0].load_balancer.dns_name : ""
+    zone_id         = can(module.network_load_balancer[0].load_balancer.zone_id) ? module.network_load_balancer[0].load_balancer.zone_id : ""
+    security_groups = can(module.network_load_balancer[0].load_balancer.security_groups) ? module.network_load_balancer[0].load_balancer.security_groups : []
+    subnets         = can(module.network_load_balancer[0].load_balancer.subnets) ? module.network_load_balancer[0].load_balancer.subnets : []
+    tags_all        = can(module.network_load_balancer[0].load_balancer.tags_all) ? module.network_load_balancer[0].load_balancer.tags_all : tomap({ "" = "" })
+  }
   description = <<-EOT
     The load balancer object from AWS.
     When generated, this can be helpful to set up indirect access to servers.
@@ -99,26 +65,16 @@ output "load_balancer" {
 }
 
 output "load_balancer_target_groups" {
-  value = (length(module.network_load_balancer) > 0 ? [
-    for k, v in module.network_load_balancer[0].target_groups :
+  value = [for i in range(length((can(module.network_load_balancer[0].target_groups) ? module.network_load_balancer[0].target_groups : {}))) :
     {
-      id          = v.id
-      arn         = v.arn
-      name_prefix = v.name_prefix
-      port        = v.port
-      protocol    = v.protocol
-      tags_all    = v.tags_all
+      id       = (can(module.network_load_balancer[0].target_groups[i].id) ? module.network_load_balancer[0].target_groups[i].id : "")
+      arn      = (can(module.network_load_balancer[0].target_groups[i].arn) ? module.network_load_balancer[0].target_groups[i].arn : "")
+      name     = (can(module.network_load_balancer[0].target_groups[i].name) ? module.network_load_balancer[0].target_groups[i].name : "")
+      port     = (can(module.network_load_balancer[0].target_groups[i].port) ? module.network_load_balancer[0].target_groups[i].port : "")
+      protocol = (can(module.network_load_balancer[0].target_groups[i].protocol) ? module.network_load_balancer[0].target_groups[i].protocol : "")
+      tags_all = (can(module.network_load_balancer[0].target_groups[i].tags_all) ? module.network_load_balancer[0].target_groups[i].tags_all : tomap({ "" = "" }))
     }
-    ] : [{
-      id          = ""
-      arn         = ""
-      name_prefix = ""
-      port        = ""
-      protocol    = ""
-      tags_all    = tomap({ "" = "" })
-    }
-    ]
-  )
+  ]
   description = <<-EOT
     The load balancer target groups from AWS.
     When generated, this can be helpful to set up indirect access to servers.
@@ -127,20 +83,13 @@ output "load_balancer_target_groups" {
 }
 
 output "domain" {
-  value = (length(module.domain) > 0 ? {
-    id      = module.domain[0].domain.id
-    name    = module.domain[0].domain.name
-    zone_id = module.domain[0].domain.zone_id
-    type    = module.domain[0].domain.type
-    records = module.domain[0].domain.records
-    } : {
-    # no object found, but output types are normal
-    id      = ""
-    name    = ""
-    zone_id = ""
-    type    = ""
-    records = []
-  })
+  value = {
+    id      = (can(module.domain[0].domain.id) ? module.domain[0].domain.id : "")
+    name    = (can(module.domain[0].domain.name) ? module.domain[0].domain.name : "")
+    zone_id = (can(module.domain[0].domain.zone_id) ? module.domain[0].domain.zone_id : "")
+    type    = (can(module.domain[0].domain.type) ? module.domain[0].domain.type : "")
+    records = (can(module.domain[0].domain.records) ? module.domain[0].domain.records : [])
+  }
   description = <<-EOT
     The domain object from AWS.
     When generated, the domain is applied to the EIP created with the load balancer.

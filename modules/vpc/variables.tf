@@ -14,10 +14,9 @@ variable "name" {
     When generating a VPC, this will be added as a tag to the resource.
   EOT
 }
-variable "cidr" {
+variable "type" {
   type        = string
   description = <<-EOT
-    The cidr for the VPC to create.
-    This is not required when selecting an existing VPC.
+    Must be 'ipv4', 'dualstack', or 'ipv6'.
   EOT
 }

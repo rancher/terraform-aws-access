@@ -2,6 +2,7 @@ locals {
   use               = var.use
   name              = var.name
   vpc_id            = var.vpc_id
+  vpc_type          = var.vpc_type
   security_group_id = var.security_group_id
   subnets           = var.subnets
   access_info       = (var.access_info == null ? {} : var.access_info)
@@ -22,16 +23,19 @@ data "aws_eip" "selected" {
   for_each = (local.select == 1 ? local.subnets : {})
   filter {
     name   = "name"
-    values = [local.name]
+    values = [each.value.name]
   }
 }
 
 resource "aws_eip" "created" {
-  for_each                  = (local.create == 1 ? local.subnets : {})
-  domain                    = "vpc"
-  associate_with_private_ip = cidrhost(each.value.cidr, -2) # map the eip to the last available ip of the private subnet
+  for_each = (local.create == 1 ? local.subnets : {})
+  domain   = "vpc"
+  associate_with_private_ip = ((local.vpc_type == "ipv4" || local.vpc_type == "dualstack") ?
+    (each.value.cidrs.ipv4 != null ? cidrhost(each.value.cidrs.ipv4, -2) : "") :
+    (each.value.cidrs.ipv6 != null ? cidrhost(each.value.cidrs.ipv6, -2) : "")
+  )
   tags = {
-    Name = local.name
+    Name = each.value.name
   }
 }
 
@@ -60,8 +64,9 @@ resource "aws_lb" "new" {
   name                             = local.name
   internal                         = false
   load_balancer_type               = "network"
-  security_groups                  = [local.security_group_id]
-  enable_cross_zone_load_balancing = true
+  security_groups                  = [aws_security_group.load_balancer[0].id, local.security_group_id]
+  enable_cross_zone_load_balancing = true           # cross zone load balancing is necessary for HA
+  ip_address_type                  = local.vpc_type # ipv4, ipv6, or dualstack
   dynamic "subnet_mapping" {
     for_each = local.subnets
     content {
@@ -75,13 +80,13 @@ resource "aws_lb" "new" {
 }
 
 resource "aws_lb_target_group" "created" {
-  for_each    = (local.create == 1 ? local.access_info : {})
-  name_prefix = "${substr(md5("${local.name}-${each.key}"), 0, 5)}-"
-  port        = each.value.port
-  protocol    = upper(each.value.protocol)
-  vpc_id      = local.vpc_id
+  for_each = (local.create == 1 ? local.access_info : {})
+  name     = each.value.target_name
+  port     = each.value.port
+  protocol = upper(each.value.protocol)
+  vpc_id   = local.vpc_id
   tags = {
-    Name = "${local.name}-${each.key}"
+    Name = each.value.target_name
   }
 }
 

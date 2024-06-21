@@ -29,11 +29,25 @@ variable "vpc_id" {
   EOT
   default     = ""
 }
-variable "vpc_cidr" {
+variable "vpc_type" {
   type        = string
+  description = <<-EOT
+    The type of vpc informs what securioty groups rules to use.
+    Should be one of 'dualstack', 'ipv4', or 'ipv6'.
+  EOT
+  default     = ""
+}
+variable "vpc_cidr" {
+  type = object({
+    ipv4 = string
+    ipv6 = string
+  })
   description = <<-EOT
     The CIDR of the VPC, used to allow ingress from the VPC to the servers in the security group.
     Not necessary if the security group is being selected.
   EOT
-  default     = ""
+  default = {
+    ipv4 = ""
+    ipv6 = ""
+  }
 }

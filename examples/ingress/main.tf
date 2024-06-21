@@ -23,21 +23,22 @@ locals {
 module "this" {
   source              = "../../"
   vpc_name            = "${local.project_name}-vpc"
-  vpc_cidr            = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
   security_group_name = "${local.project_name}-sg"
   security_group_type = "egress"
   domain              = local.domain
   load_balancer_name  = "${local.project_name}-lb"
   load_balancer_access_cidrs = {
     application = {
-      port     = 443
-      protocol = "tcp"
-      cidrs    = ["1.1.1.1/32"]
+      port        = 443
+      protocol    = "tcp"
+      cidrs       = ["1.1.1.1/32"]
+      target_name = "${local.project_name}-application"
     }
     platform = {
-      port     = 6443
-      protocol = "tcp"
-      cidrs    = ["2.2.2.2/32"]
+      port        = 6443
+      protocol    = "tcp"
+      cidrs       = ["2.2.2.2/32"]
+      target_name = "${local.project_name}-platform"
     }
   }
 }
