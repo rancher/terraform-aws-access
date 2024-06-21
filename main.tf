@@ -43,26 +43,17 @@ locals {
   )
 
   # vpc
-  vpc_name = var.vpc_name
-  vpc_cidr = var.vpc_cidr
+  vpc_name   = var.vpc_name
+  vpc_type   = var.vpc_type
+  vpc_zones  = var.vpc_zones
+  vpc_public = var.vpc_public
+  vpc_cidr   = var.vpc_cidr
 
   # subnet
-  subnets      = var.subnets
-  subnet_names = keys(local.subnets)
-  subnet_count = length(local.subnets)
-  newbits      = (local.subnet_count > 1 ? ceil(log(local.subnet_count, 2)) : 1)
-  vpc_cidr_split = [
-    for i in range(local.subnet_count) :
-    cidrsubnet(
-      (local.vpc_mod == 1 ? module.vpc[0].cidr : local.vpc_cidr),
-      local.newbits,
-      i
-    )
-  ]
-  potential_regional_subnets = { for i in range(local.subnet_count) : local.subnet_names[i] => local.vpc_cidr_split[i] }
-
-  zones                  = tolist(data.aws_availability_zones.available.names)
-  potential_subnet_zones = { for i in range(local.subnet_count) : local.subnet_names[i] => local.zones[i % length(local.zones)] }
+  availability_zones = (length(local.vpc_zones) > 0 ?
+    ({ for i in length(local.vpc_zones) : tostring(i) => local.vpc_zones[i] }) :
+    ({ "0" = data.aws_availability_zones.available.names[0] })
+  )
 
   # security group
   security_group_name = var.security_group_name
@@ -86,24 +77,25 @@ module "vpc" {
   source = "./modules/vpc"
   use    = local.vpc_use_strategy
   name   = local.vpc_name
-  cidr   = local.vpc_cidr
+  type   = local.vpc_type
 }
 
 module "subnet" {
   depends_on = [
     module.vpc,
   ]
-  for_each          = (local.subnet_mod == 1 ? local.subnets : {})
+  for_each          = (local.subnet_mod == 1 ? local.availability_zones : tomap({}))
   source            = "./modules/subnet"
   use               = local.subnet_use_strategy
+  type              = local.vpc_type
   vpc_id            = module.vpc[0].id
-  name              = each.key
-  cidr              = (each.value.cidr == "" ? local.potential_regional_subnets[each.key] : each.value.cidr)
-  availability_zone = (each.value.availability_zone == "" ? local.potential_subnet_zones[each.key] : each.value.availability_zone)
-  public            = (each.value.public == "" ? false : each.value.public)
+  vpc_cidr          = local.vpc_cidr
+  name              = "${local.vpc_name}-${each.value}"
+  availability_zone = each.value
+  public            = local.vpc_public
 }
 
-module "security_group" {
+module "project_security_group" {
   depends_on = [
     module.subnet,
     module.vpc,
@@ -114,30 +106,35 @@ module "security_group" {
   name     = local.security_group_name
   type     = local.security_group_type
   vpc_id   = module.vpc[0].id
-  vpc_cidr = module.vpc[0].vpc.cidr_block
+  vpc_type = local.vpc_type
+  vpc_cidr = {
+    ipv4 = module.vpc[0].ipv4
+    ipv6 = module.vpc[0].ipv6
+  }
 }
 
 module "network_load_balancer" {
   depends_on = [
     module.vpc,
     module.subnet,
-    module.security_group,
+    module.project_security_group,
   ]
   count             = local.load_balancer_mod
   source            = "./modules/network_load_balancer"
   use               = local.load_balancer_use_strategy
   name              = local.load_balancer_name
   vpc_id            = module.vpc[0].id
-  security_group_id = module.security_group[0].id
-  subnets           = { for s in keys(local.subnets) : s => { id = module.subnet[s].id, cidr = module.subnet[s].cidr } }
+  vpc_type          = local.vpc_type
+  security_group_id = module.project_security_group[0].id
   access_info       = local.load_balancer_access_cidrs
+  subnets           = module.subnet
 }
 
 module "domain" {
   depends_on = [
     module.vpc,
     module.subnet,
-    module.security_group,
+    module.project_security_group,
     module.network_load_balancer,
   ]
   count             = local.domain_mod

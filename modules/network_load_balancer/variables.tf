@@ -23,6 +23,12 @@ variable "vpc_id" {
     The VPC id where the load balancer will be created.
   EOT
 }
+variable "vpc_type" {
+  type        = string
+  description = <<-EOT
+    The type of VPC to use, 'dualstack', 'ipv4', or 'ipv6'.
+  EOT
+}
 variable "security_group_id" {
   type        = string
   description = <<-EOT
@@ -32,36 +38,45 @@ variable "security_group_id" {
 }
 variable "subnets" {
   type = map(object({
-    id   = string
-    cidr = string
+    id                   = string
+    arn                  = string
+    name                 = string
+    type                 = string
+    availability_zone    = string
+    availability_zone_id = string
+    cidrs = object({
+      ipv4 = string
+      ipv6 = string
+    })
+    tags = map(string)
   }))
   description = <<-EOT
-    Map of subnets to attach to the Load Balancer.
+    Set of subnets to attach to the Load Balancer.
   EOT
-  default = {
-    "dummy" = {
-      id   = ""
-      cidr = ""
-    }
-  }
 }
 variable "access_info" {
   type = map(object({
-    port     = number
-    cidrs    = list(string)
-    protocol = string
+    port        = number
+    cidrs       = list(string) # remote cidrs that can access the load balancer
+    protocol    = string
+    target_name = string
   }))
   description = <<-EOT
     A map of access information objects.
     The port is the port to expose on the load balancer.
     The cidrs is a list of external cidr blocks to allow access to the load balancer.
     The protocol is the network protocol to expose on, this can be 'udp' or 'tcp'.
+    The target_name must be unique per region per account,
+      can have a maximum of 32 characters,
+      must contain only alphanumeric characters or hyphens,
+      and must not begin or end with a hyphen.
     Example:
     {
       test = {
         port = 443
         cidrs = ["1.1.1.1/32"]
         protocol = "tcp"
+        target_name = "test-test-123abc"
       }
     }
   EOT
