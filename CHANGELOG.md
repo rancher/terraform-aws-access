@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.0.1](https://github.com/rancher/terraform-aws-access/compare/v3.0.0...v3.0.1) (2024-06-28)
+
+
+### Bug Fixes
+
+* dual-stack and load balanced access ([#85](https://github.com/rancher/terraform-aws-access/issues/85)) ([1cfbb72](https://github.com/rancher/terraform-aws-access/commit/1cfbb72f2b875d80f241ac676985fc9fbe8b0679))
+* remove extra functions ([#88](https://github.com/rancher/terraform-aws-access/issues/88)) ([1c5dcda](https://github.com/rancher/terraform-aws-access/commit/1c5dcdafcf1f2bc624a93f526205c6acb5a4925c))
+* set a retry for the transient error ([#87](https://github.com/rancher/terraform-aws-access/issues/87)) ([1107793](https://github.com/rancher/terraform-aws-access/commit/1107793e78f66b3a18961b982c59181f567fe956))
+
 ## [3.0.0](https://github.com/rancher/terraform-aws-access/compare/v2.2.1...v3.0.0) (2024-06-21)
 
 
