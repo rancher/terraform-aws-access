@@ -1,11 +1,14 @@
 locals {
-  name   = var.name
-  use    = var.use
-  type   = var.type
-  select = (local.use == "select" ? 1 : 0)
-  create = (local.use == "create" ? 1 : 0)
-  ipv4   = (local.type == "ipv4" ? local.create : 0)
-  ipv6   = ((local.type == "ipv6" || local.type == "dualstack") ? local.create : 0)
+  name      = var.name
+  use       = var.use
+  type      = var.type
+  select    = (local.use == "select" ? 1 : 0)
+  create    = (local.use == "create" ? 1 : 0)
+  ipv6      = (local.type == "ipv6" ? local.create : 0)
+  ipv4      = (local.type == "ipv4" ? local.create : 0)
+  dualstack = (local.type == "dualstack" ? local.create : 0)
+  ipv6ds    = ((local.type == "dualstack" || local.type == "ipv6") ? local.create : 0)
+  ipv4ds    = ((local.type == "dualstack" || local.type == "ipv4") ? local.create : 0)
 }
 
 data "aws_vpc" "selected" {
@@ -18,8 +21,8 @@ data "aws_vpc" "selected" {
 
 resource "aws_vpc" "new" {
   count                            = local.create
-  cidr_block                       = (local.ipv4 == 1 ? "10.0.0.0/16" : "")
-  assign_generated_ipv6_cidr_block = (local.ipv6 == 1 ? true : false)
+  cidr_block                       = "10.0.0.0/16"
+  assign_generated_ipv6_cidr_block = true
   tags = {
     Name = local.name
   }
@@ -34,7 +37,7 @@ resource "aws_internet_gateway" "new" {
 }
 
 resource "aws_route" "public_ipv4" {
-  count = local.ipv4
+  count = local.ipv4ds
   depends_on = [
     aws_internet_gateway.new,
     aws_vpc.new,
@@ -45,7 +48,7 @@ resource "aws_route" "public_ipv4" {
 }
 
 resource "aws_route" "public_ipv6" {
-  count = local.ipv6
+  count = local.ipv6ds
   depends_on = [
     aws_internet_gateway.new,
     aws_vpc.new,

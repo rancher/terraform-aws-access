@@ -1,14 +1,26 @@
 output "id" {
-  value = (local.select == 1 ? aws_route53domains_registered_domain.select[0].id : aws_route53_record.new[0].id)
+  value = (
+    local.select == 1 ?
+    aws_route53domains_registered_domain.select[0].id :
+    local.ipv4ds == 1 ?
+    aws_route53_record.ipv4[0].id :
+    aws_route53_record.ipv6[0]
+  )
+}
+output "domain" {
+  value = (
+    local.select == 1 ?
+    aws_route53domains_registered_domain.select[0] :
+    local.ipv4ds == 1 ?
+    aws_route53_record.ipv4[0] :
+    aws_route53_record.ipv6[0]
+  )
 }
 output "zone_id" {
   value = local.zone_id
 }
 output "zone" {
   value = local.zone_resource
-}
-output "domain" {
-  value = (local.select == 1 ? aws_route53domains_registered_domain.select[0] : aws_route53_record.new[0])
 }
 output "certificate" {
   value = (local.cert_use != "skip" ? (local.select_cert == 1 ? {

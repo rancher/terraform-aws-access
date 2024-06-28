@@ -45,27 +45,78 @@ locals {
   # vpc
   vpc_name   = var.vpc_name
   vpc_type   = var.vpc_type
-  vpc_zones  = var.vpc_zones
   vpc_public = var.vpc_public
-  vpc_cidr   = var.vpc_cidr
-
-  # subnet
+  vpc_zones  = var.vpc_zones
   availability_zones = (length(local.vpc_zones) > 0 ?
     ({ for i in length(local.vpc_zones) : tostring(i) => local.vpc_zones[i] }) :
     ({ "0" = data.aws_availability_zones.available.names[0] })
   )
+  vpc_ipv4 = (local.vpc_mod > 0 ? module.vpc[0].ipv4 : null)
+  vpc_ipv6 = (local.vpc_mod > 0 ? module.vpc[0].ipv6 : null)
+
+  # tflint-ignore: terraform_unused_declarations
+  fail_ipv6_missing = (
+    (
+      local.vpc_mod == 1 &&
+      (local.vpc_type == "ipv6" || local.vpc_type == "dualstack") &&
+      local.vpc_ipv6 == ""
+    ) ?
+    one([local.vpc_ipv6, "missing_ipv6_address"]) :
+    false
+  )
+  # tflint-ignore: terraform_unused_declarations
+  fail_ipv4_missing = (
+    (
+      local.vpc_mod == 1 &&
+      local.vpc_ipv4 == ""
+    ) ?
+    one([local.vpc_ipv4, "missing_ipv4_address"]) :
+    false
+  )
+
+
+  # subnet
+  subnet_names = var.subnet_names
+  subnet_map = (length(local.subnet_names) > 0 ?
+    { for i in range((length(local.subnet_names) * local.subnet_mod)) :
+      tostring(i) => {
+        name      = local.subnet_names[i]
+        ipv4_cidr = cidrsubnet(local.vpc_ipv4, 1, i)
+        ipv6_cidr = cidrsubnet(local.vpc_ipv6, 8, i)
+        az        = local.availability_zones[i]
+      }
+    } :
+    { for i in range((length(local.availability_zones) * local.subnet_mod)) :
+      tostring(i) => {
+        name      = "${local.vpc_name}-${local.availability_zones[i]}"
+        ipv4_cidr = cidrsubnet(local.vpc_ipv4, 1, i)
+        ipv6_cidr = cidrsubnet(local.vpc_ipv6, 8, i)
+        az        = local.availability_zones[i]
+      }
+    }
+  )
+  # tflint-ignore: terraform_unused_declarations
+  fail_subnet_map_length = ((local.subnet_mod == 1 && local.subnet_use_strategy == "create" && (length(local.subnet_map) != length(local.availability_zones))) ? one([jsonencode(local.subnet_names), "length_subnet_names_must_match_availability_zones"]) : false)
+  # tflint-ignore: terraform_unused_declarations
+  fail_subnet_map_empty = ((local.subnet_mod == 1 && local.subnet_use_strategy == "create" && (length(local.subnet_map) < 1)) ? one([jsonencode(local.subnet_map), "subnet_map_empty"]) : false)
+  # tflint-ignore: terraform_unused_declarations
+  fail_subnets_not_created = ((local.subnet_mod == 1 && length(module.subnet) < 1) ? one([local.subnet_mod, "subnets_not_created"]) : false)
+
 
   # security group
   security_group_name = var.security_group_name
   security_group_type = var.security_group_type
 
-  # domain
-  domain            = var.domain
-  cert_use_strategy = var.cert_use_strategy
-
   # load balancer
   load_balancer_name         = var.load_balancer_name
   load_balancer_access_cidrs = var.load_balancer_access_cidrs
+
+  # domain
+  domain            = var.domain
+  cert_use_strategy = var.cert_use_strategy
+  domain_zone       = var.domain_zone
+  # tflint-ignore: terraform_unused_declarations
+  fail_domain_zone = ((local.domain_mod == 1 && local.domain_use_strategy != "skip" && local.domain_zone == "") ? one([local.domain_zone, "domain_zone_missing"]) : false)
 }
 
 data "aws_availability_zones" "available" {
@@ -84,14 +135,15 @@ module "subnet" {
   depends_on = [
     module.vpc,
   ]
-  for_each          = (local.subnet_mod == 1 ? local.availability_zones : tomap({}))
+  for_each          = (local.subnet_mod == 1 ? local.subnet_map : tomap({}))
   source            = "./modules/subnet"
   use               = local.subnet_use_strategy
   type              = local.vpc_type
   vpc_id            = module.vpc[0].id
-  vpc_cidr          = local.vpc_cidr
-  name              = "${local.vpc_name}-${each.value}"
-  availability_zone = each.value
+  ipv4_cidr         = each.value.ipv4_cidr
+  ipv6_cidr         = each.value.ipv6_cidr
+  name              = each.value.name
+  availability_zone = each.value.az
   public            = local.vpc_public
 }
 
@@ -143,4 +195,6 @@ module "domain" {
   cert_use_strategy = local.cert_use_strategy
   content           = lower(local.domain)
   ips               = module.network_load_balancer[0].public_ips
+  domain_zone       = local.domain_zone
+  vpc_type          = local.vpc_type
 }

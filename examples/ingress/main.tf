@@ -26,6 +26,7 @@ module "this" {
   security_group_name = "${local.project_name}-sg"
   security_group_type = "egress"
   domain              = local.domain
+  domain_zone         = local.zone
   load_balancer_name  = "${local.project_name}-lb"
   load_balancer_access_cidrs = {
     application = {

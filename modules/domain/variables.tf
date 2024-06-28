@@ -38,3 +38,17 @@ variable "ips" {
   EOT
   default     = []
 }
+
+variable "vpc_type" {
+  type        = string
+  description = <<-EOT
+    The vpc type helps generate the proper domains.
+  EOT
+}
+
+variable "domain_zone" {
+  type        = string
+  description = <<-EOT
+    The zone to use for the domain.
+  EOT
+}
