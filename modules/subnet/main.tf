@@ -1,16 +1,17 @@
 locals {
   use               = var.use
   select            = (local.use == "select" ? 1 : 0)
-  create            = (local.use != "select" ? 1 : 0)
+  create            = (local.use == "create" ? 1 : 0)
   vpc_id            = var.vpc_id
-  vpc_cidr          = var.vpc_cidr
+  ipv6_cidr         = var.ipv6_cidr
+  ipv4_cidr         = var.ipv4_cidr
   type              = var.type
-  ipv4              = ((local.type == "dualstack" || local.type == "ipv4") ? local.create : 0)
-  ipv6              = (local.type == "ipv6" ? local.create : 0)
+  ipv6ds            = ((local.type == "ipv6" || local.type == "dualstack") ? local.create : 0)
   availability_zone = var.availability_zone
   public            = var.public
   name              = var.name
 }
+
 data "aws_subnet" "selected" {
   count = local.select
   filter {
@@ -19,25 +20,12 @@ data "aws_subnet" "selected" {
   }
 }
 
-resource "aws_subnet" "ipv6" {
-  count                                          = local.ipv6
-  vpc_id                                         = local.vpc_id
-  availability_zone                              = local.availability_zone
-  map_public_ip_on_launch                        = local.public
-  ipv6_cidr_block                                = (can(local.vpc_cidr.ipv6) ? local.vpc_cidr.ipv6 : "")
-  ipv6_native                                    = true
-  assign_ipv6_address_on_creation                = true
-  enable_resource_name_dns_aaaa_record_on_launch = true
-  tags = {
-    Name = local.name
-  }
-}
-
-resource "aws_subnet" "ipv4" {
-  count                           = local.ipv4
+resource "aws_subnet" "created" {
+  count                           = local.create
   vpc_id                          = local.vpc_id
-  cidr_block                      = (can(local.vpc_cidr.ipv4) ? local.vpc_cidr.ipv4 : "")
-  assign_ipv6_address_on_creation = (local.type == "dualstack" ? true : false)
+  cidr_block                      = local.ipv4_cidr
+  ipv6_cidr_block                 = local.ipv6_cidr
+  assign_ipv6_address_on_creation = (local.ipv6ds == 1 ? true : false)
   availability_zone               = local.availability_zone
   map_public_ip_on_launch         = local.public
   tags = {

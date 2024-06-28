@@ -1,28 +1,21 @@
 locals {
-  use      = var.use
-  cert_use = var.cert_use_strategy
-  content  = lower(var.content)
-  ips      = var.ips
-
-  content_parts = split(".", local.content)
-  top_level_domain = join(".", [
-    local.content_parts[(length(local.content_parts) - 2)],
-    local.content_parts[(length(local.content_parts) - 1)],
-  ])
-  subdomain = local.content_parts[0]
-  found_zone = join(".", [
-    for part in local.content_parts : part if part != local.subdomain
-  ])
+  use         = var.use
+  cert_use    = var.cert_use_strategy
+  content     = lower(var.content)
+  ips         = var.ips
+  vpc_type    = var.vpc_type
+  domain_zone = var.domain_zone
 
   # zone
-  zone_id       = data.aws_route53_zone.select[0].id
-  zone          = local.found_zone
-  zone_select   = 1
-  zone_resource = data.aws_route53_zone.select[0]
+  zone_id       = data.aws_route53_zone.select.id
+  zone          = data.aws_route53_zone.select.name
+  zone_resource = data.aws_route53_zone.select
 
   # domain record
   create = (local.use == "create" ? 1 : 0)
   select = (local.use == "select" ? 1 : 0)
+  ipv6   = (local.vpc_type == "ipv6" ? local.create : 0)
+  ipv4ds = ((local.vpc_type == "ipv4" || local.vpc_type == "dualstack") ? local.create : 0)
 
   # cert
   create_cert = (local.cert_use == "create" ? 1 : 0)
@@ -30,8 +23,7 @@ locals {
 }
 
 data "aws_route53_zone" "select" {
-  count = local.zone_select
-  name  = local.zone
+  name = local.domain_zone
 }
 
 resource "aws_route53domains_registered_domain" "select" {
@@ -39,14 +31,26 @@ resource "aws_route53domains_registered_domain" "select" {
   domain_name = local.content
 }
 
-resource "aws_route53_record" "new" {
+resource "aws_route53_record" "ipv4" {
   depends_on = [
     data.aws_route53_zone.select,
   ]
-  count   = local.create
+  count   = local.ipv4ds
   zone_id = local.zone_id
   name    = local.content
   type    = "A"
+  ttl     = 30
+  records = local.ips
+}
+
+resource "aws_route53_record" "ipv6" {
+  depends_on = [
+    data.aws_route53_zone.select,
+  ]
+  count   = local.ipv6
+  zone_id = local.zone_id
+  name    = local.content
+  type    = "AAAA"
   ttl     = 30
   records = local.ips
 }
@@ -60,9 +64,12 @@ resource "tls_private_key" "private_key" {
 # Warning, this can lead to rate limiting if you are not careful
 # make sure you are not creating a new acme_registration for every certificate
 resource "acme_registration" "reg" {
+  depends_on = [
+    data.aws_route53_zone.select,
+  ]
   count           = local.create_cert
   account_key_pem = tls_private_key.private_key[0].private_key_pem
-  email_address   = "${local.zone_id}@${local.top_level_domain}"
+  email_address   = "${local.zone_id}@${local.zone}"
 }
 
 resource "tls_private_key" "cert_private_key" {
@@ -80,7 +87,8 @@ resource "tls_cert_request" "req" {
 resource "acme_certificate" "new" {
   depends_on = [
     data.aws_route53_zone.select,
-    aws_route53_record.new,
+    aws_route53_record.ipv4,
+    aws_route53_record.ipv6,
     acme_registration.reg,
     tls_private_key.private_key,
     tls_private_key.cert_private_key,
@@ -106,7 +114,8 @@ resource "acme_certificate" "new" {
 resource "aws_iam_server_certificate" "new" {
   depends_on = [
     data.aws_route53_zone.select,
-    aws_route53_record.new,
+    aws_route53_record.ipv4,
+    aws_route53_record.ipv6,
     acme_registration.reg,
     tls_private_key.private_key,
     tls_private_key.cert_private_key,
@@ -125,7 +134,8 @@ resource "aws_iam_server_certificate" "new" {
 data "aws_iam_server_certificate" "select" {
   depends_on = [
     data.aws_route53_zone.select,
-    aws_route53_record.new,
+    aws_route53_record.ipv4,
+    aws_route53_record.ipv6,
     acme_registration.reg,
     tls_private_key.private_key,
     tls_private_key.cert_private_key,

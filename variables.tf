@@ -55,19 +55,6 @@ variable "vpc_public" {
   EOT
   default     = false
 }
-variable "vpc_cidr" {
-  type = object({
-    ipv4 = string
-    ipv6 = string
-  })
-  description = <<-EOT
-    The CIDR block to use for the VPC.
-  EOT
-  default = {
-    ipv4 = "10.0.0.0/16"  # must be a /16 block or smaller
-    ipv6 = "fc00:0:0:/56" # must be a /56 block
-  }
-}
 
 # subnet
 variable "subnet_use_strategy" {
@@ -77,7 +64,7 @@ variable "subnet_use_strategy" {
       'skip' to disable,
       'select' to use existing,
       or 'create' to generate new subnet resources.
-    The default is 'create', which requires a subnet_name and subnet_cidr to be provided.
+    The default is 'create', which requires a subnet_name to be provided.
     When selecting a subnet, the subnet_name must be provided and a subnet with the tag "Name" with the given name must exist.
     When skipping a subnet, the security group and load balancer will also be skipped (automatically).
   EOT
@@ -86,6 +73,17 @@ variable "subnet_use_strategy" {
     condition     = contains(["skip", "select", "create"], var.subnet_use_strategy)
     error_message = "The subnet_use_strategy value must be one of 'skip', 'select', or 'create'."
   }
+}
+
+variable "subnet_names" {
+  type        = list(string)
+  description = <<-EOT
+    The names to use for the subnets to select or create.
+    Required when not skipping subnets.
+    When creating, the number of subnet_names must match the number of vpc_zones.
+    Only one subnet can be provisioned per zone, this is to align with load balancer mappings.
+  EOT
+  default     = []
 }
 
 # security group
@@ -208,6 +206,17 @@ variable "domain_use_strategy" {
     condition     = contains(["skip", "select", "create"], var.domain_use_strategy)
     error_message = "The domain_use_strategy value must be one of 'skip', 'select', or 'create'."
   }
+}
+variable "domain_zone" {
+  type        = string
+  description = <<-EOT
+    The domain zone to use for generating the domain.
+    This is only required when using the 'create' domain_use_strategy.
+    The domain zone must already exist in AWS.
+    WARNING! Domain zones can take up to 24 hours to propagate, this is why we don't include them.
+    Required when not using 'skip' as the domain_use_strategy.
+  EOT
+  default     = ""
 }
 variable "domain" {
   type        = string

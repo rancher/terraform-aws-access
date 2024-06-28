@@ -13,14 +13,18 @@ variable "vpc_id" {
     The AWS unique id for the VPC which this subnet will be created in.
   EOT
 }
-variable "vpc_cidr" {
-  type = object({
-    ipv4 = string
-    ipv6 = string
-  })
+variable "ipv4_cidr" {
+  type        = string
   description = <<-EOT
-    An object with the CIDR blocks for the VPC.
-    When not dualstack it is expected that one of these will be "".
+    The CIDR for the subnet to create.
+    Ignored when selecting.
+  EOT
+}
+variable "ipv6_cidr" {
+  type        = string
+  description = <<-EOT
+    The CIDR for the subnet to create.
+    Ignored when selecting.
   EOT
 }
 variable "name" {

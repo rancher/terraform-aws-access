@@ -27,4 +27,5 @@ module "this" {
   security_group_type = "egress"
   load_balancer_name  = "${local.project_name}-lb"
   domain              = local.domain
+  domain_zone         = local.zone
 }

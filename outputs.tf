@@ -2,8 +2,8 @@ output "vpc" {
   value = {
     id                  = can(module.vpc[0].id) ? module.vpc[0].id : ""
     arn                 = can(module.vpc[0].arn) ? module.vpc[0].arn : ""
-    cidr_block          = can(module.vpc[0].cidr_block) ? module.vpc[0].cidr_block : ""
-    ipv6_cidr_block     = can(module.vpc[0].ipv6_cidr_block) ? module.vpc[0].ipv6_cidr_block : ""
+    ipv4_cidr           = can(module.vpc[0].ipv4) ? module.vpc[0].ipv4 : ""
+    ipv6_cidr           = can(module.vpc[0].ipv6) ? module.vpc[0].ipv6 : ""
     main_route_table_id = can(module.vpc[0].main_route_table_id) ? module.vpc[0].main_route_table_id : ""
     tags                = can(module.vpc[0].tags) ? module.vpc[0].tags : tomap({ "" = "" })
   }
@@ -13,15 +13,18 @@ output "vpc" {
 }
 
 output "subnets" {
-  value = { for subnet in module.subnet :
-    subnet.name => {
-      id                   = (can(module.subnet[subnet.name].id) ? module.subnet[subnet.name].id : "")
-      arn                  = (can(module.subnet[subnet.name].arn) ? module.subnet[subnet.name].arn : "")
-      availability_zone    = (can(module.subnet[subnet.name].availability_zone) ? module.subnet[subnet.name].availability_zone : "")
-      availability_zone_id = (can(module.subnet[subnet.name].availability_zone_id) ? module.subnet[subnet.name].availability_zone_id : "")
-      cidr                 = (can(module.subnet[subnet.name].cidr) ? module.subnet[subnet.name].cidr : "")
-      vpc_id               = (can(module.vpc[0].id) ? module.vpc[0].id : "")
-      tags                 = (can(module.subnet[subnet.name].tags) ? module.subnet[subnet.name].tags : tomap({ "" = "" }))
+  value = { for i in range(length(module.subnet)) :
+    module.subnet[keys(module.subnet)[i]].name => {
+      id                   = module.subnet[keys(module.subnet)[i]].id
+      arn                  = module.subnet[keys(module.subnet)[i]].arn
+      availability_zone    = module.subnet[keys(module.subnet)[i]].availability_zone
+      availability_zone_id = module.subnet[keys(module.subnet)[i]].availability_zone_id
+      cidrs = {
+        ipv4 = module.subnet[keys(module.subnet)[i]].cidrs.ipv4
+        ipv6 = module.subnet[keys(module.subnet)[i]].cidrs.ipv6
+      }
+      vpc_id = module.vpc[0].id
+      tags   = module.subnet[keys(module.subnet)[i]].tags
     }
   }
   description = <<-EOT
@@ -119,4 +122,8 @@ output "certificate" {
     When generating a domain, a valid TLS certificate is also generated.
     This is helpful for servers and applications to import for securing transfer.
   EOT
+}
+
+output "subnet_map" {
+  value = local.subnet_map
 }
