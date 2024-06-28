@@ -8,8 +8,6 @@ locals {
   access_info       = (var.access_info == null ? {} : var.access_info)
   create            = (local.use == "create" ? 1 : 0)
   select            = (local.use == "select" ? 1 : 0)
-  ipv4              = (local.type == "ipv4" ? local.create : 0)
-  ipv6              = (local.type == "ipv6" ? local.create : 0)
   ipv4ds            = ((local.type == "ipv4" || local.type == "dualstack") ? local.create : 0)
   ipv6ds            = ((local.type == "ipv6" || local.type == "dualstack") ? local.create : 0)
   public_ips = (local.ipv4ds == 1 ?

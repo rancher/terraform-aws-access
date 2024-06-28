@@ -6,10 +6,7 @@ locals {
   ipv6_cidr         = var.ipv6_cidr
   ipv4_cidr         = var.ipv4_cidr
   type              = var.type
-  ipv4ds            = ((local.type == "ipv4" || local.type == "dualstack") ? local.create : 0)
   ipv6ds            = ((local.type == "ipv6" || local.type == "dualstack") ? local.create : 0)
-  ipv4              = (local.type == "ipv4" ? local.create : 0)
-  ipv6              = (local.type == "ipv6" ? local.create : 0)
   availability_zone = var.availability_zone
   public            = var.public
   name              = var.name

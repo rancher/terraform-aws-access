@@ -15,9 +15,7 @@ locals {
   create = (local.use == "create" ? 1 : 0)
   select = (local.use == "select" ? 1 : 0)
   ipv6   = (local.vpc_type == "ipv6" ? local.create : 0)
-  ipv4   = (local.vpc_type == "ipv4" ? local.create : 0)
   ipv4ds = ((local.vpc_type == "ipv4" || local.vpc_type == "dualstack") ? local.create : 0)
-  ipv6ds = ((local.vpc_type == "ipv6" || local.vpc_type == "dualstack") ? local.create : 0)
 
   # cert
   create_cert = (local.cert_use == "create" ? 1 : 0)

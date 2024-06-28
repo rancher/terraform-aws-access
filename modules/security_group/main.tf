@@ -8,8 +8,6 @@ locals {
   vpc_id    = var.vpc_id
   vpc_type  = var.vpc_type
   vpc_cidr  = var.vpc_cidr
-  ipv4      = (local.vpc_type == "ipv4" ? 1 : 0)
-  ipv6      = (local.vpc_type == "ipv6" ? 1 : 0)
   ipv4ds    = (local.vpc_type == "dualstack" || local.vpc_type == "ipv4" ? 1 : 0)
   ipv6ds    = (local.vpc_type == "dualstack" || local.vpc_type == "ipv6" ? 1 : 0)
 }

@@ -1,14 +1,11 @@
 locals {
-  name      = var.name
-  use       = var.use
-  type      = var.type
-  select    = (local.use == "select" ? 1 : 0)
-  create    = (local.use == "create" ? 1 : 0)
-  ipv6      = (local.type == "ipv6" ? local.create : 0)
-  ipv4      = (local.type == "ipv4" ? local.create : 0)
-  dualstack = (local.type == "dualstack" ? local.create : 0)
-  ipv6ds    = ((local.type == "dualstack" || local.type == "ipv6") ? local.create : 0)
-  ipv4ds    = ((local.type == "dualstack" || local.type == "ipv4") ? local.create : 0)
+  name   = var.name
+  use    = var.use
+  type   = var.type
+  select = (local.use == "select" ? 1 : 0)
+  create = (local.use == "create" ? 1 : 0)
+  ipv6ds = ((local.type == "dualstack" || local.type == "ipv6") ? local.create : 0)
+  ipv4ds = ((local.type == "dualstack" || local.type == "ipv4") ? local.create : 0)
 }
 
 data "aws_vpc" "selected" {
