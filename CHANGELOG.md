@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.2](https://github.com/rancher/terraform-aws-access/compare/v3.0.1...v3.0.2) (2024-07-03)
+
+
+### Bug Fixes
+
+* for loop needs a range ([#89](https://github.com/rancher/terraform-aws-access/issues/89)) ([05a2dea](https://github.com/rancher/terraform-aws-access/commit/05a2dea2a880c14345fb1ba77ba6b4012f7fe999))
+
 ## [3.0.1](https://github.com/rancher/terraform-aws-access/compare/v3.0.0...v3.0.1) (2024-06-28)
 
 
