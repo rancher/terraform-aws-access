@@ -48,7 +48,7 @@ locals {
   vpc_public = var.vpc_public
   vpc_zones  = var.vpc_zones
   availability_zones = (length(local.vpc_zones) > 0 ?
-    ({ for i in length(local.vpc_zones) : tostring(i) => local.vpc_zones[i] }) :
+    ({ for i in range(length(local.vpc_zones)) : tostring(i) => local.vpc_zones[i] }) :
     ({ "0" = data.aws_availability_zones.available.names[0] })
   )
   vpc_ipv4 = (local.vpc_mod > 0 ? module.vpc[0].ipv4 : null)
