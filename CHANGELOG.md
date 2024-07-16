@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.3](https://github.com/rancher/terraform-aws-access/compare/v3.0.2...v3.0.3) (2024-07-16)
+
+
+### Bug Fixes
+
+* output public addresses ([#91](https://github.com/rancher/terraform-aws-access/issues/91)) ([d2e2e12](https://github.com/rancher/terraform-aws-access/commit/d2e2e12f4221c0d385af935a29d791f0a1ad95a8))
+
 ## [3.0.2](https://github.com/rancher/terraform-aws-access/compare/v3.0.1...v3.0.2) (2024-07-03)
 
 
