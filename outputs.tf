@@ -57,6 +57,7 @@ output "load_balancer" {
     zone_id         = can(module.network_load_balancer[0].load_balancer.zone_id) ? module.network_load_balancer[0].load_balancer.zone_id : ""
     security_groups = can(module.network_load_balancer[0].load_balancer.security_groups) ? module.network_load_balancer[0].load_balancer.security_groups : []
     subnets         = can(module.network_load_balancer[0].load_balancer.subnets) ? module.network_load_balancer[0].load_balancer.subnets : []
+    public_ips      = can(module.network_load_balancer[0].public_ips) ? module.network_load_balancer[0].public_ips : []
     tags_all        = can(module.network_load_balancer[0].load_balancer.tags_all) ? module.network_load_balancer[0].load_balancer.tags_all : tomap({ "" = "" })
   }
   description = <<-EOT

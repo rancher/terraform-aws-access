@@ -9,11 +9,8 @@ output "id" {
 }
 output "domain" {
   value = (
-    local.select == 1 ?
-    aws_route53domains_registered_domain.select[0] :
-    local.ipv4ds == 1 ?
-    aws_route53_record.ipv4[0] :
-    aws_route53_record.ipv6[0]
+    local.select == 1 ? aws_route53domains_registered_domain.select[0] :
+    local.ipv4ds == 1 ? aws_route53_record.ipv4[0] : aws_route53_record.ipv6[0]
   )
 }
 output "zone_id" {
