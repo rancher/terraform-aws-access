@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/rancher/terraform-aws-access/compare/v3.0.3...v3.1.0) (2024-07-22)
+
+
+### Features
+
+* enable version 6 access addresses ([#93](https://github.com/rancher/terraform-aws-access/issues/93)) ([402a597](https://github.com/rancher/terraform-aws-access/commit/402a597eda03b8fdf4045a237a363acb2c1860cc))
+
 ## [3.0.3](https://github.com/rancher/terraform-aws-access/compare/v3.0.2...v3.0.3) (2024-07-16)
 
 
