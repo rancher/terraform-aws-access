@@ -32,12 +32,14 @@ module "this" {
     application = {
       port        = 443
       protocol    = "tcp"
+      ip_family   = "ipv4"
       cidrs       = ["1.1.1.1/32"]
       target_name = "${local.project_name}-application"
     }
     platform = {
       port        = 6443
       protocol    = "tcp"
+      ip_family   = "ipv4"
       cidrs       = ["2.2.2.2/32"]
       target_name = "${local.project_name}-platform"
     }

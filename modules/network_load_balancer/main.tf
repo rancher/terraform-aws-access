@@ -50,7 +50,8 @@ resource "aws_security_group_rule" "external_ingress" {
   from_port         = each.value.port
   to_port           = each.value.port
   protocol          = each.value.protocol
-  cidr_blocks       = each.value.cidrs
+  cidr_blocks       = (each.value.ip_family != "ipv6" ? each.value.cidrs : null)
+  ipv6_cidr_blocks  = (each.value.ip_family == "ipv6" ? each.value.cidrs : null)
 }
 
 resource "aws_lb" "new" {

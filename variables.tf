@@ -163,6 +163,7 @@ variable "load_balancer_name" {
 variable "load_balancer_access_cidrs" {
   type = map(object({
     port        = number
+    ip_family   = string
     cidrs       = list(string)
     protocol    = string
     target_name = string
@@ -181,6 +182,7 @@ variable "load_balancer_access_cidrs" {
       test = {
         port        = 443
         cidrs       = ["1.1.1.1/32"]
+        ip_family   = "ipv4"
         protocol    = "tcp"
         target_name = "test-target-123abc"
       }

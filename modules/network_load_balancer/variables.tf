@@ -57,6 +57,7 @@ variable "subnets" {
 variable "access_info" {
   type = map(object({
     port        = number
+    ip_family   = string       # ipv4 or ipv6
     cidrs       = list(string) # remote cidrs that can access the load balancer
     protocol    = string
     target_name = string
@@ -73,9 +74,10 @@ variable "access_info" {
     Example:
     {
       test = {
-        port = 443
-        cidrs = ["1.1.1.1/32"]
-        protocol = "tcp"
+        port        = 443
+        ip_family   = "ipv4"
+        cidrs       = ["1.1.1.1/32"]
+        protocol    = "tcp"
         target_name = "test-test-123abc"
       }
     }
