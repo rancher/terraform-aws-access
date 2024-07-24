@@ -4,8 +4,21 @@ WARNING! The subnets argument must not be derived from an apply time resource.
 
 ## Recent Changes
 
+- IPv6 only and Dualstack Support BREAKING CHANGES!
+  A few interface changes were necessary to inform the module about options which are now ambiguous.
+  You must now specify "ip_family" in the load balancer access address options.
+  There is a new "vpc_type" option which tells the module your intention to use IPv6 only, dualstack, or ipv4 only.
+  The vpc_type option facilitated a new major version of the module.
+  Specifying "ip_family" in the access addresses is now required.
+  A new "ipv6" example is provided to show how to enable that, as well as "dualstack".
+  There can be some confusion if looking at the AWS objects directly,
+  many of them are dualstack for the ipv6 only use case, but ipv4 isn't allowed.
+  When deploying an ipv6 project there is no internet gateway for ipv4, allowing only ipv6 at the edge of your vpc.
+  Within the VPC you can technically use ipv4, but only on internal addressing, and it is not recommended.
+  You can restrict this by not adding ipv4 access addresses to the servers.
+
 - Private IP address for load balancer
-  Along with assigning an EIP for public access we now also attach a provate ip address to the load balancer.
+  Along with assigning an EIP for public access we now also attach a private ip address to the load balancer.
   The last available IP address in the subnet is used.
   This helps avoid IP address conflicts with instances in the subnet.
   We now provision a subnet mapping for every subnet, and an elastic IP for each mapping.
@@ -16,22 +29,6 @@ WARNING! The subnets argument must not be derived from an apply time resource.
   If you would like to terminate TLS on your server this module can generate a real Let's encrypt certificate for you.
   This is done using the `cert_use_strategy` argument, it is set to 'skip' by default, but if you set it to `create` it will create a new certificate for you. It saves the cert in an IAM object and then use that as the source of truth for the cert.
 
-- Manage external access
-
-  You can now add ingress from external addresses by cidr and port.
-  This will generate security group rules with 'from' and 'to' having the port number specified.
-  The input is a map of port to list of CIDRs, eg. `{"443" = ["1.1.1.1/32","2.2.2.2/32"], "6443" = ["3.3.3.3/24"]}`.
-
-- BREAKING CHANGES!
-
-  While adding the loadbalancer and domain to this module it kinda seems like the ssh key shouldn't be included.
-  I also found a more standardized approach to how to skip or select modules.
-  When adding a load balancer I discovered that subnets will need to be tied to availability zones.
-  I also found that it was easier to combine the subnet input to something more complex, but should be easy enough to figure out
-  1. No longer managing ssh keys with this module!
-  2. The <name>-use-strategy variables now determine how modules are used (create, skip, or select)
-  3. Subnets inputs needed to change to incorporate high availability
-  With this is a massive change in the interface, this is a major break from the previous version, but I believe necessary for its growth.
 
 ## AWS Access
 
