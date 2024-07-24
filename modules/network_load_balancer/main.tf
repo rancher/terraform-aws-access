@@ -83,13 +83,21 @@ resource "aws_lb" "new" {
 }
 
 resource "aws_lb_target_group" "created" {
-  for_each = (local.create == 1 ? local.access_info : {})
-  name     = each.value.target_name
-  port     = each.value.port
-  protocol = upper(each.value.protocol)
-  vpc_id   = local.vpc_id
+  for_each        = (local.create == 1 ? local.access_info : {})
+  name            = each.value.target_name
+  port            = each.value.port
+  protocol        = each.value.protocol
+  target_type     = "instance"
+  ip_address_type = (each.value.ip_family == "ipv6" ? "ipv6" : "ipv4")
+  vpc_id          = local.vpc_id
   tags = {
     Name = each.value.target_name
+  }
+  health_check {
+    enabled  = true
+    path     = "/"
+    port     = each.value.port
+    protocol = each.value.protocol
   }
 }
 
