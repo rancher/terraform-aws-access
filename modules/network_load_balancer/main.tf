@@ -86,7 +86,7 @@ resource "aws_lb_target_group" "created" {
   for_each        = (local.create == 1 ? local.access_info : {})
   name            = each.value.target_name
   port            = each.value.port
-  protocol        = each.value.protocol
+  protocol        = upper(each.value.protocol)
   target_type     = "instance"
   ip_address_type = (each.value.ip_family == "ipv6" ? "ipv6" : "ipv4")
   vpc_id          = local.vpc_id
@@ -95,7 +95,6 @@ resource "aws_lb_target_group" "created" {
   }
   health_check {
     enabled  = true
-    path     = "/"
     port     = each.value.port
     protocol = each.value.protocol
   }
