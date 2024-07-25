@@ -96,7 +96,7 @@ resource "aws_lb_target_group" "created" {
   health_check {
     enabled  = true
     port     = each.value.port
-    protocol = each.value.protocol
+    protocol = upper(each.value.protocol)
   }
 }
 
