@@ -4,6 +4,10 @@ WARNING! The subnets argument must not be derived from an apply time resource.
 
 ## Recent Changes
 
+- IPv6 is having issues due to missing the "primary" ipv6 flag in the AWS provider.
+  https://github.com/hashicorp/terraform-provider-aws/pull/36425
+  This PR fixes the issue, but in the mean time I am setting the subnet to "ipv6_native".
+
 - IPv6 only and Dualstack Support BREAKING CHANGES!
   A few interface changes were necessary to inform the module about options which are now ambiguous.
   You must now specify "ip_family" in the load balancer access address options.
