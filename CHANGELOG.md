@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.1.1](https://github.com/rancher/terraform-aws-access/compare/v3.1.0...v3.1.1) (2024-07-25)
+
+
+### Bug Fixes
+
+* add target group fields ([#95](https://github.com/rancher/terraform-aws-access/issues/95)) ([890b942](https://github.com/rancher/terraform-aws-access/commit/890b942b97b40a5884c0926e21ffb1278772e004))
+* health check protocol must be capitalized ([#99](https://github.com/rancher/terraform-aws-access/issues/99)) ([1804984](https://github.com/rancher/terraform-aws-access/commit/18049843dd39d4887644db03108c660a0b295da7))
+* make sure protocol is upper case ([#98](https://github.com/rancher/terraform-aws-access/issues/98)) ([8a61e57](https://github.com/rancher/terraform-aws-access/commit/8a61e57d04b0f10bcf698ac9f406fdbff35bc599))
+* update documentation ([#97](https://github.com/rancher/terraform-aws-access/issues/97)) ([9037f63](https://github.com/rancher/terraform-aws-access/commit/9037f63f1ea01267124a9cb6eabb4db20784767c))
+
 ## [3.1.0](https://github.com/rancher/terraform-aws-access/compare/v3.0.3...v3.1.0) (2024-07-22)
 
 
