@@ -26,6 +26,7 @@ resource "aws_subnet" "created" {
   cidr_block                      = local.ipv4_cidr
   ipv6_cidr_block                 = local.ipv6_cidr
   assign_ipv6_address_on_creation = (local.ipv6ds == 1 ? true : false)
+  ipv6_native                     = (local.type == "ipv6" ? true : false)
   availability_zone               = local.availability_zone
   map_public_ip_on_launch         = local.public
   tags = {
