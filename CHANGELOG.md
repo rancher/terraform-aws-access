@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.1.2](https://github.com/rancher/terraform-aws-access/compare/v3.1.1...v3.1.2) (2024-07-25)
+
+
+### Bug Fixes
+
+* make native version 6 network ([#100](https://github.com/rancher/terraform-aws-access/issues/100)) ([f09c597](https://github.com/rancher/terraform-aws-access/commit/f09c597beeeb7351e4b2fce7645ba6b72f9160cf))
+* revert version 6 native ([#103](https://github.com/rancher/terraform-aws-access/issues/103)) ([f2ee57f](https://github.com/rancher/terraform-aws-access/commit/f2ee57f6eb988531214c0f6658086c8b1075935f))
+* update documentation ([#102](https://github.com/rancher/terraform-aws-access/issues/102)) ([99a45f6](https://github.com/rancher/terraform-aws-access/commit/99a45f647c76cd3f2f60cdad0d24ae85715d61fc))
+
 ## [3.1.1](https://github.com/rancher/terraform-aws-access/compare/v3.1.0...v3.1.1) (2024-07-25)
 
 
