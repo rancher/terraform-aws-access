@@ -21,14 +21,14 @@ data "aws_subnet" "selected" {
 }
 
 resource "aws_subnet" "created" {
-  count                           = local.create
-  vpc_id                          = local.vpc_id
-  cidr_block                      = local.ipv4_cidr
-  ipv6_cidr_block                 = local.ipv6_cidr
-  assign_ipv6_address_on_creation = (local.ipv6ds == 1 ? true : false)
-  ipv6_native                     = (local.type == "ipv6" ? true : false)
-  availability_zone               = local.availability_zone
-  map_public_ip_on_launch         = local.public
+  count                                          = local.create
+  vpc_id                                         = local.vpc_id
+  cidr_block                                     = local.ipv4_cidr # this is necessary to create the load balancer, even in ipv6 only mode
+  ipv6_cidr_block                                = local.ipv6_cidr
+  enable_resource_name_dns_aaaa_record_on_launch = (local.type == "ipv6" ? true : false)
+  assign_ipv6_address_on_creation                = (local.ipv6ds == 1 ? true : false)
+  availability_zone                              = local.availability_zone
+  map_public_ip_on_launch                        = local.public
   tags = {
     Name = local.name
   }
