@@ -81,16 +81,16 @@ locals {
     { for i in range((length(local.subnet_names) * local.subnet_mod)) :
       tostring(i) => {
         name      = local.subnet_names[i]
-        ipv4_cidr = cidrsubnet(local.vpc_ipv4, 1, i)
-        ipv6_cidr = cidrsubnet(local.vpc_ipv6, 8, i)
+        ipv4_cidr = cidrsubnet(local.vpc_ipv4, length(local.subnet_names), i)
+        ipv6_cidr = cidrsubnet(local.vpc_ipv6, (length(local.subnet_names) * 8), i)
         az        = local.availability_zones[i]
       }
     } :
     { for i in range((length(local.availability_zones) * local.subnet_mod)) :
       tostring(i) => {
         name      = "${local.vpc_name}-${local.availability_zones[i]}"
-        ipv4_cidr = cidrsubnet(local.vpc_ipv4, 1, i)
-        ipv6_cidr = cidrsubnet(local.vpc_ipv6, 8, i)
+        ipv4_cidr = cidrsubnet(local.vpc_ipv4, length(local.subnet_names), i)
+        ipv6_cidr = cidrsubnet(local.vpc_ipv6, (length(local.subnet_names) * 8), i)
         az        = local.availability_zones[i]
       }
     }
