@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.3](https://github.com/rancher/terraform-aws-access/compare/v3.1.2...v3.1.3) (2024-08-08)
+
+
+### Bug Fixes
+
+* network new bits match network count ([#104](https://github.com/rancher/terraform-aws-access/issues/104)) ([b030b68](https://github.com/rancher/terraform-aws-access/commit/b030b68afab056f8f3cd27514f2ac3362164f27a))
+
 ## [3.1.2](https://github.com/rancher/terraform-aws-access/compare/v3.1.1...v3.1.2) (2024-07-25)
 
 
