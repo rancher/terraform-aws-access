@@ -82,7 +82,7 @@ locals {
       tostring(i) => {
         name      = local.subnet_names[i]
         ipv4_cidr = cidrsubnet(local.vpc_ipv4, length(local.subnet_names), i)
-        ipv6_cidr = cidrsubnet(local.vpc_ipv6, (length(local.subnet_names) * 8), i)
+        ipv6_cidr = cidrsubnet(local.vpc_ipv6, 8, i) # must be hard coded to 8: AWS only accepts a /64 and always assigns a /56 to the VPC
         az        = local.availability_zones[i]
       }
     } :
@@ -90,7 +90,7 @@ locals {
       tostring(i) => {
         name      = "${local.vpc_name}-${local.availability_zones[i]}"
         ipv4_cidr = cidrsubnet(local.vpc_ipv4, length(local.subnet_names), i)
-        ipv6_cidr = cidrsubnet(local.vpc_ipv6, (length(local.subnet_names) * 8), i)
+        ipv6_cidr = cidrsubnet(local.vpc_ipv6, 8, i) # must be hard coded to 8: AWS only accepts a /64 and always assigns a /56 to the VPC
         az        = local.availability_zones[i]
       }
     }
