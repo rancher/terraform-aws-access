@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.4](https://github.com/rancher/terraform-aws-access/compare/v3.1.3...v3.1.4) (2024-08-09)
+
+
+### Bug Fixes
+
+* hard code version 6 address new bit length ([#106](https://github.com/rancher/terraform-aws-access/issues/106)) ([3e90c19](https://github.com/rancher/terraform-aws-access/commit/3e90c1951f90a78dace67bfcd99c3024b0e90dc5))
+
 ## [3.1.3](https://github.com/rancher/terraform-aws-access/compare/v3.1.2...v3.1.3) (2024-08-08)
 
 
