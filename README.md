@@ -4,9 +4,12 @@ WARNING! The subnets argument must not be derived from an apply time resource.
 
 ## Recent Changes
 
-- IPv6 is having issues due to missing the "primary" ipv6 flag in the AWS provider.
-  https://github.com/hashicorp/terraform-provider-aws/pull/36425
-  This PR fixes the issue, but in the mean time I am setting the subnet to "ipv6_native".
+- Dependency chain resolution
+  I was getting some intermittent issues attempting to destroy EIPs while also destroying the load balancer.
+  The error was something like "error disassociating EC2 address".
+  I believe AWS is automatically disassociating the EIP when destroying the load balancer.
+  To resolve I am setting the explicit dependency for the load balancer on the EIP addresses.
+  This should force the EIPs to be deleted before the load balancer.
 
 - IPv6 only and Dualstack Support BREAKING CHANGES!
   A few interface changes were necessary to inform the module about options which are now ambiguous.
