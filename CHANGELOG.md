@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.1.5](https://github.com/rancher/terraform-aws-access/compare/v3.1.4...v3.1.5) (2024-08-26)
+
+
+### Bug Fixes
+
+* remove incorrect note and add new ([#110](https://github.com/rancher/terraform-aws-access/issues/110)) ([06e8d36](https://github.com/rancher/terraform-aws-access/commit/06e8d36b275addb91b215b72decc3a0f928167a1))
+* remove old note ([#111](https://github.com/rancher/terraform-aws-access/issues/111)) ([89cc490](https://github.com/rancher/terraform-aws-access/commit/89cc49057df866adf876cfb555bef8076dd88551))
+* resolve dependency chain issues ([#108](https://github.com/rancher/terraform-aws-access/issues/108)) ([21a5cb1](https://github.com/rancher/terraform-aws-access/commit/21a5cb1bd0ae02e4283fc65a324053e3e99a71fc))
+
 ## [3.1.4](https://github.com/rancher/terraform-aws-access/compare/v3.1.3...v3.1.4) (2024-08-09)
 
 
