@@ -55,7 +55,10 @@ resource "aws_security_group_rule" "external_ingress" {
 }
 
 resource "aws_lb" "new" {
-  count                            = local.create
+  count = local.create
+  depends_on = [
+    aws_eip.created,
+  ]
   name                             = local.name
   internal                         = false
   load_balancer_type               = "network"
@@ -83,6 +86,9 @@ resource "aws_lb" "new" {
 }
 
 resource "aws_lb_target_group" "created" {
+  depends_on = [
+    aws_lb.new,
+  ]
   for_each        = (local.create == 1 ? local.access_info : {})
   name            = each.value.target_name
   port            = each.value.port
@@ -101,6 +107,9 @@ resource "aws_lb_target_group" "created" {
 }
 
 resource "aws_lb_listener" "created" {
+  depends_on = [
+    aws_lb.new,
+  ]
   for_each          = (local.create == 1 ? local.access_info : {})
   load_balancer_arn = aws_lb.new[0].arn
   port              = each.value.port
