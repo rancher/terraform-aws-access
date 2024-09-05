@@ -80,7 +80,7 @@ resource "tls_cert_request" "req" {
   count           = local.create_cert
   private_key_pem = tls_private_key.cert_private_key[0].private_key_pem
   subject {
-    common_name = local.content
+    common_name = "${local.content}.${local.zone}"
   }
 }
 
