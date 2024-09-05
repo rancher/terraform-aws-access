@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.6](https://github.com/rancher/terraform-aws-access/compare/v3.1.5...v3.1.6) (2024-09-05)
+
+
+### Bug Fixes
+
+* common name should have full domain ([#112](https://github.com/rancher/terraform-aws-access/issues/112)) ([28d9829](https://github.com/rancher/terraform-aws-access/commit/28d982963332f06ebbb18acfdfb7d0e2c9ccd49f))
+
 ## [3.1.5](https://github.com/rancher/terraform-aws-access/compare/v3.1.4...v3.1.5) (2024-08-26)
 
 
