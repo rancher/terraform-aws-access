@@ -13,8 +13,19 @@ done
 
 run_tests() {
   local rerun=$1
-  REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+  REPO_ROOT="$(git rev-parse --show-toplevel)"
   cd "$REPO_ROOT" || exit 1
+
+  # Find the tests directory
+  TEST_DIR=""
+  if [ -d "tests" ]; then
+    TEST_DIR="tests"
+  elif [ -d "test/tests" ]; then
+    TEST_DIR="test/tests"
+  else
+    echo "Error: Unable to find tests directory" >&2
+    exit 1
+  fi
 
   echo "" > "/tmp/${IDENTIFIER}_test.log"
   cat <<'EOF'> "/tmp/${IDENTIFIER}_test-processor"
@@ -35,7 +46,7 @@ EOF
   chmod +x "/tmp/${IDENTIFIER}_test-processor"
   export NO_COLOR=1
   echo "starting tests..."
-  cd tests;
+  cd "$TEST_DIR";
 
   local rerun_flag=""
   if [ "$rerun" = true ] && [ -f "/tmp/${IDENTIFIER}_failed_tests.txt" ]; then
@@ -51,7 +62,7 @@ EOF
     --format=standard-verbose \
     --jsonfile "/tmp/${IDENTIFIER}_test.log" \
     --post-run-command "sh /tmp/${IDENTIFIER}_test-processor" \
-    --packages "$REPO_ROOT/tests/..." \
+    --packages "$REPO_ROOT/$TEST_DIR/..." \
     -- \
     -parallel=10 \
     -count=1 \
