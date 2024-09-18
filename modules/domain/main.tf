@@ -178,18 +178,3 @@ resource "aws_secretsmanager_secret_version" "private_key_value_new" {
   secret_id     = aws_secretsmanager_secret.private_key_new[0].id
   secret_string = tls_private_key.cert_private_key[0].private_key_pem
 }
-
-data "aws_secretsmanager_secret_version" "private_key_select" {
-  depends_on = [
-    data.aws_route53_zone.select,
-    aws_route53_record.ipv4,
-    aws_route53_record.ipv6,
-    acme_registration.reg,
-    tls_private_key.private_key,
-    tls_private_key.cert_private_key,
-    tls_cert_request.req,
-    acme_certificate.new,
-  ]
-  count     = local.select_cert
-  secret_id = "${local.content}-private-key"
-}

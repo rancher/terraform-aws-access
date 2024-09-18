@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 rerun_failed=false
 specific_test=""
@@ -46,11 +46,12 @@ EOF
   chmod +x "/tmp/${IDENTIFIER}_test-processor"
   export NO_COLOR=1
   echo "starting tests..."
-  cd "$TEST_DIR";
+  cd "$TEST_DIR" || return 1;
 
   local rerun_flag=""
   if [ "$rerun" = true ] && [ -f "/tmp/${IDENTIFIER}_failed_tests.txt" ]; then
-    rerun_flag="-run=$(cat /tmp/${IDENTIFIER}_failed_tests.txt | tr '\n' '|')"
+    # shellcheck disable=SC2002
+    rerun_flag="-run=$(cat "/tmp/${IDENTIFIER}_failed_tests.txt" | tr '\n' '|')"
   fi
 
   local specific_test_flag=""
@@ -58,6 +59,7 @@ EOF
     specific_test_flag="-run=$specific_test"
   fi
 
+  # shellcheck disable=SC2086
   gotestsum \
     --format=standard-verbose \
     --jsonfile "/tmp/${IDENTIFIER}_test.log" \
