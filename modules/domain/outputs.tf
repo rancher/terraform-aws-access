@@ -26,6 +26,7 @@ output "certificate" {
     name        = data.aws_iam_server_certificate.select[0].name
     expiration  = data.aws_iam_server_certificate.select[0].expiration_date
     upload_date = data.aws_iam_server_certificate.select[0].upload_date
+    key_id      = "${local.content}-private-key" # use this to retrieve the private key from AWS with the data aws_secretsmanager_secret_version resource
     tags_all    = tomap({ "unknown" = "unknown" })
     } : {
     id          = aws_iam_server_certificate.new[0].id
@@ -33,6 +34,7 @@ output "certificate" {
     name        = aws_iam_server_certificate.new[0].name
     expiration  = aws_iam_server_certificate.new[0].expiration
     upload_date = aws_iam_server_certificate.new[0].upload_date
+    key_id      = "${local.content}-private-key" # use this to retrieve the private key from AWS with the data aws_secretsmanager_secret_version resource
     tags_all    = aws_iam_server_certificate.new[0].tags_all
     }) : {
     id          = ""
@@ -40,6 +42,7 @@ output "certificate" {
     name        = ""
     expiration  = ""
     upload_date = ""
+    key_id      = ""
     tags_all    = tomap({ "" = "" })
   })
 }

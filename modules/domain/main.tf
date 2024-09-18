@@ -69,7 +69,7 @@ resource "acme_registration" "reg" {
   ]
   count           = local.create_cert
   account_key_pem = tls_private_key.private_key[0].private_key_pem
-  email_address   = "${local.zone_id}@${local.zone}"
+  email_address   = "${local.content}@${local.zone}"
 }
 
 resource "tls_private_key" "cert_private_key" {
@@ -145,4 +145,51 @@ data "aws_iam_server_certificate" "select" {
   count       = local.select_cert
   name_prefix = "${local.content}-"
   latest      = true
+}
+
+resource "aws_secretsmanager_secret" "private_key_new" {
+  depends_on = [
+    data.aws_route53_zone.select,
+    aws_route53_record.ipv4,
+    aws_route53_record.ipv6,
+    acme_registration.reg,
+    tls_private_key.private_key,
+    tls_private_key.cert_private_key,
+    tls_cert_request.req,
+    acme_certificate.new,
+  ]
+  count = local.create_cert
+  name  = "${local.content}-private-key"
+}
+
+resource "aws_secretsmanager_secret_version" "private_key_value_new" {
+  depends_on = [
+    data.aws_route53_zone.select,
+    aws_route53_record.ipv4,
+    aws_route53_record.ipv6,
+    acme_registration.reg,
+    tls_private_key.private_key,
+    tls_private_key.cert_private_key,
+    tls_cert_request.req,
+    acme_certificate.new,
+    aws_secretsmanager_secret.private_key_new,
+  ]
+  count         = local.create_cert
+  secret_id     = aws_secretsmanager_secret.private_key_new[0].id
+  secret_string = tls_private_key.cert_private_key[0].private_key_pem
+}
+
+data "aws_secretsmanager_secret_version" "private_key_select" {
+  depends_on = [
+    data.aws_route53_zone.select,
+    aws_route53_record.ipv4,
+    aws_route53_record.ipv6,
+    acme_registration.reg,
+    tls_private_key.private_key,
+    tls_private_key.cert_private_key,
+    tls_cert_request.req,
+    acme_certificate.new,
+  ]
+  count     = local.select_cert
+  secret_id = "${local.content}-private-key"
 }

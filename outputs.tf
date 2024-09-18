@@ -108,6 +108,7 @@ output "certificate" {
     name        = module.domain[0].certificate.name
     expiration  = module.domain[0].certificate.expiration
     upload_date = module.domain[0].certificate.upload_date
+    key_id      = module.domain[0].certificate.key_id
     tags_all    = module.domain[0].certificate.tags_all
     } : {
     # no object found, but output types are normal
@@ -116,6 +117,7 @@ output "certificate" {
     name        = ""
     expiration  = ""
     upload_date = ""
+    key_id      = ""
     tags_all    = tomap({ "" = "" })
   })
   description = <<-EOT
