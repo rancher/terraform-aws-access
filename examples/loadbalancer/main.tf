@@ -13,7 +13,7 @@ provider "acme" {
 locals {
   identifier   = var.identifier
   example      = "loadbalancer"
-  project_name = "tf-${substr(md5(join("-", [local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
+  project_name = lower(substr("tf-${substr(md5(join("-", [local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}", 0, 25))
 }
 
 # AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively)

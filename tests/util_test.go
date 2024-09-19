@@ -30,7 +30,7 @@ func setup(t *testing.T, directory string, region string, terraformVars map[stri
 		".*registry service is unreachable.*":                                  "Failed due to transient network error.",
 		".*connection reset by peer.*":                                         "Failed due to transient network error.",
 		".*TLS handshake timeout.*":                                            "Failed due to transient network error.",
-		".*disassociating EC2 EIP.*The networkInterface ID .*does not exist.*": "Failed due to transient AWS error.",
+		".*disassociating EC2 EIP.*": 																					"Failed due to transient AWS error.",
 	}
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{

@@ -1,6 +1,6 @@
-module github.com/rancher/terraform-aws-access.go
+module github.com/rancher/terraform-aws-access
 
-go 1.18
+go 1.21
 
 require (
 	github.com/gruntwork-io/terratest v0.41.10
