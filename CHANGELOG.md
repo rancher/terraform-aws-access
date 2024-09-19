@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.1.7](https://github.com/rancher/terraform-aws-access/compare/v3.1.6...v3.1.7) (2024-09-19)
+
+
+### Bug Fixes
+
+* bump dependency from 4.0.5 to 4.0.6 ([#114](https://github.com/rancher/terraform-aws-access/issues/114)) ([ce7bc5b](https://github.com/rancher/terraform-aws-access/commit/ce7bc5b67eee24becd40ee1f72639dec05638ccb))
+* save private key and fix tests ([#115](https://github.com/rancher/terraform-aws-access/issues/115)) ([c5f1ed9](https://github.com/rancher/terraform-aws-access/commit/c5f1ed99684d4396f49354a3879788b302f69499))
+* update read me ([#117](https://github.com/rancher/terraform-aws-access/issues/117)) ([84d50aa](https://github.com/rancher/terraform-aws-access/commit/84d50aa52cd8bdd1d5286dadc4f1821df817a1bc))
+
 ## [3.1.6](https://github.com/rancher/terraform-aws-access/compare/v3.1.5...v3.1.6) (2024-09-05)
 
 
