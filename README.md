@@ -4,6 +4,10 @@ WARNING! The subnets argument must not be derived from an apply time resource.
 
 ## Recent Changes
 
+- Bug Fixes and Add the private key
+  To configure Rancher (and other applications) to use the certificate we generate for the domain
+  we need to also save the private key for the certificate.
+
 - Dependency chain resolution
   I was getting some intermittent issues attempting to destroy EIPs while also destroying the load balancer.
   The error was something like "error disassociating EC2 address".
@@ -23,14 +27,6 @@ WARNING! The subnets argument must not be derived from an apply time resource.
   When deploying an ipv6 project there is no internet gateway for ipv4, allowing only ipv6 at the edge of your vpc.
   Within the VPC you can technically use ipv4, but only on internal addressing, and it is not recommended.
   You can restrict this by not adding ipv4 access addresses to the servers.
-
-- Private IP address for load balancer
-  Along with assigning an EIP for public access we now also attach a private ip address to the load balancer.
-  The last available IP address in the subnet is used.
-  This helps avoid IP address conflicts with instances in the subnet.
-  We now provision a subnet mapping for every subnet, and an elastic IP for each mapping.
-  We then assign all the EIPs to the domain.
-  This enables cross-zone load balancing with DNS round robin while also supplying a specific IP to each AZ.
 
 ## AWS Access
 
