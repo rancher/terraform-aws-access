@@ -90,7 +90,7 @@ resource "aws_lb_target_group" "created" {
     aws_lb.new,
   ]
   for_each        = (local.create == 1 ? local.access_info : {})
-  name            = each.value.target_name
+  name            = substr(each.value.target_name, 0, 32)
   port            = each.value.port
   protocol        = upper(each.value.protocol)
   target_type     = "instance"
