@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.9](https://github.com/rancher/terraform-aws-access/compare/v3.1.8...v3.1.9) (2024-10-09)
+
+
+### Bug Fixes
+
+* use issuer certificate ([#121](https://github.com/rancher/terraform-aws-access/issues/121)) ([ca4ed57](https://github.com/rancher/terraform-aws-access/commit/ca4ed57d387e1d77d0854013fea6717440300732))
+
 ## [3.1.8](https://github.com/rancher/terraform-aws-access/compare/v3.1.7...v3.1.8) (2024-10-08)
 
 
