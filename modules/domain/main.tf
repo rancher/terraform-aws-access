@@ -35,24 +35,26 @@ resource "aws_route53_record" "ipv4" {
   depends_on = [
     data.aws_route53_zone.select,
   ]
-  count   = local.ipv4ds
-  zone_id = local.zone_id
-  name    = local.content
-  type    = "A"
-  ttl     = 30
-  records = local.ips
+  count           = local.ipv4ds
+  zone_id         = local.zone_id
+  name            = local.content
+  type            = "A"
+  ttl             = 30
+  records         = local.ips
+  allow_overwrite = true
 }
 
 resource "aws_route53_record" "ipv6" {
   depends_on = [
     data.aws_route53_zone.select,
   ]
-  count   = local.ipv6
-  zone_id = local.zone_id
-  name    = local.content
-  type    = "AAAA"
-  ttl     = 30
-  records = local.ips
+  count           = local.ipv6
+  zone_id         = local.zone_id
+  name            = local.content
+  type            = "AAAA"
+  ttl             = 30
+  records         = local.ips
+  allow_overwrite = true
 }
 
 # cert generation
