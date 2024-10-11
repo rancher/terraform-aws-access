@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.10](https://github.com/rancher/terraform-aws-access/compare/v3.1.9...v3.1.10) (2024-10-11)
+
+
+### Bug Fixes
+
+* allow domains to be overridden ([#123](https://github.com/rancher/terraform-aws-access/issues/123)) ([7601fae](https://github.com/rancher/terraform-aws-access/commit/7601fae4d9b275684e7756454bbac2f7b83863ce))
+
 ## [3.1.9](https://github.com/rancher/terraform-aws-access/compare/v3.1.8...v3.1.9) (2024-10-09)
 
 
