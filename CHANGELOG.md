@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.11](https://github.com/rancher/terraform-aws-access/compare/v3.1.10...v3.1.11) (2024-10-16)
+
+
+### Bug Fixes
+
+* ignore address changes in domain ([#125](https://github.com/rancher/terraform-aws-access/issues/125)) ([8dfe1ea](https://github.com/rancher/terraform-aws-access/commit/8dfe1eae34ce043e99012510bf4ba643c316acb2))
+
 ## [3.1.10](https://github.com/rancher/terraform-aws-access/compare/v3.1.9...v3.1.10) (2024-10-11)
 
 
