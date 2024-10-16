@@ -42,6 +42,11 @@ resource "aws_route53_record" "ipv4" {
   ttl             = 30
   records         = local.ips
   allow_overwrite = true
+  lifecycle {
+    ignore_changes = [
+      records,
+    ]
+  }
 }
 
 resource "aws_route53_record" "ipv6" {
@@ -55,6 +60,11 @@ resource "aws_route53_record" "ipv6" {
   ttl             = 30
   records         = local.ips
   allow_overwrite = true
+  lifecycle {
+    ignore_changes = [
+      records,
+    ]
+  }
 }
 
 # cert generation
