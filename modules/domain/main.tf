@@ -138,7 +138,8 @@ resource "aws_iam_server_certificate" "new" {
   name_prefix       = "${local.content}-"
   certificate_body  = acme_certificate.new[0].certificate_pem
   certificate_chain = acme_certificate.new[0].issuer_pem
-  private_key       = tls_private_key.cert_private_key[0].private_key_pem
+  # full chain: "${acme_certificate.new[0].certificate_pem}${acme_certificate.new[0].issuer_pem}"
+  private_key = tls_private_key.cert_private_key[0].private_key_pem
   lifecycle {
     create_before_destroy = true
   }
