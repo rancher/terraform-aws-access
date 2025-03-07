@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.1.12](https://github.com/rancher/terraform-aws-access/compare/v3.1.11...v3.1.12) (2025-03-06)
+
+
+### Bug Fixes
+
+* remove version constraints ([#127](https://github.com/rancher/terraform-aws-access/issues/127)) ([0f3c590](https://github.com/rancher/terraform-aws-access/commit/0f3c59090eca4d98c59632f229d88ad1bf7092f7))
+* update to comply with new restrictions ([#128](https://github.com/rancher/terraform-aws-access/issues/128)) ([043e587](https://github.com/rancher/terraform-aws-access/commit/043e58746af8ae5228ff5836a8b218159a0e7426))
+
 ## [3.1.11](https://github.com/rancher/terraform-aws-access/compare/v3.1.10...v3.1.11) (2024-10-16)
 
 
