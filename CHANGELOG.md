@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.13](https://github.com/rancher/terraform-aws-access/compare/v3.1.12...v3.1.13) (2025-05-06)
+
+
+### Bug Fixes
+
+* link project with load balance ([31228fd](https://github.com/rancher/terraform-aws-access/commit/31228fd21c7023a9f49239811d9bff93a999393a))
+
 ## [3.1.12](https://github.com/rancher/terraform-aws-access/compare/v3.1.11...v3.1.12) (2025-03-06)
 
 
