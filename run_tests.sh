@@ -111,19 +111,15 @@ if [ -z "$ZONE" ]; then echo "ZONE isn't set"; else echo "ZONE is set"; fi
 if [ -z "$cleanup_id" ]; then
   echo "checking tests for compile errors..."
   D="$(pwd)"
-  cd "$REPO_ROOT/test/tests"
-  go mod tidy
-  if [ $? -gt 0 ]; then echo "failed to tidy, exit code $?"; exit 1; fi
+  cd "$REPO_ROOT/test/tests" || exit
+  if ! go mod tidy; then echo "failed to tidy"; exit 1; fi
 
-  for file in $(find $REPO_ROOT/test -name '*.go'); do
+  while IFS= read -r file; do
     echo "found $file";
-    go test -c "$file" -o "$file.test"
-    C=$?
-    rm -rf "$file.test"
-    if [ $C -gt 0 ]; then echo "failed to compile $file, exit code $C"; exit $C; fi
-  done
+    if ! go test -c "$file"; then C=$?; echo "failed to compile $file, exit code $C"; exit $C; fi
+  done < "$(find "$REPO_ROOT/test" -name '*.go')"
   echo "compile checks passed..."
-  cd "$D"
+  cd "$D" || exit
 
   echo "checking terraform configs for errors..."
   tflint --recursive
