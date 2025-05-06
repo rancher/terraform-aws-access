@@ -1,4 +1,4 @@
-package test
+package dualstack
 
 import (
 	"os"
@@ -6,25 +6,26 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
+  util "github.com/rancher/terraform-aws-access/test/tests"
 )
 
 // this test generates all objects, no overrides
-func TestBasic(t *testing.T) {
+func TestDualstack(t *testing.T) {
 	t.Parallel()
 	zone := os.Getenv("ZONE")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
 	}
-	directory := "basic"
-	region := "us-west-1"
+	directory := "dualstack"
+  region := os.Getenv("AWS_REGION")
 
 	terraformVars := map[string]interface{}{
 		"identifier": uniqueID,
-		"zone":     	zone,
+		"zone":       zone,
 	}
-	terraformOptions := setup(t, directory, region, terraformVars)
-	defer teardown(t, directory)
+	terraformOptions := util.Setup(t, directory, region, terraformVars)
+	defer util.Teardown(t, directory)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }

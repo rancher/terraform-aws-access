@@ -1,4 +1,4 @@
-package test
+package domain
 
 import (
 	"os"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
+  util "github.com/rancher/terraform-aws-access/test/tests"
 )
 
 // this test generates all objects, no overrides
@@ -17,18 +18,19 @@ func TestDomain(t *testing.T) {
 	}
 	zone := os.Getenv("ZONE")
 	directory := "domain"
-	region := "us-west-1"
+  region := os.Getenv("AWS_REGION")
 
 	terraformVars := map[string]interface{}{
 		"identifier": uniqueID,
 		"zone":     	zone,
 	}
-	terraformOptions := setup(t, directory, region, terraformVars)
+	terraformOptions := util.Setup(t, directory, region, terraformVars)
 
-	defer teardown(t, directory)
+	defer util.Teardown(t, directory)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
+
 func TestCert(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER")
@@ -43,9 +45,9 @@ func TestCert(t *testing.T) {
 		"identifier": uniqueID,
 		"zone":     	zone,
 	}
-	terraformOptions := setup(t, directory, region, terraformVars)
+	terraformOptions := util.Setup(t, directory, region, terraformVars)
 
-	defer teardown(t, directory)
+	defer util.Teardown(t, directory)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
