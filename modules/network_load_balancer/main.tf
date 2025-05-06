@@ -33,14 +33,6 @@ locals {
       }
     }
   ]...)
-  # Access info example
-  # test = {
-  #   port        = 443
-  #   ip_family   = "ipv4"
-  #   cidrs       = ["1.1.1.1/32"]
-  #   protocol    = "tcp"
-  #   target_name = "test-test-123abc"
-  # }
 }
 
 data "aws_lb" "selected" {
