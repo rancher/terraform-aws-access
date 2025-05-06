@@ -1,28 +1,46 @@
-package test
+package tests
 
 import (
 	"fmt"
 	"os"
+  "path/filepath"
 	"testing"
 
+  g "github.com/gruntwork-io/terratest/modules/git"
 	"github.com/gruntwork-io/terratest/modules/terraform"
-	"github.com/stretchr/testify/require"
 )
 
-func teardown(t *testing.T, directory string) {
-	err := os.RemoveAll(fmt.Sprintf("../examples/%s/.terraform", directory))
-	require.NoError(t, err)
-	err1 := os.RemoveAll(fmt.Sprintf("../examples/%s/.terraform.lock.hcl", directory))
-	require.NoError(t, err1)
-	err2 := os.RemoveAll(fmt.Sprintf("../examples/%s/terraform.tfstate", directory))
-	require.NoError(t, err2)
-	err3 := os.RemoveAll(fmt.Sprintf("../examples/%s/terraform.tfstate.backup", directory))
-	require.NoError(t, err3)
+func Teardown(t *testing.T, directory string) {
+  repoRoot, err := filepath.Abs(g.GetRepoRoot(t))
+  if err != nil {
+    t.Fatalf("Error getting git root directory: %v", err)
+  }
+  err = os.RemoveAll(fmt.Sprintf(repoRoot + "/examples/%s/.terraform", directory))
+  if err != nil {
+    t.Fatalf("Error removing .terraform directory: %v", err)
+  }
+	err = os.RemoveAll(fmt.Sprintf(repoRoot + "/examples/%s/.terraform.lock.hcl", directory))
+  if err != nil {
+    t.Fatalf("Error removing terraform lock file: %v", err)
+  }
+	err = os.RemoveAll(fmt.Sprintf(repoRoot + "/examples/%s/terraform.tfstate", directory))
+  if err != nil {
+    t.Fatalf("Error removing state file: %v", err)
+  }
+	err = os.RemoveAll(fmt.Sprintf(repoRoot + "/examples/%s/terraform.tfstate.backup", directory))
+  if err != nil {
+    t.Fatalf("Error remote state backup file: %v", err)
+  }
 }
 
-func setup(t *testing.T, directory string, region string, terraformVars map[string]interface{}) *terraform.Options {
+func Setup(t *testing.T, directory string, region string, terraformVars map[string]interface{}) *terraform.Options {
 
-	retryableTerraformErrors := map[string]string{
+  repoRoot, err := filepath.Abs(g.GetRepoRoot(t))
+  if err != nil {
+    t.Fatalf("Error getting git root directory: %v", err)
+  }
+
+  retryableTerraformErrors := map[string]string{
 		// The reason is unknown, but eventually these succeed after a few retries.
 		".*unable to verify signature.*":                                       "Failed due to transient network error.",
 		".*unable to verify checksum.*":                                        "Failed due to transient network error.",
@@ -34,7 +52,7 @@ func setup(t *testing.T, directory string, region string, terraformVars map[stri
 	}
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: fmt.Sprintf("../examples/%s", directory),
+		TerraformDir: fmt.Sprintf(repoRoot + "/examples/%s", directory),
 		// Variables to pass to our Terraform code using -var options
 		Vars: terraformVars,
 		// Environment variables to set when running Terraform

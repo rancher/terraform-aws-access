@@ -15,6 +15,24 @@ locals {
     [for s in local.subnets : cidrhost(s.cidrs.ipv6, -2) if can(cidrhost(s.cidrs.ipv6, -2))]
   )
 
+  access_info_cidrs_length = [
+    for i in range(length(local.access_info)) :
+    length(local.access_info[keys(local.access_info)[i]].cidrs)
+  ] # [1,1,2,2,1]
+
+  access_info_cidrs_matrix = merge([
+    for ia in range(length(local.access_info)) :
+    {
+      for ib in range(local.access_info_cidrs_length[ia]) :
+      "${keys(local.access_info)[ia]}-${ib}" => {
+        port        = local.access_info[keys(local.access_info)[ia]].port
+        ip_family   = local.access_info[keys(local.access_info)[ia]].ip_family
+        cidr        = local.access_info[keys(local.access_info)[ia]].cidrs[ib]
+        protocol    = local.access_info[keys(local.access_info)[ia]].protocol
+        target_name = local.access_info[keys(local.access_info)[ia]].target_name
+      }
+    }
+  ]...)
 }
 
 data "aws_lb" "selected" {
@@ -43,15 +61,24 @@ resource "aws_security_group" "load_balancer" {
   }
 }
 
-resource "aws_security_group_rule" "external_ingress" {
-  for_each          = (local.create == 1 ? local.access_info : {})
+resource "aws_vpc_security_group_ingress_rule" "external_ingress" {
+  for_each          = (local.create == 1 ? local.access_info_cidrs_matrix : {})
   security_group_id = aws_security_group.load_balancer[0].id
-  type              = "ingress"
   from_port         = each.value.port
   to_port           = each.value.port
-  protocol          = each.value.protocol
-  cidr_blocks       = (each.value.ip_family != "ipv6" ? each.value.cidrs : null)
-  ipv6_cidr_blocks  = (each.value.ip_family == "ipv6" ? each.value.cidrs : null)
+  ip_protocol       = each.value.protocol
+  cidr_ipv4         = (each.value.ip_family != "ipv6" ? each.value.cidr : null)
+  cidr_ipv6         = (each.value.ip_family == "ipv6" ? each.value.cidr : null)
+}
+
+# allows the project to ingress the load balancer
+resource "aws_vpc_security_group_ingress_rule" "project_ingress_loadbalancer" {
+  depends_on = [
+    aws_security_group.load_balancer,
+  ]
+  referenced_security_group_id = local.security_group_id
+  security_group_id            = aws_security_group.load_balancer[0].id
+  ip_protocol                  = "-1"
 }
 
 resource "aws_lb" "new" {
@@ -62,7 +89,7 @@ resource "aws_lb" "new" {
   name                             = local.name
   internal                         = false
   load_balancer_type               = "network"
-  security_groups                  = [aws_security_group.load_balancer[0].id, local.security_group_id]
+  security_groups                  = [aws_security_group.load_balancer[0].id]
   enable_cross_zone_load_balancing = true # cross zone load balancing is necessary for HA
   dynamic "subnet_mapping" {
     for_each = local.subnets

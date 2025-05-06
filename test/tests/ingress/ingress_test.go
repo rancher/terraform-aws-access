@@ -1,4 +1,4 @@
-package test
+package ingress
 
 import (
 	"os"
@@ -6,23 +6,26 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
+  util "github.com/rancher/terraform-aws-access/test/tests"
 )
 
-// this test generates all objects, no overrides
-func TestSecuritygroup(t *testing.T) {
+// this test generates improves on the basic by adding ingress for the load balancer
+func TestIngress(t *testing.T) {
 	t.Parallel()
+	zone := os.Getenv("ZONE")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
 	}
-	directory := "securitygroup"
-	region := "us-west-1"
+	directory := "ingress"
+  region := os.Getenv("AWS_REGION")
 
 	terraformVars := map[string]interface{}{
 		"identifier": uniqueID,
+		"zone":     	zone,
 	}
-	terraformOptions := setup(t, directory, region, terraformVars)
-	defer teardown(t, directory)
+	terraformOptions := util.Setup(t, directory, region, terraformVars)
+	defer util.Teardown(t, directory)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
