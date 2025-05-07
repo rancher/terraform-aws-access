@@ -89,7 +89,7 @@ resource "aws_lb" "new" {
   name                             = local.name
   internal                         = false
   load_balancer_type               = "network"
-  security_groups                  = [aws_security_group.load_balancer[0].id]
+  security_groups                  = [aws_security_group.load_balancer[0].id, local.security_group_id]
   enable_cross_zone_load_balancing = true # cross zone load balancing is necessary for HA
   dynamic "subnet_mapping" {
     for_each = local.subnets
