@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.14](https://github.com/rancher/terraform-aws-access/compare/v3.1.13...v3.1.14) (2025-05-07)
+
+
+### Bug Fixes
+
+* add project security group to load balance ([#132](https://github.com/rancher/terraform-aws-access/issues/132)) ([847fa8d](https://github.com/rancher/terraform-aws-access/commit/847fa8d0cb00090cab67a0487fa7684ef5e32bae))
+
 ## [3.1.13](https://github.com/rancher/terraform-aws-access/compare/v3.1.12...v3.1.13) (2025-05-06)
 
 
