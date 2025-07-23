@@ -102,26 +102,19 @@ output "domain" {
 }
 
 output "certificate" {
+  sensitive = true
   value = ((length(module.domain) > 0) ? {
-    id          = module.domain[0].certificate.id
-    arn         = module.domain[0].certificate.arn
-    name        = module.domain[0].certificate.name
-    expiration  = module.domain[0].certificate.expiration
-    upload_date = module.domain[0].certificate.upload_date
-    key_id      = module.domain[0].certificate.key_id
-    tags_all    = module.domain[0].certificate.tags_all
+    private_key = module.domain[0].certificate.private_key
+    public_key  = module.domain[0].certificate.public_key
+    chain       = module.domain[0].certificate.chain
     } : {
     # no object found, but output types are normal
-    id          = ""
-    arn         = ""
-    name        = ""
-    expiration  = ""
-    upload_date = ""
-    key_id      = ""
-    tags_all    = tomap({ "" = "" })
+    private_key = ""
+    public_key  = ""
+    chain       = ""
   })
   description = <<-EOT
-    The certificate object from AWS.
+    The ACME certificate information.
     When generating a domain, a valid TLS certificate is also generated.
     This is helpful for servers and applications to import for securing transfer.
   EOT

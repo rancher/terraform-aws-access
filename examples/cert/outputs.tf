@@ -14,5 +14,6 @@ output "domain" {
   value = module.this.domain
 }
 output "certificate" {
-  value = module.this.certificate
+  value     = module.this.certificate
+  sensitive = true
 }

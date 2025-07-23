@@ -21,6 +21,7 @@ EOT
   esac
 done
 
+# shellcheck disable=SC2143
 if [ -n "$cleanup_id" ]; then
   export IDENTIFIER="$cleanup_id"
 fi
@@ -72,11 +73,13 @@ EOF
   fi
 
   local specific_test_flag=""
+  # shellcheck disable=SC2143
   if [ -n "$specific_test" ]; then
     specific_test_flag="-run=$specific_test"
   fi
 
   local package_pattern=""
+  # shellcheck disable=SC2143
   if [ -n "$specific_package" ]; then
     package_pattern="$specific_package"
   else
@@ -111,35 +114,41 @@ if [ -z "$ZONE" ]; then echo "ZONE isn't set"; else echo "ZONE is set"; fi
 if [ -z "$cleanup_id" ]; then
   echo "checking tests for compile errors..."
   D="$(pwd)"
+
   cd "$REPO_ROOT/test/tests" || exit
-  if ! go mod tidy; then echo "failed to tidy"; exit 1; fi
+  if ! go mod tidy; then C=$?; echo "failed to tidy, exit code $C"; exit $C; fi
+  echo "completed tidy..."
 
   while IFS= read -r file; do
     echo "found $file";
-    if ! go test -c "$file"; then C=$?; echo "failed to compile $file, exit code $C"; exit $C; fi
-  done < "$(find "$REPO_ROOT/test" -name '*.go')"
+    if ! go test -c "$file" -o "${file}.test"; then C=$?; echo "failed to compile $file, exit code $C"; exit $C; fi
+    rm -rf "${file}.test"
+  done <<< "$(find "$REPO_ROOT/test" -not \( -path "$REPO_ROOT/test/tests/data" -prune \) -name '*.go')"
   echo "compile checks passed..."
+
   cd "$D" || exit
 
   echo "checking terraform configs for errors..."
-  tflint --recursive
-  C=$?
-  if [ $C -gt 0 ]; then echo "tflint failed, exit code $C"; exit $C; fi
+  if ! tflint --recursive; then C=$?; echo "tflint failed, exit code $C"; exit $C; fi
   echo "terraform configs valid..."
 
   # Run tests initially
   run_tests false
+  echo "waiting for 60 sec for deletes to propagate"
+  sleep 60
 
   # Check if we need to rerun failed tests
   if [ "$rerun_failed" = true ] && [ -f "/tmp/${IDENTIFIER}_failed_tests.txt" ]; then
     echo "Rerunning failed tests..."
     run_tests true
+    echo "waiting for 60 sec for deletes to propagate"
+    sleep 60
   fi
 fi
 
 echo "Clearing leftovers with Id $IDENTIFIER in $AWS_REGION..."
-sleep 60
 
+# shellcheck disable=SC2143
 if [ -n "$IDENTIFIER" ]; then
   attempts=0
   # shellcheck disable=SC2143
@@ -153,6 +162,7 @@ if [ -n "$IDENTIFIER" ]; then
     echo "Warning: Failed to clear all resources after 3 attempts."
   fi
 
+  # remove key pairs
   attempts=0
   # shellcheck disable=SC2143
   while [ -n "$(leftovers -d --iaas=aws --aws-region="$AWS_REGION" --type="ec2-key-pair" --filter="terraform-ci-$IDENTIFIER" | grep -v 'AccessDenied')" ] && [ $attempts -lt 3 ]; do
@@ -164,6 +174,50 @@ if [ -n "$IDENTIFIER" ]; then
   if [ $attempts -eq 3 ]; then
     echo "Warning: Failed to clear all EC2 key pairs after 3 attempts."
   fi
+
+  # remove s3 storage
+  attempts=0
+  ID="$(aws s3 ls | grep -i "$IDENTIFIER" | awk '{print $3}')"
+  # shellcheck disable=SC2143
+  while [ -n "$(aws s3 ls | grep -i "$IDENTIFIER")" ] && [ $attempts -lt 3 ]; do
+    echo "found s3 bucket $ID, removing..."
+    while read -r v; do
+      if [ -z "$v" ]; then continue; fi;
+      aws s3api delete-object --bucket "$(echo "$ID" | tr '[:upper:]' '[:lower:]')" --key "tfstate" --version-id="$v"
+    done <<<"$(
+      aws s3api list-object-versions --bucket "$(echo "$ID" | tr '[:upper:]' '[:lower:]')" | jq -r '.Versions[]?.VersionId'
+    )"
+
+    while read -r v; do
+      if [ -z "$v" ]; then continue; fi;
+      aws s3api delete-object --bucket "$(echo "$ID" | tr '[:upper:]' '[:lower:]')" --key "tfstate" --version-id="$v";
+    done <<<"$(
+      aws s3api list-object-versions --bucket "$(echo "$ID" | tr '[:upper:]' '[:lower:]')" | jq -r '.DeleteMarkers[]?.VersionId'
+    )"
+
+    aws s3api delete-bucket --bucket "$(echo "$ID" | tr '[:upper:]' '[:lower:]')"
+
+    sleep 10
+    attempts=$((attempts + 1))
+  done
+
+  # remove load balancer target groups
+  attempts=0
+  # shellcheck disable=SC2143
+  while [ $attempts -lt 3 ]; do
+    while read -r line; do
+      if [ -z "$line" ]; then continue; fi
+      echo "removing load balancer target group, $line..."
+      aws elbv2 delete-target-group --target-group-arn "$line";
+    done <<<"$(
+      while read -r line; do
+        if [ -z "$line" ]; then continue; fi
+        aws elbv2 describe-tags --resource-arns "$line" | jq -r --arg id "$IDENTIFIER" '.TagDescriptions[] | select(any(.Tags[]; .Key == "Id" and .Value == $id)) | .ResourceArn // ""';
+      done <<<"$(aws elbv2 describe-target-groups | jq -r '.TargetGroups[]?.TargetGroupArn')"
+    )"
+    sleep 10
+    attempts=$((attempts + 1))
+  done
 fi
 
 if [ -f "/tmp/${IDENTIFIER}_failed_tests.txt" ]; then

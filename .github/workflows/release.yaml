@@ -102,7 +102,6 @@ jobs:
           IDENTIFIER: ${{github.run_id}}
           ZONE: ${{secrets.ZONE}}
           ACME_SERVER_URL: https://acme-v02.api.letsencrypt.org/directory
-          RANCHER_INSECURE: false
         run: |
           ./run_tests.sh
       - uses: actions/github-script@v7
