@@ -20,30 +20,22 @@ output "zone" {
   value = local.zone_resource
 }
 output "certificate" {
+  sensitive = true
   value = (local.cert_use != "skip" ? (local.select_cert == 1 ? {
-    id          = data.aws_iam_server_certificate.select[0].id
-    arn         = data.aws_iam_server_certificate.select[0].arn
-    name        = data.aws_iam_server_certificate.select[0].name
-    expiration  = data.aws_iam_server_certificate.select[0].expiration_date
-    upload_date = data.aws_iam_server_certificate.select[0].upload_date
-    key_id      = "${local.content}-private-key" # use this to retrieve the private key from AWS with the data aws_secretsmanager_secret_version resource
-    tags_all    = tomap({ "unknown" = "unknown" })
+    # select
+    public_key  = data.aws_iam_server_certificate.select[0].certificate_body
+    private_key = ""
+    chain       = data.aws_iam_server_certificate.select[0].certificate_chain
     } : {
-    id          = aws_iam_server_certificate.new[0].id
-    arn         = aws_iam_server_certificate.new[0].arn
-    name        = aws_iam_server_certificate.new[0].name
-    expiration  = aws_iam_server_certificate.new[0].expiration
-    upload_date = aws_iam_server_certificate.new[0].upload_date
-    key_id      = "${local.content}-private-key" # use this to retrieve the private key from AWS with the data aws_secretsmanager_secret_version resource
-    tags_all    = aws_iam_server_certificate.new[0].tags_all
+    # create
+    public_key  = acme_certificate.new[0].certificate_pem
+    private_key = tls_private_key.cert_private_key[0].private_key_pem
+    chain       = acme_certificate.new[0].issuer_pem
     }) : {
-    id          = ""
-    arn         = ""
-    name        = ""
-    expiration  = ""
-    upload_date = ""
-    key_id      = ""
-    tags_all    = tomap({ "" = "" })
+    # default
+    public_key  = ""
+    private_key = ""
+    chain       = ""
   })
 }
 output "certificate_arn" {
