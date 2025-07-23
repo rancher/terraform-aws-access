@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/rancher/terraform-aws-access/compare/v3.1.14...v4.0.0) (2025-07-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove aws secret, output cert info ([#134](https://github.com/rancher/terraform-aws-access/issues/134))
+
+### Bug Fixes
+
+* remove aws secret, output cert info ([#134](https://github.com/rancher/terraform-aws-access/issues/134)) ([1941a4f](https://github.com/rancher/terraform-aws-access/commit/1941a4ff2310767719679d794833ab9589ec17a6))
+
 ## [3.1.14](https://github.com/rancher/terraform-aws-access/compare/v3.1.13...v3.1.14) (2025-05-07)
 
 
