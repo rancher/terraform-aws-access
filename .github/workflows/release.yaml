@@ -49,6 +49,7 @@ jobs:
           role-duration-seconds: 7200 # 2 hours
           output-credentials: true
       - name: install-nix
+        if: steps.release-please.outputs.pr
         run: |
           curl -L -o install.sh "https://releases.nixos.org/nix/nix-${NIX_INSTALL_VERSION}/install"
           echo "${NIX_INSTALL_SHA} install.sh" | sha256sum -c -
