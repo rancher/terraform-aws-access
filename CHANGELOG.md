@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.0.1](https://github.com/rancher/terraform-aws-access/compare/v4.0.0...v4.0.1) (2026-04-10)
+
+
+### Bug Fixes
+
+* bump actions/checkout from 4 to 6 ([#139](https://github.com/rancher/terraform-aws-access/issues/139)) ([3b545f4](https://github.com/rancher/terraform-aws-access/commit/3b545f41ab4b59d58f35369471f0242d69f4bc66))
+* bump actions/github-script from 7 to 8 ([#137](https://github.com/rancher/terraform-aws-access/issues/137)) ([de35c4c](https://github.com/rancher/terraform-aws-access/commit/de35c4c227cbfc89ee74889bb81ca295090ccd07))
+* bump aws-actions/configure-aws-credentials from 4 to 6 ([#141](https://github.com/rancher/terraform-aws-access/issues/141)) ([b9a1068](https://github.com/rancher/terraform-aws-access/commit/b9a10681c747f75ef071d4ec5405115fdc6ad4de))
+* supply chain vulnerabilities and environment files ([#143](https://github.com/rancher/terraform-aws-access/issues/143)) ([1b52f03](https://github.com/rancher/terraform-aws-access/commit/1b52f03eb62389b6a8bd981c122b4c14926eb38d))
+
 ## [4.0.0](https://github.com/rancher/terraform-aws-access/compare/v3.1.14...v4.0.0) (2025-07-23)
 
 
