@@ -48,23 +48,23 @@
             name = "dev-shell-package";
             paths = with pkgs; [
               actionlint
+              age
               aspellWithDicts
               awscli2
               bashInteractive
-              cmctl
               curl
               dig
+              eslint
               gh
               git
               gitleaks
               gnupg
               go
-              golint
+              golangci-lint
+              goreleaser
               gotestfmt
               gotestsum
-              kubernetes-helm
               jq
-              kubectl
               leftovers
               less
               openssh
@@ -73,13 +73,13 @@
               tflint
               tfsec
               tfswitch
+              trivy
               updatecli
               vim
               which
-              yq-go
+              yq
             ];
           };
-
         in
         {
           packages.default = devShellPackage;
