@@ -23,7 +23,7 @@ jobs:
         id: release-please
         with:
           release-type: terraform-module
-      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0 https://github.com/actions/github-script/commits/main
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v8.0.0 https://github.com/actions/github-script/commits/main
         if: steps.release-please.outputs.pr
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -72,7 +72,7 @@ jobs:
           ACME_SERVER_URL: https://acme-v02.api.letsencrypt.org/directory
         run: |
           ./run_tests.sh
-      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0 https://github.com/actions/github-script/commits/main
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v8.0.0 https://github.com/actions/github-script/commits/main
         if: steps.release-please.outputs.pr
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
