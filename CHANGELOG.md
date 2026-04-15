@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.0.2](https://github.com/rancher/terraform-aws-access/compare/v4.0.1...v4.0.2) (2026-04-15)
+
+
+### Bug Fixes
+
+* bump actions/github-script from 8.0.0 to 9.0.0 ([#146](https://github.com/rancher/terraform-aws-access/issues/146)) ([5f2d76b](https://github.com/rancher/terraform-aws-access/commit/5f2d76b0a53b11024e5b26cf7dee8ae1354317ca))
+* bump googleapis/release-please-action from 4.3.0 to 4.4.0 ([#145](https://github.com/rancher/terraform-aws-access/issues/145)) ([d122b73](https://github.com/rancher/terraform-aws-access/commit/d122b73c1dac04257c4d0073e6b012c3149ea34b))
+* pin and update ([#148](https://github.com/rancher/terraform-aws-access/issues/148)) ([aabe9a2](https://github.com/rancher/terraform-aws-access/commit/aabe9a2ea5a9f91a76fa8f0acb3ecdaade3e323e))
+
 ## [4.0.1](https://github.com/rancher/terraform-aws-access/compare/v4.0.0...v4.0.1) (2026-04-10)
 
 
