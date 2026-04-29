@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.0.3](https://github.com/rancher/terraform-aws-access/compare/v4.0.2...v4.0.3) (2026-04-29)
+
+
+### Bug Fixes
+
+* bump release please action from 4.4.0 to 4.4.1 ([#149](https://github.com/rancher/terraform-aws-access/issues/149)) ([299db1b](https://github.com/rancher/terraform-aws-access/commit/299db1b53ca1132056a6bb0a7f4eb395de1b7b4b))
+* remove tfswitch and download terraform manually ([#151](https://github.com/rancher/terraform-aws-access/issues/151)) ([2ad1f55](https://github.com/rancher/terraform-aws-access/commit/2ad1f55a87794423425f43bbbf659a1703000e9b))
+
 ## [4.0.2](https://github.com/rancher/terraform-aws-access/compare/v4.0.1...v4.0.2) (2026-04-15)
 
 
