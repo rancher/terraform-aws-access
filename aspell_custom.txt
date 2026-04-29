@@ -38,5 +38,6 @@ rke
 rke2
 sha
 terraform
+tfswitch
 variablize
 yaml
