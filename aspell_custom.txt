@@ -37,6 +37,7 @@ rc
 rke
 rke2
 sha
+subnet
 terraform
 tfswitch
 variablize
