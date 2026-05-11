@@ -45,6 +45,7 @@ resource "aws_route53_record" "ipv4" {
   lifecycle {
     ignore_changes = [
       records,
+      zone_id,
     ]
   }
 }
@@ -63,6 +64,7 @@ resource "aws_route53_record" "ipv6" {
   lifecycle {
     ignore_changes = [
       records,
+      zone_id,
     ]
   }
 }

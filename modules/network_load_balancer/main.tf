@@ -110,6 +110,11 @@ resource "aws_lb" "new" {
   tags = {
     Name = local.name
   }
+  lifecycle {
+    ignore_changes = [
+      subnet_mapping,
+    ]
+  }
 }
 
 resource "aws_lb_target_group" "created" {
