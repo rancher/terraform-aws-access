@@ -10,8 +10,9 @@ env:
   AWS_ROLE: arn:aws:iam::270074865685:role/terraform-module-ci-test
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
   ACME_SERVER_URL: https://acme-v02.api.letsencrypt.org/directory
-  NIX_INSTALL_SHA: de490f61fcbaf9a5cabf2fa621ddb9ef93ad35d9a23a04e7d51b26e092b63691
-  NIX_INSTALL_VERSION: 2.34.4
+  # https://releases.nixos.org/?prefix=nix
+  NIX_INSTALL_SHA: e9d447ce3d2ff62d7ff9cb6ef401de6fa8acb148839dd00f7271945d7b638b14
+  NIX_INSTALL_VERSION: 2.34.7
 
 permissions: write-all
 
