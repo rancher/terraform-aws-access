@@ -136,7 +136,7 @@ for id in $resources_ids; do
     sleep $((attempts * 10))
     attempts=$((attempts + 1))
   done
-done
+
   # remove route 53 records
   echo "Clearing out Route 53 records if they were missed..."
   LOWER_IDENTIFIER=$(echo "$IDENTIFIER" | tr '[:upper:]' '[:lower:]')
