@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.4](https://github.com/rancher/terraform-aws-access/compare/v4.0.3...v4.0.4) (2026-05-15)
+
+
+### Bug Fixes
+
+* Add some QOL changes ([#155](https://github.com/rancher/terraform-aws-access/issues/155)) ([d654030](https://github.com/rancher/terraform-aws-access/commit/d654030b29dd955f27026d161ee4bec7a42357a3))
+
 ## [4.0.3](https://github.com/rancher/terraform-aws-access/compare/v4.0.2...v4.0.3) (2026-05-11)
 
 
