@@ -15,7 +15,7 @@ locals {
   example      = "selectsubnets"
   project_name = lower(substr("tf-${substr(md5(join("-", [local.example, md5(local.identifier)])), 0, 5)}", 0, 15))
   zone         = var.zone
-  domain       = "${local.project_name}-${local.identifier}.${local.zone}"
+  domain       = lower("${local.project_name}-${local.identifier}.${local.zone}")
 }
 
 module "setup" {

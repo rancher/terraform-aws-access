@@ -14,8 +14,8 @@ locals {
   identifier   = var.identifier
   example      = "basic"
   project_name = lower(substr("tf-${substr(md5(join("-", [local.example, md5(local.identifier)])), 0, 5)}", 0, 15))
-  zone         = var.zone
-  domain       = "${local.project_name}-${local.identifier}.${local.zone}"
+  zone         = lower(var.zone)
+  domain       = lower("${local.project_name}-${local.identifier}.${local.zone}")
 }
 
 # AWS reserves the first four IP addresses and the last IP address in any CIDR block for its own use (cumulatively)

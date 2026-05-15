@@ -140,6 +140,30 @@ resource "terraform_data" "input_validation" {
       ) ? false : true # the bad condition is defined, then the result is flipped to trigger the error
       error_message = "Even when skipping domain creation, the domain zone must still be set."
     }
+    precondition {
+      condition = (
+        local.domain_mod == 1 &&
+        local.domain_use_strategy != "skip" &&
+        length(local.domain) < 1
+      )
+      error_message = "If deploying a domain, a domain name must be set."
+    }
+    precondition {
+      condition = (
+        local.domain_mod == 1 &&
+        local.domain_use_strategy != "skip" &&
+        local.domain != lower(local.domain)
+      )
+      error_message = "If deploying a domain, a domain name must be lower case."
+    }
+    precondition {
+      condition = (
+        local.domain_mod == 1 &&
+        local.domain_use_strategy != "skip" &&
+        local.zone != lower(local.zone)
+      )
+      error_message = "If deploying a domain, a domain zone must be lower case."
+    }
   }
 }
 
