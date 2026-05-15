@@ -2,7 +2,6 @@
 name: Ask a Question
 about: Need help finding something or making something work
 title: '[QUESTION] '
-labels: 'internal/user'
 assignees: ''
 
 ---

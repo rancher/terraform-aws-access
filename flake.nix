@@ -83,42 +83,54 @@
           };
           aspellWithDicts = pkgs.aspellWithDicts (d: [d.en d.en-computers]);
 
-          devShellPackage = pkgs.symlinkJoin {
-            name = "dev-shell-package";
-            paths = with pkgs; [
-              actionlint
-              age
-              aspellWithDicts
-              awscli2
-              bashInteractive
-              curl
-              dig
-              eslint
-              gh
-              git
-              gitleaks
-              gnupg
-              go
-              golangci-lint
-              goreleaser
-              gotestfmt
-              gotestsum
-              jq
-              leftovers
-              less
-              openssh
-              openssl
-              shellcheck
-              terraform
-              tflint
-              tfsec
-              trivy
-              updatecli
-              vim
-              which
-              yq
-            ];
-          };
+        devPackages = [
+          # place our downloaded packages here
+          aspellWithDicts
+          leftovers
+          terraform
+        ] ++ (with pkgs; [
+          # here are the packages from the nix repository
+          actionlint
+          age
+          awscli2
+          bashInteractive
+          curl
+          dig
+          eslint
+          gh
+          git
+          gitleaks
+          gnupg
+          go
+          golangci-lint
+          goreleaser
+          gotestfmt
+          gotestsum
+          jq
+          less
+          openssh
+          openssl
+          shellcheck
+          tflint
+          tfsec
+          trivy
+          updatecli
+          vim
+          which
+          yq-go
+        ]);
+
+        devShellPackage = pkgs.symlinkJoin {
+          name = "dev-shell-package";
+
+          # buildEnv properly handles combining all outputs (like bin, out, etc.)
+          paths = [
+            (pkgs.buildEnv {
+              name = "dev-shell-env";
+              paths = devPackages;
+            })
+          ];
+        };
         in
         {
           packages.default = devShellPackage;
@@ -126,7 +138,7 @@
           devShells.default = pkgs.mkShell {
             buildInputs = [ devShellPackage ];
             shellHook = ''
-              while read word; do echo -e "*$word\n#" | aspell -a --dont-validate-words >/dev/null; done < aspell_custom.txt
+              while read word; do echo -e "*$word\n#" | aspell -a --dont-validate-words 2&>/dev/null; done < aspell_custom.txt
               export PS1="nix:# ";
             '';
           };
