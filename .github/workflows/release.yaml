@@ -33,12 +33,15 @@ jobs:
         with:
           release-type: terraform-module
       - name: Checkout
-        # https://github.com/actions/checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        if: steps.release-please.outputs.pr
-        with:
-          token: ${{secrets.GITHUB_TOKEN}}
-          fetch-depth: 0
+        shell: bash
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
       - name: 'Wait for E2E'
         # https://github.com/actions/github-script
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0

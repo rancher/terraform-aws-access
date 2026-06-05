@@ -23,10 +23,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        # https://github.com/actions/checkout/releases
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          fetch-depth: 0
+        shell: bash
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
       - name: 'Lint terraform'
         shell: >-
           /home/suse/.nix-profile/bin/nix develop
@@ -56,10 +61,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        # https://github.com/actions/checkout/releases
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          fetch-depth: 0
+        shell: bash
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
       - name: 'Check for github-script errors'
         shell: >-
           /home/suse/.nix-profile/bin/nix develop
@@ -89,10 +99,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        # https://github.com/actions/checkout/releases
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          fetch-depth: 0
+        shell: bash
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
       - name: 'Action Lint'
         shell: >-
           /home/suse/.nix-profile/bin/nix develop
@@ -120,10 +135,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        # https://github.com/actions/checkout/releases
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          fetch-depth: 0
+        shell: bash
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
       - name: 'Shell Check'
         shell: >-
           /home/suse/.nix-profile/bin/nix develop
@@ -154,8 +174,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        # https://github.com/actions/checkout/releases
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        shell: bash
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
       - name: 'Check commit message'
         shell: >-
           /home/suse/.nix-profile/bin/nix develop
@@ -186,10 +213,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        # https://github.com/actions/checkout/releases
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          fetch-depth: 0
+        shell: bash
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
       - name: 'Check for secrets'
         shell: >-
           /home/suse/.nix-profile/bin/nix develop
@@ -219,10 +251,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        # https://github.com/actions/checkout/releases
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          fetch-depth: 0
+        shell: bash
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
       - name: 'Test Compile Check'
         shell: >-
           /home/suse/.nix-profile/bin/nix develop

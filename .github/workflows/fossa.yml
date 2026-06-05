@@ -18,10 +18,15 @@ jobs:
       options: --user suse
     steps:
     - name: Checkout
-      # https://github.com/actions/checkout/releases
-      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      with:
-        fetch-depth: 0
+      shell: bash
+      run: |
+        git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        git init .
+        git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+        git fetch --tags --force origin
+        git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+        git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+        git checkout "${{ github.sha }}"
     # The FOSSA token is shared between all repos in Rancher's GH org. It can be
     # used directly and there is no need to request specific access to EIO.
     - name: 'Read FOSSA Token'
