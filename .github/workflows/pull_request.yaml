@@ -25,6 +25,8 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
+          sudo chown -R $(whoami) .
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
           git fetch --tags --force origin
@@ -62,6 +64,8 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
+          sudo chown -R $(whoami) .
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
           git fetch --tags --force origin
@@ -99,6 +103,8 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
+          sudo chown -R $(whoami) .
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
           git fetch --tags --force origin
@@ -134,6 +140,8 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
+          sudo chown -R $(whoami) .
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
           git fetch --tags --force origin
@@ -172,6 +180,8 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
+          sudo chown -R $(whoami) .
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
           git fetch --tags --force origin
@@ -210,6 +220,8 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
+          sudo chown -R $(whoami) .
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
           git fetch --tags --force origin
@@ -247,6 +259,8 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
+          sudo chown -R $(whoami) .
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
           git fetch --tags --force origin
