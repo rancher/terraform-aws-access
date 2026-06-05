@@ -1,11 +1,29 @@
 #!/usr/bin/env bash
 set -e
 
+if [ -z "$NIX_SSL_CERT_FILE" ]; then
+  for cert in /etc/ssl/certs/ca-certificates.crt \
+              /etc/ssl/certs/ca-bundle.crt \
+              /etc/pki/tls/certs/ca-bundle.crt \
+              /etc/ssl/ca-bundle.pem \
+              /var/lib/ca-certificates/ca-bundle.pem; do
+    if [ -f "$cert" ]; then
+      export NIX_SSL_CERT_FILE="$cert"
+      break
+    fi
+  done
+fi
+
+export SSL_CERT_FILE="$NIX_SSL_CERT_FILE"
+export CURL_CA_BUNDLE="$NIX_SSL_CERT_FILE"
+
 /home/suse/.nix-profile/bin/nix develop \
   --ignore-environment \
   --extra-experimental-features nix-command \
   --extra-experimental-features flakes \
   --keep NIX_SSL_CERT_FILE \
+  --keep SSL_CERT_FILE \
+  --keep CURL_CA_BUNDLE \
   --keep NIX_ENV_LOADED \
   --keep TERM \
   --keep HOME \
