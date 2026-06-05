@@ -17,6 +17,9 @@ fi
 export SSL_CERT_FILE="$NIX_SSL_CERT_FILE"
 export CURL_CA_BUNDLE="$NIX_SSL_CERT_FILE"
 
+printf "%s\n" "$*" > .nix-script.sh
+trap 'rm -f .nix-script.sh' EXIT
+
 /home/suse/.nix-profile/bin/nix develop \
   --ignore-environment \
   --extra-experimental-features nix-command \
@@ -39,4 +42,4 @@ export CURL_CA_BUNDLE="$NIX_SSL_CERT_FILE"
   --keep IDENTIFIER \
   --keep ZONE \
   --keep ACME_SERVER_URL \
-  --command bash -e -c "$*"
+  --command bash -e .nix-script.sh
