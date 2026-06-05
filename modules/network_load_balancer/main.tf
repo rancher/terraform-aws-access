@@ -44,7 +44,7 @@ data "aws_lb" "selected" {
 
 resource "aws_eip" "created" {
   for_each                  = (local.ipv4ds == 1 ? local.subnets : {})
-  domain                    = "vpc"
+  domain                    = "vpc" # this isn't a dns domain
   associate_with_private_ip = cidrhost(each.value.cidrs.ipv4, -2)
   tags = {
     Name = each.value.name

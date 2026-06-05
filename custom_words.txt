@@ -1,0 +1,6 @@
+authconfig
+goreleaser
+kubeconfig
+nutanix
+tfswitch
+variablize

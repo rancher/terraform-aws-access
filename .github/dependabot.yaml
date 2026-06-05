@@ -18,3 +18,11 @@ updates:
       day: "sunday" # this way it is ready for review on Monday
     commit-message:
       prefix: "fix"
+  # Check for updates to CI container image every week
+  - package-ecosystem: "docker"
+    directory: "/.github/workflows"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    commit-message:
+      prefix: "fix"

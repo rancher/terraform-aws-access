@@ -55,25 +55,19 @@ locals {
   vpc_ipv6 = (local.vpc_mod > 0 ? module.vpc[0].ipv6 : null)
 
   # subnet
-  subnet_names = var.subnet_names
-  subnet_map = (length(local.subnet_names) > 0 ?
-    { for i in range((length(local.subnet_names) * local.subnet_mod)) :
-      tostring(i) => {
-        name      = local.subnet_names[i]
-        ipv4_cidr = cidrsubnet(local.vpc_ipv4, length(local.subnet_names), i)
-        ipv6_cidr = cidrsubnet(local.vpc_ipv6, 8, i) # must be hard coded to 8: AWS only accepts a /64 and always assigns a /56 to the VPC
-        az        = local.availability_zones[i]
-      }
-    } :
-    { for i in range((length(local.availability_zones) * local.subnet_mod)) :
-      tostring(i) => {
-        name      = "${local.vpc_name}-${local.availability_zones[i]}"
-        ipv4_cidr = cidrsubnet(local.vpc_ipv4, length(local.subnet_names), i)
-        ipv6_cidr = cidrsubnet(local.vpc_ipv6, 8, i) # must be hard coded to 8: AWS only accepts a /64 and always assigns a /56 to the VPC
-        az        = local.availability_zones[i]
-      }
-    }
+  subnet_names = (length(var.subnet_names) > 0 ?
+    var.subnet_names :
+    [for i in range(length(local.availability_zones)) : "${local.vpc_name}-${local.availability_zones[tostring(i)]}"]
   )
+  subnet_map = {
+    for i in range((length(local.subnet_names) * local.subnet_mod)) :
+    tostring(i) => {
+      name      = local.subnet_names[i]
+      ipv4_cidr = cidrsubnet(local.vpc_ipv4, length(local.subnet_names), i)
+      ipv6_cidr = cidrsubnet(local.vpc_ipv6, 8, i) # must be hard coded to 8: AWS only accepts a /64 and always assigns a /56 to the VPC
+      az        = local.availability_zones[tostring(i)]
+    }
+  }
 
   # security group
   security_group_name = var.security_group_name
@@ -96,41 +90,12 @@ resource "terraform_data" "input_validation" {
     # }
     precondition {
       condition = (
-        local.vpc_mod == 1 &&
-        (local.vpc_type == "ipv6" || local.vpc_type == "dualstack") &&
-        local.vpc_ipv6 == ""
-      ) ? false : true # the bad condition is defined, then the result is flipped to trigger the error
-      error_message = "When deploying an IPv6 or Dualstack project, vpc_ipv6 must be set."
-    }
-    precondition {
-      condition = (
-        local.vpc_mod == 1 &&
-        local.vpc_ipv4 == ""
-      ) ? false : true # the bad condition is defined, then the result is flipped to trigger the error
-      error_message = "When deploying a project, vpc_ipv4 must be set."
-    }
-    precondition {
-      condition = (
         local.subnet_mod == 1 &&
         local.subnet_use_strategy == "create" &&
-        length(local.subnet_map) != length(local.availability_zones)
+        length(var.subnet_names) > 0 &&
+        length(var.subnet_names) != length(local.availability_zones)
       ) ? false : true # the bad condition is defined, then the result is flipped to trigger the error
-      error_message = "When creating subnets, the number of subnets to create must match the number of availability zones."
-    }
-    precondition {
-      condition = (
-        local.subnet_mod == 1 &&
-        local.subnet_use_strategy == "create" &&
-        length(local.subnet_map) < 1
-      )
-      error_message = "When creating subnets, at least one subnet must be created. Make sure you are in the correct region and that you are able to use all availablilty zones."
-    }
-    precondition {
-      condition = (
-        local.subnet_mod == 1 &&
-        length(module.subnet) < 1
-      ) ? false : true # the bad condition is defined, then the result is flipped to trigger the error
-      error_message = "When creating subnets, the subnet module should have count=1."
+      error_message = "When creating subnets, the number of subnet_names must match the number of vpc_zones specified. If vpc_zones is empty, exactly 1 subnet_name is expected."
     }
     precondition {
       condition = (
@@ -145,7 +110,7 @@ resource "terraform_data" "input_validation" {
         local.domain_mod == 1 &&
         local.domain_use_strategy != "skip" &&
         length(local.domain) < 1
-      )
+      ) ? false : true # the bad condition is defined, then the result is flipped to trigger the error
       error_message = "If deploying a domain, a domain name must be set."
     }
     precondition {
@@ -153,15 +118,15 @@ resource "terraform_data" "input_validation" {
         local.domain_mod == 1 &&
         local.domain_use_strategy != "skip" &&
         local.domain != lower(local.domain)
-      )
+      ) ? false : true # the bad condition is defined, then the result is flipped to trigger the error
       error_message = "If deploying a domain, a domain name must be lower case."
     }
     precondition {
       condition = (
         local.domain_mod == 1 &&
         local.domain_use_strategy != "skip" &&
-        local.zone != lower(local.zone)
-      )
+        local.domain_zone != lower(local.domain_zone)
+      ) ? false : true # the bad condition is defined, then the result is flipped to trigger the error
       error_message = "If deploying a domain, a domain zone must be lower case."
     }
   }

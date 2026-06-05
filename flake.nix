@@ -81,11 +81,9 @@
               chmod +x $out/bin/terraform
             '';
           };
-          aspellWithDicts = pkgs.aspellWithDicts (d: [d.en d.en-computers]);
 
         devPackages = [
           # place our downloaded packages here
-          aspellWithDicts
           leftovers
           terraform
         ] ++ (with pkgs; [
@@ -94,6 +92,7 @@
           age
           awscli2
           bashInteractive
+          cspell
           curl
           dig
           eslint
@@ -138,7 +137,6 @@
           devShells.default = pkgs.mkShell {
             buildInputs = [ devShellPackage ];
             shellHook = ''
-              while read word; do echo -e "*$word\n#" | aspell -a --dont-validate-words 2&>/dev/null; done < aspell_custom.txt
               export PS1="nix:# ";
             '';
           };

@@ -4,6 +4,4 @@
 terraform*
 override.*
 *_override.tf
-!terraform.md
-.claude
-.claude/*
+!terraform.instructions.md
