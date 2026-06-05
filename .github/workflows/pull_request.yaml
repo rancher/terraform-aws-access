@@ -25,7 +25,7 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
-          sudo chown -R $(whoami) .
+          sudo chown -R $(whoami) . "$HOME"
           sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
@@ -54,7 +54,7 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
-          sudo chown -R $(whoami) .
+          sudo chown -R $(whoami) . "$HOME"
           sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
@@ -83,7 +83,7 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
-          sudo chown -R $(whoami) .
+          sudo chown -R $(whoami) . "$HOME"
           sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
@@ -108,7 +108,7 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
-          sudo chown -R $(whoami) .
+          sudo chown -R $(whoami) . "$HOME"
           sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
@@ -133,7 +133,7 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
-          sudo chown -R $(whoami) .
+          sudo chown -R $(whoami) . "$HOME"
           sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
@@ -161,7 +161,7 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
-          sudo chown -R $(whoami) .
+          sudo chown -R $(whoami) . "$HOME"
           sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
@@ -190,7 +190,7 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
-          sudo chown -R $(whoami) .
+          sudo chown -R $(whoami) . "$HOME"
           sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
