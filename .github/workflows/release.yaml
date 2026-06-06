@@ -11,7 +11,7 @@ env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
   ACME_SERVER_URL: https://acme-v02.api.letsencrypt.org/directory
 
-permissions: write-all
+permissions: {}
 
 jobs:
   release:
@@ -23,11 +23,11 @@ jobs:
     permissions:
       contents: write
       issues: write
-      pull_requests: write
-      workflows: write
+      pull-requests: write
+      actions: write
     steps:
       - name: 'Release Please'
-        # https://github.com/googleapis/release-please-action
+        # https://github.com/googleapis/release-please-action/releases
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: release-please
         with:
@@ -35,7 +35,7 @@ jobs:
       - name: Checkout
         shell: bash
         run: |
-          sudo chown -R $(whoami) . "$HOME"
+          sudo chown -R "$(whoami)" . "$HOME"
           sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git init .
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
@@ -44,12 +44,12 @@ jobs:
           git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
           git checkout "${{ github.sha }}"
       - name: 'Wait for E2E'
-        # https://github.com/actions/github-script
+        # https://github.com/actions/github-script/releases
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         id: wait-for-e2e
         if: steps.release-please.outputs.pr
         env:
-          PR_NUMBER: ${{ fromJSON(needs.release-please-pr.outputs.pr).number }}
+          PR_NUMBER: ${{ fromJSON(steps.release-please.outputs.pr).number }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -58,7 +58,7 @@ jobs:
             await script({ github, context, core, process });
       - name: 'Aws Credential Setup'
         id: aws-creds
-        # https://github.com/aws-actions/configure-aws-credentials
+        # https://github.com/aws-actions/configure-aws-credentials/releases
         uses: aws-actions/configure-aws-credentials@d979d5b3a71173a29b74b5b88418bfda9437d885 # v6.1.1
         if: steps.release-please.outputs.pr
         with:
@@ -82,15 +82,14 @@ jobs:
         run: |
           bash .github/workflows/scripts/nix-run.sh "./run_tests.sh"
       - name: 'Report Results'
-        # https://github.com/actions/github-script
+        # https://github.com/actions/github-script/releases
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         if: steps.release-please.outputs.pr
+        env:
+          PR_NUMBER: ${{ fromJSON(steps.release-please.outputs.pr).number }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.rest.issues.createComment({
-              issue_number: ${{ fromJson(steps.release-please.outputs.pr).number }},
-              owner: "${{ github.repository_owner }}",
-              repo: "${{ github.event.repository.name }}",
-              body: "End to End Tests Passed! \n ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            })
+            const scriptPath = `${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/report-results.js`;
+            const { default: script } = await import(scriptPath);
+            await script({ github, context, core, process });

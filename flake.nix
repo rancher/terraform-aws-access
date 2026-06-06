@@ -107,6 +107,7 @@
           gotestsum
           jq
           less
+          nodejs_26
           openssh
           openssl
           shellcheck

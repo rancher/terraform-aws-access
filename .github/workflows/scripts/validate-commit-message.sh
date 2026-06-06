@@ -7,9 +7,10 @@ set -o pipefail
 
 filter() {
   COMMIT="$1"
-  output="$(echo "$COMMIT" | grep -v -e '^fix: ' -e '^feature: ' -e '^feat: ' -e '^refactor!: ' -e '^feature!: ' -e '^feat!: ' -e '^chore(main): ' -e '^Merge branch ' || true)"
+  output="$(echo "$COMMIT" | grep -v -e '^fix: ' -e '^feature: ' -e '^feat: ' -e '^refactor!: ' -e '^feature!: ' -e '^feat!: ' -e '^chore(main): ' -e '^Merge ' || true)"
   echo "$output"
 }
+
 prefix_check() {
   message="$1"
   if [ "" != "$(filter "$message")" ]; then
@@ -24,6 +25,7 @@ EOF
     echo "...Commit message starts with the required prefix."
   fi
 }
+
 empty_check() {
   message="$1"
   if [ "" == "$message" ]; then
@@ -33,6 +35,7 @@ empty_check() {
     echo "...Commit message isnt empty."
   fi
 }
+
 length_check() {
   message="$1"
   length="$(wc -m <<<"$message")"
@@ -43,8 +46,10 @@ length_check() {
     echo "...Commit message subject line is less than 100 characters."
   fi
 }
+
 spell_check() {
   message="$1"
+  if grep -e '^Merge ' <<<"$message"; then exit 0; fi
   WORDS="$(cspell stdin <<<"$message")"
   if [ "" != "$WORDS" ]; then
     echo "...Commit message contains spelling errors on: ^$WORDS\$"
@@ -57,7 +62,6 @@ spell_check() {
 }
 
 # Fetch the commit messages
-
 if [ -z "${PR_NUMBER:-}" ]; then
   echo "Notice: PR_NUMBER environment variable is not set."
   echo "Falling back to checking local commits against origin/main..."

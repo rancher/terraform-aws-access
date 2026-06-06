@@ -5,3 +5,6 @@ terraform*
 override.*
 *_override.tf
 !terraform.instructions.md
+node_modules
+package.json
+package-lock.json
