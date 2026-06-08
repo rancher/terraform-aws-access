@@ -79,8 +79,8 @@ variable "subnet_names" {
   type        = list(string)
   description = <<-EOT
     The names to use for the subnets to select or create.
-    Required when not skipping subnets.
-    When creating, the number of subnet_names must match the number of vpc_zones.
+    If left empty, a default name will be generated based on the vpc_name and availability zone.
+    When creating, if provided, the number of subnet_names must match the number of vpc_zones.
     Only one subnet can be provisioned per zone, this is to align with load balancer mappings.
   EOT
   default     = []

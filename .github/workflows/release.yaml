@@ -10,41 +10,55 @@ env:
   AWS_ROLE: arn:aws:iam::270074865685:role/terraform-module-ci-test
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
   ACME_SERVER_URL: https://acme-v02.api.letsencrypt.org/directory
-  # https://releases.nixos.org/?prefix=nix
-  NIX_INSTALL_SHA: e9d447ce3d2ff62d7ff9cb6ef401de6fa8acb148839dd00f7271945d7b638b14
-  NIX_INSTALL_VERSION: 2.34.7
 
-permissions: write-all
+permissions: {}
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
+    container:
+      image: ghcr.io/rancher/ci-image/nix:20260603-18
+      options: --user suse
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: write
     steps:
-      # https://github.com/googleapis/release-please-action
-      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+      - name: 'Release Please'
+        # https://github.com/googleapis/release-please-action/releases
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: release-please
         with:
           release-type: terraform-module
-      # https://github.com/actions/github-script
-      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+      - name: Checkout
+        shell: bash
+        run: |
+          sudo chown -R "$(whoami)" . "$HOME"
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
+      - name: 'Wait for E2E'
+        # https://github.com/actions/github-script/releases
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        id: wait-for-e2e
         if: steps.release-please.outputs.pr
+        env:
+          PR_NUMBER: ${{ fromJSON(steps.release-please.outputs.pr).number }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.rest.issues.createComment({
-              issue_number: ${{ fromJson(steps.release-please.outputs.pr).number }},
-              owner: "${{ github.repository_owner }}",
-              repo: "${{ github.event.repository.name }}",
-              body: "Please make sure e2e tests pass before merging this PR! \n ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            })
-      # https://github.com/actions/checkout
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        if: steps.release-please.outputs.pr
-        with:
-          token: ${{secrets.GITHUB_TOKEN}}
-          fetch-depth: 0
-      - id: aws-creds
-        # https://github.com/aws-actions/configure-aws-credentials
+            const scriptPath = `${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/wait-for-e2e.js`;
+            const { default: script } = await import(scriptPath);
+            await script({ github, context, core, process });
+      - name: 'Aws Credential Setup'
+        id: aws-creds
+        # https://github.com/aws-actions/configure-aws-credentials/releases
         uses: aws-actions/configure-aws-credentials@d979d5b3a71173a29b74b5b88418bfda9437d885 # v6.1.1
         if: steps.release-please.outputs.pr
         with:
@@ -53,19 +67,9 @@ jobs:
           aws-region: ${{env.AWS_REGION}}
           role-duration-seconds: 7200 # 2 hours
           output-credentials: true
-      - name: install-nix
+      - name: 'Run Tests'
         if: steps.release-please.outputs.pr
-        run: |
-          curl -L -o install.sh "https://releases.nixos.org/nix/nix-${NIX_INSTALL_VERSION}/install"
-          echo "${NIX_INSTALL_SHA} install.sh" | sha256sum -c -
-          chmod +x install.sh
-          ./install.sh
-          source /home/runner/.nix-profile/etc/profile.d/nix.sh
-          nix --version
-          which nix
-      - name: Run Tests
-        if: steps.release-please.outputs.pr
-        shell: '/home/runner/.nix-profile/bin/nix develop --ignore-environment --extra-experimental-features nix-command --extra-experimental-features flakes --keep HOME --keep SSH_AUTH_SOCK --keep IDENTIFIER --keep GITHUB_TOKEN --keep GITHUB_OWNER --keep ZONE --keep AWS_ROLE --keep AWS_REGION --keep AWS_DEFAULT_REGION --keep AWS_ACCESS_KEY_ID --keep AWS_SECRET_ACCESS_KEY --keep AWS_SESSION_TOKEN --keep UPDATECLI_GPGTOKEN --keep UPDATECLI_GITHUB_TOKEN --keep UPDATECLI_GITHUB_ACTOR --keep GPG_SIGNING_KEY --keep NIX_SSL_CERT_FILE --keep NIX_ENV_LOADED --keep TERM --command bash -e {0}'
+        shell: bash
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.aws-creds.outputs.aws-access-key-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.aws-creds.outputs.aws-secret-access-key }}
@@ -76,16 +80,16 @@ jobs:
           ZONE: ${{secrets.ZONE}}
           ACME_SERVER_URL: https://acme-v02.api.letsencrypt.org/directory
         run: |
-          ./run_tests.sh
-      # https://github.com/actions/github-script
-      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+          bash .github/workflows/scripts/nix-run.sh "./run_tests.sh"
+      - name: 'Report Results'
+        # https://github.com/actions/github-script/releases
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         if: steps.release-please.outputs.pr
+        env:
+          PR_NUMBER: ${{ fromJSON(steps.release-please.outputs.pr).number }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.rest.issues.createComment({
-              issue_number: ${{ fromJson(steps.release-please.outputs.pr).number }},
-              owner: "${{ github.repository_owner }}",
-              repo: "${{ github.event.repository.name }}",
-              body: "End to End Tests Passed! \n ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            })
+            const scriptPath = `${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/report-results.js`;
+            const { default: script } = await import(scriptPath);
+            await script({ github, context, core, process });
