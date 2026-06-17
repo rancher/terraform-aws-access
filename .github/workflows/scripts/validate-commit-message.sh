@@ -38,6 +38,7 @@ empty_check() {
 
 length_check() {
   message="$1"
+  if grep -e '^Merge ' <<<"$message"; then exit 0; fi
   length="$(wc -m <<<"$message")"
   if [ "$length" -gt 71 ]; then
     echo "...Commit message subject line should be less than 72 characters, found $length."
