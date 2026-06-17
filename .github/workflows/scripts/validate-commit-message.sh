@@ -39,11 +39,13 @@ empty_check() {
 length_check() {
   message="$1"
   length="$(wc -m <<<"$message")"
-  if [ "$length" -gt 100 ]; then
-    echo "...Commit message subject line should be less than 100 characters, found $length."
+  if [ "$length" -gt 71 ]; then
+    echo "...Commit message subject line should be less than 72 characters, found $length."
+    echo "...GitHub truncates messages greater than 71 characters, making them unreadable beyond that point."
+    echo "...See https://github.com/orgs/community/discussions/12450 for more information."
     exit 1
   else
-    echo "...Commit message subject line is less than 100 characters."
+    echo "...Commit message subject line is less than 72 characters."
   fi
 }
 

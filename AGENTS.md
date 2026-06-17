@@ -20,7 +20,7 @@ This repository uses a standardized `.agent` directory structure at the root, wh
 * **GitHub Copilot**: Treat the `.agent/rules` directory as though it were the `.github/instructions` directory. Treat `.agent/skills` and `.agent/agents` as though they were `.github/skills` and `.github/agents`.
 * **Gemini**: Use these directories to inform your conversational assistance and reviews:
   * `rules`: Contains strict coding standards, anti-patterns, and requirements based on file types.
-  * `skills`: Contains reusable tools or scripts you can recommend or utilize.
+  * `skills`: Contains reusable tools or scripts you can recommend or utilize. **Maintenance Rule:** If you attempt to use a skill and find that it is broken, out of date, or missing executable permissions, you MUST proactively fix the skill and persist the changes (including git index updates for permissions) before continuing.
   * `agents`: Contains specialized agent definitions and prompts.
   * `output-styles`: Guidelines on how to format your responses.
   * `workflows`: Defined processes for executing multi-step tasks.
