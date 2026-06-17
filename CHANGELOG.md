@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.0.4](https://github.com/rancher/terraform-aws-access/compare/v4.0.3...v4.0.4) (2026-06-17)
+
+
+### Bug Fixes
+
+* Add some QOL changes ([#155](https://github.com/rancher/terraform-aws-access/issues/155)) ([d654030](https://github.com/rancher/terraform-aws-access/commit/d654030b29dd955f27026d161ee4bec7a42357a3))
+* bump aws-actions/configure-aws-credentials from 6.1.1 to 6.2.0 ([#160](https://github.com/rancher/terraform-aws-access/issues/160)) ([81db09c](https://github.com/rancher/terraform-aws-access/commit/81db09c670459bf2597ddd594c4116c3bd76add5))
+* pull release out of the container, but keep the tests in ([#162](https://github.com/rancher/terraform-aws-access/issues/162)) ([8a2758f](https://github.com/rancher/terraform-aws-access/commit/8a2758f9ce3ced966210abb2f54e81ec4e80c8b2))
+* reduce character count to 71, fix eslint ([#163](https://github.com/rancher/terraform-aws-access/issues/163)) ([f7d970a](https://github.com/rancher/terraform-aws-access/commit/f7d970aa912ef2446b012c0b82d55275af701daa))
+* remove unused local provider ([#161](https://github.com/rancher/terraform-aws-access/issues/161)) ([ee7bb82](https://github.com/rancher/terraform-aws-access/commit/ee7bb82b03cb7fbe2b11384716d759d8f0efbc00))
+* update tests and resolve dependency cycle ([#158](https://github.com/rancher/terraform-aws-access/issues/158)) ([be000c4](https://github.com/rancher/terraform-aws-access/commit/be000c4122c423c2bdd141e6ebc5494e1be65a42))
+
 ## [4.0.3](https://github.com/rancher/terraform-aws-access/compare/v4.0.2...v4.0.3) (2026-05-11)
 
 
