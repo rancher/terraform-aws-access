@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-if [ -z "$NIX_SSL_CERT_FILE" ]; then
+if [ -z "${NIX_SSL_CERT_FILE:-}" ]; then
   for cert in /etc/ssl/certs/ca-certificates.crt \
               /etc/ssl/certs/ca-bundle.crt \
               /etc/pki/tls/certs/ca-bundle.crt \
@@ -14,13 +14,27 @@ if [ -z "$NIX_SSL_CERT_FILE" ]; then
   done
 fi
 
-export SSL_CERT_FILE="$NIX_SSL_CERT_FILE"
-export CURL_CA_BUNDLE="$NIX_SSL_CERT_FILE"
+export SSL_CERT_FILE="${NIX_SSL_CERT_FILE:-}"
+export CURL_CA_BUNDLE="${NIX_SSL_CERT_FILE:-}"
 
-printf "%s\n" "$*" > .nix-script.sh
+{
+  echo "git config --global --add safe.directory \"$PWD\""
+  printf "%s\n" "$*"
+} > .nix-script.sh
+
 trap 'rm -f .nix-script.sh' EXIT
 
-/home/suse/.nix-profile/bin/nix develop \
+# Ensure the suse user can read/write the script and current directory
+chown -R suse:suse . || true
+
+# Ensure parent directories are traversable by the suse user
+p="$PWD"
+while [ "$p" != "/" ] && [ -n "$p" ]; do
+  chmod a+rx "$p" 2>/dev/null || true
+  p="$(dirname "$p")"
+done
+
+sudo -E -u suse /home/suse/.nix-profile/bin/nix develop \
   --ignore-environment \
   --extra-experimental-features nix-command \
   --extra-experimental-features flakes \
