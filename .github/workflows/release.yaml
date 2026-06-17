@@ -15,16 +15,13 @@ permissions: {}
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    container:
-      image: ghcr.io/rancher/ci-image/nix:20260603-18
-      options: --user suse
     permissions:
       contents: write
-      issues: write
       pull-requests: write
-      actions: write
+      issues: write
+      id-token: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - name: 'Release Please'
         # https://github.com/googleapis/release-please-action/releases
@@ -32,31 +29,29 @@ jobs:
         id: release-please
         with:
           release-type: terraform-module
-      - name: Checkout
+
+      - name: 'Checkout'
+        # https://github.com/actions/checkout/releases
+        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
+
+      - name: Free Disk Space Before Test
         shell: bash
         run: |
-          sudo chown -R "$(whoami)" . "$HOME"
-          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git init .
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-          git fetch --tags --force origin
-          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
-          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
-          git checkout "${{ github.sha }}"
-      - name: 'Wait for E2E'
+          bash .github/workflows/scripts/free-disk-space.sh
+
+      - name: 'Comment PR e2e wait'
         # https://github.com/actions/github-script/releases
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        id: wait-for-e2e
         if: steps.release-please.outputs.pr
-        env:
-          PR_NUMBER: ${{ fromJSON(steps.release-please.outputs.pr).number }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const scriptPath = `${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/wait-for-e2e.js`;
+            const scriptPath = `${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/pr-e2e-wait.js`;
             const { default: script } = await import(scriptPath);
-            await script({ github, context, core, process });
-      - name: 'Aws Credential Setup'
+            context.payload.pull_request = { number: ${{ fromJson(steps.release-please.outputs.pr).number }} };
+            await script({ github, context });
+
+      - name: 'Configure AWS Credentials'
         id: aws-creds
         # https://github.com/aws-actions/configure-aws-credentials/releases
         uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b # v6.2.0
@@ -67,7 +62,8 @@ jobs:
           aws-region: ${{env.AWS_REGION}}
           role-duration-seconds: 7200 # 2 hours
           output-credentials: true
-      - name: 'Run Tests'
+
+      - name: Run Tests
         if: steps.release-please.outputs.pr
         shell: bash
         env:
@@ -79,17 +75,18 @@ jobs:
           IDENTIFIER: ${{github.run_id}}
           ZONE: ${{secrets.ZONE}}
           ACME_SERVER_URL: https://acme-v02.api.letsencrypt.org/directory
+          RANCHER_INSECURE: false
         run: |
-          bash .github/workflows/scripts/nix-run.sh "./run_tests.sh"
-      - name: 'Report Results'
+          bash .github/workflows/scripts/run-in-nix-container.sh "bash .github/workflows/scripts/execute-tests.sh"
+
+      - name: 'Comment PR e2e pass'
         # https://github.com/actions/github-script/releases
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         if: steps.release-please.outputs.pr
-        env:
-          PR_NUMBER: ${{ fromJSON(steps.release-please.outputs.pr).number }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const scriptPath = `${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/report-results.js`;
+            const scriptPath = `${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/pr-e2e-pass.js`;
             const { default: script } = await import(scriptPath);
-            await script({ github, context, core, process });
+            context.payload.pull_request = { number: ${{ fromJson(steps.release-please.outputs.pr).number }} };
+            await script({ github, context });
