@@ -70,8 +70,6 @@ jobs:
         shell: bash
         run: |
           bash .github/workflows/scripts/nix-run.sh "
-            npm install --save-dev eslint @eslint/js
-            npm install --save-dev @eslint/js globals
             eslint .
           "
 
