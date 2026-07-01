@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.0.5](https://github.com/rancher/terraform-aws-access/compare/v4.0.4...v4.0.5) (2026-07-01)
+
+
+### Bug Fixes
+
+* bump actions checkout from v6.0.3 to new v7.0.0 ([#164](https://github.com/rancher/terraform-aws-access/issues/164)) ([1d1654f](https://github.com/rancher/terraform-aws-access/commit/1d1654fcebca0988f56def028a4a6e60b2cfe25d))
+* bump actions/checkout from 6.0.3 to 7.0.0 ([#167](https://github.com/rancher/terraform-aws-access/issues/167)) ([ad19523](https://github.com/rancher/terraform-aws-access/commit/ad19523b7f17a3a2aaf572e078701913b883300d))
+* bump aws-actions/configure-aws-credentials from 6.2.0 to 6.2.1 ([#168](https://github.com/rancher/terraform-aws-access/issues/168)) ([709922f](https://github.com/rancher/terraform-aws-access/commit/709922fc68e3988dc4bf42b89b96fbb5fe086e12))
+
 ## [4.0.4](https://github.com/rancher/terraform-aws-access/compare/v4.0.3...v4.0.4) (2026-06-17)
 
 
