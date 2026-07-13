@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.0.5](https://github.com/rancher/terraform-aws-access/compare/v4.0.4...v4.0.5) (2026-07-13)
+
+
+### Bug Fixes
+
+* bump actions checkout from v6.0.3 to new v7.0.0 ([#164](https://github.com/rancher/terraform-aws-access/issues/164)) ([1d1654f](https://github.com/rancher/terraform-aws-access/commit/1d1654fcebca0988f56def028a4a6e60b2cfe25d))
+* bump actions/checkout from 6.0.3 to 7.0.0 ([#167](https://github.com/rancher/terraform-aws-access/issues/167)) ([ad19523](https://github.com/rancher/terraform-aws-access/commit/ad19523b7f17a3a2aaf572e078701913b883300d))
+* bump aws-actions/configure-aws-credentials from 6.2.0 to 6.2.1 ([#168](https://github.com/rancher/terraform-aws-access/issues/168)) ([709922f](https://github.com/rancher/terraform-aws-access/commit/709922fc68e3988dc4bf42b89b96fbb5fe086e12))
+* bump aws-actions/configure-aws-credentials from 6.2.1 to 6.2.2 ([#171](https://github.com/rancher/terraform-aws-access/issues/171)) ([72c022b](https://github.com/rancher/terraform-aws-access/commit/72c022be5cbe40dd6100f340b46edde9740659eb))
+* bump fossas/fossa-action from 1.9.0 to 2.0.0 ([#169](https://github.com/rancher/terraform-aws-access/issues/169)) ([24e976a](https://github.com/rancher/terraform-aws-access/commit/24e976a7454c7c26edc016203232d3659e820294))
+* bump hashicorp/tls from 4.0.6 to 4.3.0 ([#170](https://github.com/rancher/terraform-aws-access/issues/170)) ([7af01cf](https://github.com/rancher/terraform-aws-access/commit/7af01cf53601cb2d6fc26814e372faa2c7c8b1b6))
+* remove docker ecosystem from dependabot ([#166](https://github.com/rancher/terraform-aws-access/issues/166)) ([39a7d41](https://github.com/rancher/terraform-aws-access/commit/39a7d4142bf7f288d610bdb120626e834d600910))
+
 ## [4.0.4](https://github.com/rancher/terraform-aws-access/compare/v4.0.3...v4.0.4) (2026-06-17)
 
 
