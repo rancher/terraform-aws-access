@@ -135,7 +135,7 @@ When acting as an AI assistant executing these instructions, follow each phase t
 2.  **Workflow Security & Standardization (`.github/workflows/*.yaml`)**:
     *   Ensure all workflow files have a top-level `permissions: {}` block and job-level strict permissions.
     *   Ensure every step begins with a descriptive `name:`.
-        - When adding a name, make sure to remove the dash from the previous begining, otherwise it will be interpreted as a new step
+        - When adding a name, make sure to remove the dash from the previous beginning, otherwise it will be interpreted as a new step
     *   Ensure all jobs have `timeout-minutes` set appropriately, default to '30'
     *   Ensure all jobs use the nix ci-image container.
         ```yaml
