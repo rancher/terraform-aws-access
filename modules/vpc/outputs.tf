@@ -27,9 +27,9 @@ output "ipv4" {
 }
 output "ipv6" {
   value = (
-    local.select == 1 ? try(tolist(data.aws_vpc.selected[0].ipv6_cidr_block_associations)[0].ipv6_cidr_block, null) :
-    local.create == 1 ? aws_vpc.new[0].ipv6_cidr_block :
-    null
+    local.select == 1 ? try(tolist(data.aws_vpc.selected[0].ipv6_cidr_block_associations)[0].ipv6_cidr_block, "") : # when selecting, we must use the data source which has ipv6_cidr_block_associations.ipv6_cidr_block
+    local.create == 1 ? aws_vpc.new[0].ipv6_cidr_block :                                                            # when creating a new VPC we can get the ipv6_cidr_block directly
+    ""
   )
 }
 output "main_route_table_id" {
