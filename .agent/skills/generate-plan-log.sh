@@ -24,6 +24,19 @@ extract_date() {
     fi
 }
 
+extract_amended_date() {
+    local file="$1"
+    local date_val
+    
+    date_val=$(awk 'tolower($0) ~ /amended date/ { sub(/^[^:]*:[ \t]*\**/, ""); sub(/\**[ \t]*$/, ""); print; exit }' "${file}")
+    
+    if [[ -z "${date_val}" ]]; then
+        echo "Not specified"
+    else
+        echo "${date_val}"
+    fi
+}
+
 extract_purpose() {
     local file="$1"
     local purpose_val
@@ -149,17 +162,23 @@ generate_plan_log() {
             has_plans=true
             local plan_name="${filename%.md}"
             local date_val
+            local amended_val
             local purpose_val
             local sort_key
             
             date_val=$(resolve_executed_date "${file}")
+            amended_val=$(extract_amended_date "${file}")
+            if [[ "${amended_val}" == "Not specified" ]]; then
+                amended_val="${date_val}"
+            fi
             purpose_val=$(extract_purpose "${file}")
             sort_key=$(get_sort_key "${date_val}")
             
             local out_file="${tmp_dir}/${sort_key}_${filename}.txt"
             {
                 echo "## ${plan_name}"
-                echo "- **Date:** ${date_val}"
+                echo "- **Executed Date:** ${date_val}"
+                echo "- **Amended Date:** ${amended_val}"
                 echo "- **Purpose:** ${purpose_val}"
                 echo ""
             } > "${out_file}"

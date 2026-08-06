@@ -63,8 +63,8 @@ create_pull_request() {
   branch=$(git branch --show-current)
   fork_owner=$(get_fork_owner)
 
-  # Extract upstream repo name dynamically (defaulting to rancher/terraform-aws-rke2)
-  local upstream_repo="rancher/terraform-aws-rke2"
+  # Extract upstream repo name dynamically (defaulting to rancher/terraform-aws-access)
+  local upstream_repo="rancher/terraform-aws-access"
   local origin_url
   origin_url=$(git remote get-url origin 2>/dev/null || true)
   if [[ "$origin_url" =~ github\.com[:/][^/]+/([^/]+)\.git ]]; then
