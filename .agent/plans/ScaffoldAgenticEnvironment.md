@@ -1,6 +1,6 @@
 # Agentic Environment Setup Plan
 
-**Date Completed:** Pending
+**Date Completed:** 2026-08-05
 **Purpose:** Provide a reproducible blueprint for scaffolding a unified, cross-platform AI agentic environment in any new or existing repository.
 
 This plan details the steps an AI assistant should take to generate the foundational configuration files and directory structures required to align GitHub Copilot, Claude, and Gemini under a single set of architectural rules.
@@ -166,7 +166,29 @@ When acting as an AI assistant executing this plan in a new repository, follow e
     *   Create `.agent/output-styles/claude-strict.md` or `.agent/output-styles/gemini-conversational.md` as needed.
 2.  **Rules**:
     *   Create language-specific instruction files (e.g., `go.instructions.md`, `python.instructions.md`, `workflows.instructions.md`) inside `.agent/rules/`.
-3.  **Skills**:
+3.  Skills:
     *   Add any common bash scripts for formatting, testing, or linting (e.g., `run-tests.sh`) to `.agent/skills/`.
-4.  **Workflows**:
+4.  Workflows:
     *   Add step-by-step instructions for PR creation, releases, or CI fixes into `.agent/workflows/`.
+
+---
+
+## Implementation Checklist
+
+### Phase 1: File Verification & Permissions Audit
+- [x] Grant execution permissions (+x) to `.agent/skills/parse-test-logs.sh` and `.agent/skills/update-modules.sh`.
+- [x] Run `shellcheck` on all shell scripts in `.agent/skills/` to verify scripting quality.
+- [x] Run project-wide spelling checks via `cspell` if supported.
+
+### Phase 2: Quality Gates & Upstream Synchronization
+- [x] Proactively review the full set of modifications against `.agent/rules/github-copilot-review.instructions.md`.
+- [x] Sync local environment with upstream using `.agent/skills/git-sync.sh`.
+- [x] Create a dedicated feature branch for the Agentic Environment.
+
+### Phase 3: IDE Review & Conventional Commit
+- [x] Isolate all changes (keeping them unstaged) and present the complete diff to the developer.
+- [x] After explicit developer sign-off, commit the changes using the non-bumping conventional type `ci:` or `chore:` (since these are internal tool configurations and do not affect the public Terraform module).
+
+### Phase 4: Draft Pull Request Creation
+- [x] Execute `.agent/skills/create-pr.sh --draft` to open a Draft PR.
+- [x] Request final developer check on GitHub, then promote to Ready for Review.
