@@ -13,6 +13,7 @@ This is the standard development process. All AI agents MUST strictly read, unde
    - **`feat`** (bumping SemVer Minor) and **`refactor`/`!`** (bumping SemVer Major) MUST ONLY be used if the change directly modifies the Terraform files defining the published module itself (`main.tf`, `variables.tf`, `versions.tf`, or `outputs.tf`).
    - **Internal Dev Changes:** Changes to helper scripts, CI/CD configuration, linters, internal hooks, or test suites DO NOT affect the published product. They MUST NOT use `feat`, `refactor`, or `!` types. Instead, use non-bumping conventional prefixes such as `build`, `ci`, `test`, `docs`, `fix`, or `chore`.
 5. **Secure Local Backup & Isolation (~/.gemini/tmp):** To isolate staged commits for pristine IDE review with zero clutter, the agent MUST temporarily backup all non-layer modified and untracked files to the standard `~/.gemini/tmp/<repo-name>/backup_changes` directory.
+6. **PR Review Chunking:** To facilitate high-quality reviews, large changesets must be broken down into logically independent, easily reviewable subsystem layers (chunks) rather than one massive, overwhelming Pull Request. Each chunk/layer should be designed to be completely independent so they can be merged in any order without causing merge conflicts or breaking the build. Each layer should be submitted, reviewed, and merged sequentially.
 
 ---
 
