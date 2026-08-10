@@ -1,6 +1,7 @@
 # Plan: Release Process
 
-* **Executed Date:** pending
+* **Executed Date:** 2026-08-06
+* **Amended Date:** pending
 * **Purpose:** Establish and enable the newly designed "Standard Repository Release Process: Architectural Blueprint & Tooling Specification" as our repository's standard. This involves documenting the standard in `RELEASING.md`, communicating it in `README.md`, and making the necessary codebase updates to convert our GHA and script logic to this new process.
 * **Goals & Code Snippets:**
 
