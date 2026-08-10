@@ -4,4 +4,4 @@ set -e
 while read -r file; do
   echo "checking $file..."
   shellcheck -x "$file"
-done <<<"$(grep -Rl -e '^#!' | grep -v '.terraform'| grep -v '.git')"
+done <<<"$(grep -Rl -e '^#!' | grep -v '.terraform' | grep -v '.git' | grep -v 'node_modules' | grep -v '.js' | grep -v '.md')"
