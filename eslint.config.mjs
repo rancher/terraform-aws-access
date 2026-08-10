@@ -9,4 +9,11 @@ export default [
       "no-console": "error",
     },
   },
+  {
+    files: [".agent/hooks/**/*.js"],
+    rules: {
+      // Local agent hooks run outside Actions environment and must use console streams to report decisions
+      "no-console": "off",
+    },
+  },
 ];
