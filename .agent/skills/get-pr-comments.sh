@@ -101,7 +101,7 @@ get_repo_context() {
 
     # If no upstream, default to canonical rancher repository
     if [[ -z "${url}" ]]; then
-        echo "rancher/terraform-provider-rancher2"
+        echo "rancher/terraform-aws-access"
         return
     fi
 

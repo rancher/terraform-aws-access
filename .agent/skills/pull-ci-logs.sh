@@ -18,7 +18,7 @@ Arguments:
                           the single most recent run matching the criteria is used.
 
 Options:
-  -r, --repo OWNER/REPO   The GitHub repository (default: rancher/terraform-provider-file).
+  -r, --repo OWNER/REPO   The GitHub repository (default: rancher/terraform-aws-access).
   -w, --workflow NAME     Filter runs by workflow name (e.g., "Release", "pull_request").
   -s, --status STATUS     Filter runs by status (e.g., "completed", "failure").
   -f, --failed-only       Only fetch logs for failed steps.
@@ -149,7 +149,7 @@ get_latest_run_id() {
 }
 
 main() {
-  local repo="rancher/terraform-provider-file"
+  local repo="rancher/terraform-aws-access"
   local failed_only=false
   local output_file=""
   local run_id=""
