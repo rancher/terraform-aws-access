@@ -114,7 +114,6 @@ resource "acme_certificate" "new" {
   recursive_nameservers = [
     "${local.zone_resource.primary_name_server}:53",
   ]
-  disable_complete_propagation = true
   dns_challenge {
     provider = "route53"
     config = {
