@@ -1,5 +1,21 @@
 # Changelog
 
+## [5.0.0](https://github.com/rancher/terraform-aws-access/compare/v4.0.6...v5.0.0) (2026-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* Upgrades the minimum required AWS provider version to `>= 6.57.1` to resolve data source deprecation warnings. ---------
+
+### Bug Fixes
+
+* bump aws-actions/configure-aws-credentials from 6.2.3 to 6.2.4 ([#184](https://github.com/rancher/terraform-aws-access/issues/184)) ([36335b7](https://github.com/rancher/terraform-aws-access/commit/36335b7f2aeb625ce13591175cfdfd5b3365fc2b))
+* bump hashicorp/tls from 4.3.0 to 4.4.0 ([#183](https://github.com/rancher/terraform-aws-access/issues/183)) ([becb112](https://github.com/rancher/terraform-aws-access/commit/becb112d2b3969804fdbd6641554fd4d43bbbb77))
+* bump rancher-eio/read-vault-secrets ([#182](https://github.com/rancher/terraform-aws-access/issues/182)) ([bcd02de](https://github.com/rancher/terraform-aws-access/commit/bcd02dee1aa76a4eebb38df84878f205521a93e8))
+* resolve vpc ipv6 output deprecation warning ([#176](https://github.com/rancher/terraform-aws-access/issues/176)) ([350e241](https://github.com/rancher/terraform-aws-access/commit/350e2416c27302fec592b225187fe333a5a8ea87))
+* scaffold unified cross-platform agentic environment ([#175](https://github.com/rancher/terraform-aws-access/issues/175)) ([8e80f49](https://github.com/rancher/terraform-aws-access/commit/8e80f49004c8403eba40521a26e2b27b5c568dec))
+* this fixes the failing acme provider issue ([#186](https://github.com/rancher/terraform-aws-access/issues/186)) ([4526187](https://github.com/rancher/terraform-aws-access/commit/45261872428c2d72a410542cc1e73cd05ac675c1))
+
 ## [4.0.6](https://github.com/rancher/terraform-aws-access/compare/v4.0.5...v4.0.6) (2026-07-27)
 
 
