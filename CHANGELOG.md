@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.1](https://github.com/rancher/terraform-aws-access/compare/v5.0.0...v5.0.1) (2026-09-21)
+
+
+### Bug Fixes
+
+* bump aws-actions/configure-aws-credentials from 6.2.4 to 6.3.0 ([#187](https://github.com/rancher/terraform-aws-access/issues/187)) ([172970d](https://github.com/rancher/terraform-aws-access/commit/172970d6d5fe3aa38333dac51345e3d715140fe9))
+
 ## [5.0.0](https://github.com/rancher/terraform-aws-access/compare/v4.0.6...v5.0.0) (2026-09-15)
 
 
